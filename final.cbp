@@ -371,6 +371,7 @@
 		<Unit filename="include/input.h" />
 		<Unit filename="include/level.h" />
 		<Unit filename="include/matrices.h" />
+		<Unit filename="include/obstacle.h" />
 		<Unit filename="include/player.h" />
 		<Unit filename="include/renderer.h" />
 		<Unit filename="include/scene.h" />
@@ -388,6 +389,7 @@
 		<Unit filename="src/level.cpp" />
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/matrices.cpp" />
+		<Unit filename="src/obstacle.cpp" />
 		<Unit filename="src/player.cpp" />
 		<Unit filename="src/renderer.cpp" />
 		<Unit filename="src/scene.cpp" />

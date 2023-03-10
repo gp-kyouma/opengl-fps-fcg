@@ -91,7 +91,12 @@ void TextRendering_PrintMatrixVectorProductDivW(GLFWwindow* window, glm::mat4 M,
 void TextRendering_ShowFramesPerSecond(GLFWwindow* window);
 
 // 'Liga' a textura com nome correspondente no dicionário
-void setTexture(std::string name);
+void setDiffuseTexture(std::string name);
+void setSpecularTexture(std::string name);
+
+// determina repetição de textura
+void setTextureRepeat(float u, float v);
+void resetTextureRepeat();
 
 /*
 DECLARAÇÃO DE VARIÁVEIS GLOBAIS
@@ -101,7 +106,8 @@ DECLARAÇÃO DE VARIÁVEIS GLOBAIS
 extern std::stack<glm::mat4>  g_MatrixStack;
 
 // Dicionário (map) que associa um ID de textura a um nome
-extern std::map<std::string, GLuint> g_TextureMap;
+extern std::map<std::string, GLuint> g_TextureMapDiffuse;
+extern std::map<std::string, GLuint> g_TextureMapSpecular;
 
 // Variáveis que definem um programa de GPU (shaders). Veja função LoadShadersFromFiles().
 extern GLuint g_GpuProgramID;
@@ -111,8 +117,9 @@ extern GLint g_projection_uniform;
 extern GLint g_object_id_uniform;
 extern GLint g_bbox_min_uniform;
 extern GLint g_bbox_max_uniform;
-extern GLint g_render_as_white_uniform;
-extern GLuint g_texture_image_uniform;
+extern GLint g_repeat_uniform;
+extern GLuint g_diffuse_texture_image_uniform;
+extern GLuint g_specular_texture_image_uniform;
 
 // Número de texturas carregadas pela função LoadTextureImage()
 extern GLuint g_NumLoadedTextures;

@@ -24,18 +24,18 @@
 
 void drawAABB(AABB aabb) // para razões de debug
 {
-    glm::vec3 aabb_center = getAABBCenter(aabb);
-    glm::vec3 aabb_size   = getAABBSize(aabb);
+    glm::vec3 aabb_center = aabb.getCenter();
+    glm::vec3 aabb_size   = aabb.getSize();
 
     glm::mat4 model = Matrix_Translate(aabb_center.x, aabb_center.y, aabb_center.z) *
                       Matrix_Scale(aabb_size.x, aabb_size.y, aabb_size.z);
 
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
 
-    glUniform1i(g_render_as_white_uniform, true);
+    setDiffuseTexture("white");
+    setSpecularTexture("white");
     glLineWidth(4.0f);
     DrawVirtualObject("cube_edges");
-    glUniform1i(g_render_as_white_uniform, false);
 }
 
 void drawFloor(Level level)
@@ -48,8 +48,11 @@ void drawFloor(Level level)
 
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
 
-    setTexture("floor");
+    setTextureRepeat(halfWidth,halfLength);
+    setDiffuseTexture("floor");
+    setSpecularTexture("black");
     DrawVirtualObject("the_plane");
+    resetTextureRepeat();
 }
 
 void drawWall(Level level, CardinalDirection direction)
@@ -68,29 +71,74 @@ void drawWall(Level level, CardinalDirection direction)
                     Matrix_Rotate_X(-pi2) * // -90graus
                     Matrix_Scale(halfWidth, 1.0f, halfHeight) *
                     Matrix_Rotate_Y(pi2*2); // 180graus
+            setTextureRepeat(halfWidth,halfHeight);
             break;
         case SOUTH:
             model = Matrix_Translate(0.0f, level.levelFloor + halfHeight, -halfLength) *
                     Matrix_Rotate_X(pi2) *  // 90graus
                     Matrix_Scale(halfWidth, 1.0f, halfHeight);
+            setTextureRepeat(halfWidth,halfHeight);
             break;
         case EAST:
             model = Matrix_Translate(-halfWidth, level.levelFloor + halfHeight, 0.0f) *
                     Matrix_Rotate_Z(-pi2) * // -90graus
                     Matrix_Scale(halfHeight, 1.0f, halfLength) *
                     Matrix_Rotate_Y(pi2);   // 90graus
+            setTextureRepeat(halfHeight,halfLength);
             break;
         case WEST:
             model = Matrix_Translate(halfWidth, level.levelFloor + halfHeight, 0.0f) *
                     Matrix_Rotate_Z(pi2) *  // 90graus
                     Matrix_Scale(halfHeight, 1.0f, halfLength) *
                     Matrix_Rotate_Y(-pi2);  // -90graus
+            setTextureRepeat(halfHeight,halfLength);
             break;
         default: break;
     }
 
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
 
-    setTexture("wall");
+    setDiffuseTexture("wall");
+    setSpecularTexture("black");
     DrawVirtualObject("the_plane");
+    resetTextureRepeat();
+}
+
+void drawObstacle(Obstacle obstacle)
+{
+    float width  = (obstacle.o_size.x);
+    float length = (obstacle.o_size.z);
+    float height = (obstacle.o_size.y);
+
+    glm::mat4 model;
+    model = Matrix_Translate(obstacle.pos.x, obstacle.pos.y, obstacle.pos.z) *
+            Matrix_Scale(width, height, length);
+
+    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+
+    switch (obstacle.type)
+    {
+        case OBSTACLE_PLATFORM:
+            setTextureRepeat(obstacle.o_size.x,obstacle.o_size.z);
+            setDiffuseTexture("floor");
+            setSpecularTexture("black");
+            break;
+        case OBSTACLE_WALL:
+            if (width > length)
+                setTextureRepeat(width,height);
+            else
+                setTextureRepeat(length,height);
+            setDiffuseTexture("wall");
+            setSpecularTexture("black");
+            break;
+        case OBSTACLE_BOX:
+            resetTextureRepeat();
+            setDiffuseTexture("box");
+            setSpecularTexture("black");
+            break;
+        default: break;
+    }
+
+    DrawVirtualObject("cube");
+    resetTextureRepeat();
 }

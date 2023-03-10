@@ -127,10 +127,26 @@ int main(int argc, char* argv[])
     // Carregamos imagem para ser utilizada como textura
     LoadTextureImage("../../data/stone_floor.jpg", "floor");
     LoadTextureImage("../../data/brick_wall.jpg", "wall");
+    LoadTextureImage("../../data/placeholder_box.jpg", "box");
+
+    LoadTextureImage("../../data/full_white.jpg", "white");
+    LoadTextureImage("../../data/full_black.jpg", "black");
 
     ObjModel planemodel("../../data/plane.obj");
     ComputeNormals(&planemodel);
     BuildTrianglesAndAddToVirtualScene(&planemodel);
+
+    ObjModel cubemodel("../../data/cube.obj");
+    ComputeNormals(&cubemodel);
+    BuildTrianglesAndAddToVirtualScene(&cubemodel);
+
+    ObjModel bnuuy("../../data/bunny.obj");
+    ComputeNormals(&bnuuy);
+    BuildTrianglesAndAddToVirtualScene(&bnuuy);
+
+    ObjModel mino("../../data/Minotaur.obj");
+    ComputeNormals(&mino);
+    BuildTrianglesAndAddToVirtualScene(&mino);
 
     BuildCubeEdgesAndAddToVirtualScene();
 
@@ -144,8 +160,6 @@ int main(int argc, char* argv[])
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
-
-    glUniform1i(g_render_as_white_uniform, false);
 
     // GAME
     Game game;

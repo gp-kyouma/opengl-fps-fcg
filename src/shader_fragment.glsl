@@ -22,11 +22,11 @@ uniform mat4 projection;
 uniform vec4 bbox_min;
 uniform vec4 bbox_max;
 
-// Se true, ignora a cor calculada e escolhe branco
-uniform bool render_as_white; // should i remove this later lol?
-
 // Variáveis para acesso das imagens de textura
-uniform sampler2D TextureImage0;
+uniform sampler2D TextureImageDiffuse;
+uniform sampler2D TextureImageSpecular;
+
+uniform vec2 repeat;
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec4 color;
@@ -55,29 +55,51 @@ void main()
 
     // Vetor que define o sentido da fonte de luz em relação ao ponto atual.
     vec4 l = normalize(vec4(0.0,1.0,0.0,0.0));
+             //normalize(camera_position - p);
 
     // Vetor que define o sentido da câmera em relação ao ponto atual.
     vec4 v = normalize(camera_position - p);
+
+    // Vetor que define o sentido da reflexão especular ideal.
+    vec4 r = -l + 2*n*dot(n,l);
+
+    // Half vector (blinn-phong)
+    vec4 h = normalize(v+l);
 
     // Coordenadas de textura U e V
     float U = 0.0;
     float V = 0.0;
 
     // Coordenadas de textura do plano, obtidas do arquivo OBJ.
-    U = texcoords.x;
-    V = texcoords.y;
+    U = texcoords.x * repeat.x;
+    V = texcoords.y * repeat.y;
 
-    // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
-    vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
+    // Expoente especular para o modelo de iluminação de Phong
+    float q = 1.0;//placeholder
+    float qlinha = 8*q;
 
-    // Equação de Iluminação
-    float lambert = max(0,dot(n,l));
+    // Obtemos a refletância difusa a partir da leitura da imagem TextureImageDiffuse
+    vec3 Kd = texture(TextureImageDiffuse, vec2(U,V)).rgb;
 
-    color.rgb = Kd0 * (lambert + 0.01);
+    // Obtemos a refletância especular a partir da leitura da imagem TextureImageSpecular
+    vec3 Ks = texture(TextureImageSpecular, vec2(U,V)).rgb;
 
-    // Se render_as_white = true, descarta a cor calculada e escolhe branco
-    if (render_as_white == true)
-        color.rgb = vec3(1.0, 1.0, 1.0);
+    // Espectro da fonte de iluminação
+    vec3 I = vec3(1.0,1.0,1.0); // PREENCHA AQUI o espectro da fonte de luz
+
+    // Espectro da luz ambiente
+    vec3 Ia = vec3(0.1,0.1,0.1); // PREENCHA AQUI o espectro da luz ambiente
+
+    // Termo difuso utilizando a lei dos cossenos de Lambert
+    vec3 lambert_diffuse_term = Kd*I*max(0,dot(n,l));
+
+    // Termo ambiente
+    vec3 ambient_term = Kd*Ia;
+
+    // Termo especular utilizando o modelo de iluminação de BLINN-Phong
+    vec3 phong_specular_term = Ks*I*pow(max(0,dot(n,h)),qlinha);//placeholder
+
+    color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
 
     // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
     // necessário:

@@ -6,7 +6,8 @@
 std::stack<glm::mat4>  g_MatrixStack;
 
 // Dicionário (map) que associa um ID de textura a um nome
-std::map<std::string, GLuint> g_TextureMap;
+std::map<std::string, GLuint> g_TextureMapDiffuse;
+std::map<std::string, GLuint> g_TextureMapSpecular;
 
 // Variáveis que definem um programa de GPU (shaders). Veja função LoadShadersFromFiles().
 GLuint g_GpuProgramID = 0;
@@ -16,8 +17,9 @@ GLint g_projection_uniform;
 GLint g_object_id_uniform;
 GLint g_bbox_min_uniform;
 GLint g_bbox_max_uniform;
-GLint g_render_as_white_uniform;
-GLuint g_texture_image_uniform;
+GLint g_repeat_uniform;
+GLuint g_diffuse_texture_image_uniform;
+GLuint g_specular_texture_image_uniform;
 
 // Número de texturas carregadas pela função LoadTextureImage()
 GLuint g_NumLoadedTextures = 0;
@@ -96,8 +98,8 @@ void LoadTextureImage(const char* filename, std::string name)
     glGenSamplers(1, &sampler_id);
 
     // Veja slides 95-96 do documento Aula_20_Mapeamento_de_Texturas.pdf
-    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glSamplerParameteri(sampler_id, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     // Parâmetros de amostragem da textura.
     glSamplerParameteri(sampler_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -118,7 +120,8 @@ void LoadTextureImage(const char* filename, std::string name)
 
     stbi_image_free(data);
 
-    g_TextureMap[name] = g_NumLoadedTextures;
+    g_TextureMapSpecular[name] = g_NumLoadedTextures;
+    g_TextureMapDiffuse[name] = g_NumLoadedTextures;
 
     g_NumLoadedTextures += 1;
 }
@@ -199,16 +202,33 @@ void LoadShadersFromFiles()
     g_bbox_min_uniform   = glGetUniformLocation(g_GpuProgramID, "bbox_min");
     g_bbox_max_uniform   = glGetUniformLocation(g_GpuProgramID, "bbox_max");
 
-    g_render_as_white_uniform = glGetUniformLocation(g_GpuProgramID, "render_as_white");
+    g_repeat_uniform = glGetUniformLocation(g_GpuProgramID, "repeat");
 
     // Variáveis em "shader_fragment.glsl" para acesso das imagens de textura
-    g_texture_image_uniform = glGetUniformLocation(g_GpuProgramID, "TextureImage0");
+    g_diffuse_texture_image_uniform  = glGetUniformLocation(g_GpuProgramID, "TextureImageDiffuse");
+    g_specular_texture_image_uniform = glGetUniformLocation(g_GpuProgramID, "TextureImageSpecular");
 }
 
-// 'Liga' a textura com nome correspondente no dicionário
-void setTexture(std::string name)
+// 'Liga' a textura com nome correspondente no dicionário (diffuse)
+void setDiffuseTexture(std::string name)
 {
-    glUniform1i(g_texture_image_uniform, g_TextureMap[name]);
+    glUniform1i(g_diffuse_texture_image_uniform, g_TextureMapDiffuse[name]);
+}
+
+// 'Liga' a textura com nome correspondente no dicionário (specular)
+void setSpecularTexture(std::string name)
+{
+    glUniform1i(g_specular_texture_image_uniform, g_TextureMapSpecular[name]);
+}
+
+void setTextureRepeat(float u, float v)
+{
+    glUniform2f(g_repeat_uniform, u, v);
+}
+
+void resetTextureRepeat()
+{
+    glUniform2f(g_repeat_uniform, 1.0f, 1.0f);
 }
 
 // Função que pega a matriz M e guarda a mesma no topo da pilha
@@ -480,6 +500,30 @@ void BuildCubeEdgesAndAddToVirtualScene()
     glm::vec3 bbox_min = glm::vec3(-0.5f, -0.5f, -0.5f);
     glm::vec3 bbox_max = glm::vec3( 0.5f,  0.5f,  0.5f);
 
+    std::vector<float>  normal_coefficients = {
+    //    X      Y     Z     W
+         0.0f,  1.0f,  0.0f, 0.0f,
+         0.0f,  1.0f,  0.0f, 0.0f,
+         0.0f,  1.0f,  0.0f, 0.0f,
+         0.0f,  1.0f,  0.0f, 0.0f,
+         0.0f,  1.0f,  0.0f, 0.0f,
+         0.0f,  1.0f,  0.0f, 0.0f,
+         0.0f,  1.0f,  0.0f, 0.0f,
+         0.0f,  1.0f,  0.0f, 0.0f,
+    };
+
+    std::vector<float>  texture_coefficients = {
+    //    U      V
+         0.0f,  0.0f,
+         0.0f,  0.0f,
+         0.0f,  0.0f,
+         0.0f,  0.0f,
+         0.0f,  0.0f,
+         0.0f,  0.0f,
+         0.0f,  0.0f,
+         0.0f,  0.0f,
+    };
+
     SceneObject theobject;
     theobject.name           = "cube_edges";
     theobject.first_index    = 0; // Primeiro índice
@@ -497,6 +541,28 @@ void BuildCubeEdgesAndAddToVirtualScene()
     glBufferSubData(GL_ARRAY_BUFFER, 0, model_coefficients.size() * sizeof(float), model_coefficients.data());
     GLuint location = 0; // "(location = 0)" em "shader_vertex.glsl"
     GLint  number_of_dimensions = 4; // vec4 em "shader_vertex.glsl"
+    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(location);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    GLuint VBO_normal_coefficients_id;
+    glGenBuffers(1, &VBO_normal_coefficients_id);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_normal_coefficients_id);
+    glBufferData(GL_ARRAY_BUFFER, normal_coefficients.size() * sizeof(float), NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, normal_coefficients.size() * sizeof(float), normal_coefficients.data());
+    location = 1; // "(location = 1)" em "shader_vertex.glsl"
+    number_of_dimensions = 4; // vec4 em "shader_vertex.glsl"
+    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(location);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    GLuint VBO_texture_coefficients_id;
+    glGenBuffers(1, &VBO_texture_coefficients_id);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_texture_coefficients_id);
+    glBufferData(GL_ARRAY_BUFFER, texture_coefficients.size() * sizeof(float), NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, texture_coefficients.size() * sizeof(float), texture_coefficients.data());
+    location = 2; // "(location = 1)" em "shader_vertex.glsl"
+    number_of_dimensions = 2; // vec2 em "shader_vertex.glsl"
     glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(location);
     glBindBuffer(GL_ARRAY_BUFFER, 0);

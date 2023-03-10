@@ -10,15 +10,29 @@
 STRUCTS/CLASSES
 */
 
+enum CardinalDirection
+{
+    NORTH,  // z+
+    SOUTH,  // z-
+    EAST,   // x-
+    WEST,   // x+
+    UP,     // y+
+    DOWN,   // y-
+};
+
 // Estrutura que descreve uma AABB (axis-aligned bounding box) de um objeto
 struct AABB
 {
     glm::vec3 aabb_min;
     glm::vec3 aabb_max;
+
+    // funções auxiliares
+    glm::vec3 getSize();
+    glm::vec3 getCenter();
 };
 
 // Estrutura que descreve uma esfera que envolve um objeto
-struct BoundingSphere
+struct Sphere
 {
     glm::vec3 center;
     float radius;
@@ -30,13 +44,17 @@ struct BoundingSphere
 DECLARAÇÃO DE FUNÇÕES
 */
 
-// funções auxiliares de AABB
-glm::vec3 getAABBSize(AABB aabb);
-glm::vec3 getAABBCenter(AABB aabb);
+// AABB x AABB
+bool Collide(AABB aabb1, AABB aabb2);
+
+// AABB x AABB com parâmetro extra de saída
+// (vetor de deslocamento que deve ser aplicado a aabb1 para resolver a colisão, se houver)
+bool Collide(AABB aabb1, AABB aabb2, glm::vec3 &desloc);
+
+// Sphere x AABB
+bool Collide(Sphere sphere, AABB aabb);
 
 // todo:
-// AABB x AABB
-// Sphere x AABB
 // ...e pelo menos mais uma
 
 #endif // FCG_COLLISIONS

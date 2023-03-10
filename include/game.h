@@ -2,6 +2,7 @@
 #define FCG_GAME
 
 #include <queue>
+#include <vector>
 
 // Headers das bibliotecas OpenGL
 #include <glad/glad.h>   // Criação de contexto OpenGL 3.3
@@ -14,6 +15,7 @@
 
 #include "player.h"
 #include "level.h"
+#include "obstacle.h"
 
 /*
 STRUCTS/CLASSES
@@ -28,6 +30,9 @@ struct Game
 
     Player player;
     // inimigos, obstáculos, projéteis, etc...
+
+    // vetor de obstáculos
+    std::vector<Obstacle> obstacles;
 
     // fila de níveis que o jogo tem
     std::queue<Level> level_queue;

@@ -22,7 +22,28 @@ void Game::Init()
     test_level.player_pos  = glm::vec3(0.0f,6.0f,0.0f);
     test_level.player_view = glm::vec3(0.0f,0.0f,1.0f);
 
+    Obstacle ob1, ob2, ob3;
+
+    ob1.o_size = glm::vec3(1.0f,1.0f,1.0f);
+    ob1.pos    = glm::vec3(3.0f,1.5f,4.0f);
+    ob1.type   = OBSTACLE_BOX;
+
+    ob2.o_size = glm::vec3(3.0f,0.5f,3.0f);
+    ob2.pos    = glm::vec3(1.0f,3.5f,0.0f);
+    ob2.type   = OBSTACLE_PLATFORM;
+
+    ob3.o_size = glm::vec3(1.0f,5.0f,4.0f);
+    ob3.pos    = glm::vec3(-2.0f,3.5f,-2.0f);
+    ob3.type   = OBSTACLE_WALL;
+
+    test_level.obstacles.push_back(ob1);
+    test_level.obstacles.push_back(ob2);
+    test_level.obstacles.push_back(ob3);
+
     level_queue.push(test_level);
+
+    //placeholder
+    obstacles = level_queue.front().obstacles;
 
     // PLAYER
     player.pos  = level_queue.front().player_pos;
@@ -51,7 +72,35 @@ void Game::Update()
     player.setView(g_CameraTheta, g_CameraPhi);
     player.doPlayerMovement(deltaTime);
 
-    // checa se o jogador está dentro dos limites da fase e ajusta se não estiver
+    // testa colisão com obstáculos
+    player.grounded = false;
+
+    bool col_result;
+    glm::vec3 resolve;
+
+    for (unsigned int i = 0; i < obstacles.size(); i++)
+    {
+        col_result = Collide(player.getAABB(),obstacles[i].getAABB(),resolve);
+        if (col_result)
+        {
+            player.movePos(resolve);
+            if (resolve.y != 0) // colisão vertical
+            {
+                if (resolve.y > 0) // colisão em cima
+                {
+                    player.grounded = true;
+                    if (player.y_velocity < 0)
+                        player.y_velocity = 0.0f;
+                }
+                else // colisão em baixo
+                    if (player.y_velocity > 0)
+                        player.y_velocity = 0.0f;
+            }
+        }
+    }
+
+
+    // testa colisão com a fase
     playerWithinLevel(player, level_queue.front());
 
     // todo: everything else xdddzs
@@ -107,6 +156,9 @@ void Game::Draw(GLFWwindow* window)
     glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
     glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
 
+    // reseta repetição de texturas
+    resetTextureRepeat();
+
     // (/INICIALIZAÇÃO)
 
     // (DESENHA OBJETOS)
@@ -117,6 +169,41 @@ void Game::Draw(GLFWwindow* window)
     drawWall(level_queue.front(), EAST);
     drawWall(level_queue.front(), WEST);
     // todo: draw enemies, draw projectiles, draw obstacles... etc
+
+    for (unsigned int i = 0; i < obstacles.size(); i++)
+        drawObstacle(obstacles[i]);
+
+    //desenha weapon sem weapon ainda
+
+    glm::vec4 v_up = glm::vec4(0.0f,1.0f,0.0f,0.0f);  // Vetor "up" fixado para apontar para o "céu" (eixo Y global)
+
+    glm::vec4 w = Vetor(-player.view);
+    glm::vec4 u = crossproduct(v_up,w);
+
+    w = w / norm(w);
+    u = u / norm(u);
+
+    glm::vec4 v = crossproduct(w,u);
+
+    glm::vec4 vertical_displace   = -v*0.1f;
+    glm::vec4 horizontal_displace =  u*0.3f;
+    glm::vec4 forward_displace    = -w*0.5f;
+
+    glm::vec4 weapon_pos = Ponto(player.pos)+vertical_displace+horizontal_displace+forward_displace;
+    weapon_pos.y += player.neck;
+
+    glm::mat4 model = Matrix_Translate(weapon_pos.x,weapon_pos.y,weapon_pos.z) *
+                      Matrix_Rotate_Y(g_CameraTheta) *
+                      Matrix_Rotate_X(-g_CameraPhi)  *
+                      Matrix_Scale(0.2f, 0.2f, 0.2f);
+
+    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+
+    resetTextureRepeat();
+    setDiffuseTexture("box");
+    setSpecularTexture("black");
+    DrawVirtualObject("the_bunny");
+
 
     // se g_ShowInfo = true, mostra as AABBs na tela
     if (g_ShowInfo)

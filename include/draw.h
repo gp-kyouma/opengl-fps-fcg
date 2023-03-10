@@ -10,21 +10,8 @@
 #include "renderer.h"
 #include "collisions.h"
 #include "player.h"
+#include "obstacle.h"
 #include "level.h"
-
-/*
-ENUMS
-*/
-
-enum CardinalDirection
-{
-    NORTH,  // z+
-    SOUTH,  // z-
-    EAST,   // x-
-    WEST,   // x+
-    UP,     // y+
-    DOWN,   // y-
-};
 
 /*
 DECLARAÇÃO DE FUNÇÕES
@@ -34,6 +21,7 @@ void drawAABB(AABB aabb); // para razões de debug
 
 void drawFloor(Level level);
 void drawWall(Level level, CardinalDirection direction);
+void drawObstacle(Obstacle obstacle);
 
 // draw weapon, draw enemy, draw projectile, draw obstacle, etc etc...
 
