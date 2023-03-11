@@ -18,6 +18,9 @@ bool g_SKeyPressed        = false;
 bool g_DKeyPressed        = false;
 bool g_SpaceBarKeyPressed = false;
 
+// Variável que segura qual tecla numérica o usuário pressionou por último, -1
+int g_LastNumberPressed = 0;
+
 // Variáveis que definem a câmera em coordenadas esféricas, controladas pelo
 // usuário através do mouse (veja função CursorPosCallback()).
 float g_CameraTheta = 0.0f; // Ângulo no plano ZX em relação ao eixo Z
@@ -196,6 +199,28 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
             g_SpaceBarKeyPressed = true;
         if (action == GLFW_RELEASE)
             g_SpaceBarKeyPressed = false;
+    }
+
+    // Se o usuário apertar uma tecla numérica de 1 a 5, atualiza variável global
+    if (key == GLFW_KEY_1 && action == GLFW_PRESS)
+    {
+        g_LastNumberPressed = 0;
+    }
+    if (key == GLFW_KEY_2 && action == GLFW_PRESS)
+    {
+        g_LastNumberPressed = 1;
+    }
+    if (key == GLFW_KEY_3 && action == GLFW_PRESS)
+    {
+        g_LastNumberPressed = 2;
+    }
+    if (key == GLFW_KEY_4 && action == GLFW_PRESS)
+    {
+        g_LastNumberPressed = 3;
+    }
+    if (key == GLFW_KEY_5 && action == GLFW_PRESS)
+    {
+        g_LastNumberPressed = 4;
     }
 
     // Se o usuário apertar a tecla H, fazemos um "toggle" da informação extra.

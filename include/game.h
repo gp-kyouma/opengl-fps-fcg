@@ -16,6 +16,7 @@
 #include "player.h"
 #include "level.h"
 #include "obstacle.h"
+#include "weapon.h"
 
 /*
 STRUCTS/CLASSES

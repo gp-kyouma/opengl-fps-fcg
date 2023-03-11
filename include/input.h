@@ -57,6 +57,9 @@ extern bool g_SKeyPressed;
 extern bool g_DKeyPressed;
 extern bool g_SpaceBarKeyPressed;
 
+// Variável que segura qual tecla numérica o usuário pressionou por último, -1
+extern int g_LastNumberPressed;
+
 // Variáveis que definem a câmera em coordenadas esféricas, controladas pelo
 // usuário através do mouse (veja função CursorPosCallback()).
 extern float g_CameraTheta; // Ângulo no plano ZX em relação ao eixo Z

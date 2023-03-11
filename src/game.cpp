@@ -17,12 +17,12 @@ void Game::Init()
 {
     // LEVELS
     Level test_level;   // placeholder for test purposes
-    test_level.levelLength = 10.0f;
-    test_level.levelWidth  = 8.0f;
+    test_level.levelLength = 20.0f;//10 goes up to 40
+    test_level.levelWidth  = 20.0f;//8  goes up to 40
     test_level.player_pos  = glm::vec3(0.0f,6.0f,0.0f);
     test_level.player_view = glm::vec3(0.0f,0.0f,1.0f);
 
-    Obstacle ob1, ob2, ob3;
+    Obstacle ob1, ob2, ob3, ob4, ob5, ob6;
 
     ob1.o_size = glm::vec3(1.0f,1.0f,1.0f);
     ob1.pos    = glm::vec3(3.0f,1.5f,4.0f);
@@ -32,13 +32,28 @@ void Game::Init()
     ob2.pos    = glm::vec3(1.0f,3.5f,0.0f);
     ob2.type   = OBSTACLE_PLATFORM;
 
-    ob3.o_size = glm::vec3(1.0f,5.0f,4.0f);
-    ob3.pos    = glm::vec3(-2.0f,3.5f,-2.0f);
-    ob3.type   = OBSTACLE_WALL;
+    ob3.o_size = glm::vec3(1.5f,0.5f,1.5f);
+    ob3.pos    = glm::vec3(-0.5f,5.5f,-3.5f);
+    ob3.type   = OBSTACLE_PLATFORM;
+
+    ob4.o_size = glm::vec3(1.5f,0.5f,1.5f);
+    ob4.pos    = glm::vec3(-1.5f,7.5f,-5.5f);
+    ob4.type   = OBSTACLE_PLATFORM;
+
+    ob5.o_size = glm::vec3(1.0f,8.0f,4.0f);
+    ob5.pos    = glm::vec3(-2.0f,5.0f,-2.0f);
+    ob5.type   = OBSTACLE_WALL;
+
+    ob6.o_size = glm::vec3(1.0f,10.0f,4.0f);
+    ob6.pos    = glm::vec3(-5.0f,6.0f,-2.0f);
+    ob6.type   = OBSTACLE_WALL;
 
     test_level.obstacles.push_back(ob1);
     test_level.obstacles.push_back(ob2);
     test_level.obstacles.push_back(ob3);
+    test_level.obstacles.push_back(ob4);
+    test_level.obstacles.push_back(ob5);
+    test_level.obstacles.push_back(ob6);
 
     level_queue.push(test_level);
 
@@ -56,6 +71,11 @@ void Game::Init()
     player.y_velocity = 0.0f;
 
     player.speed = 2.0f;
+
+    player.health = player.maxHealth;
+    player.dmgCooldown = 0.0f;
+    player.wpnCooldown = 0.0f;
+    player.currentWeapon  = 0; // should be melee
 
     // TEMPO
     prevTime = (float)glfwGetTime();
@@ -124,7 +144,7 @@ void Game::Draw(GLFWwindow* window)
     // e também resetamos todos os pixels do Z-buffer (depth buffer).
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Pedimos para a GPU utilizar o programa de GPU criado acima (contendo
+    // Pedimos para a GPU utilizar o programa de GPU criado (contendo
     // os shaders de vértice e fragmentos).
     glUseProgram(g_GpuProgramID);
 
@@ -143,7 +163,7 @@ void Game::Draw(GLFWwindow* window)
     // Note que, no sistema de coordenadas da câmera, os planos near e far
     // estão no sentido negativo! Veja slides 176-204 do documento Aula_09_Projecoes.pdf.
     float nearplane = -0.1f;  // Posição do "near plane"
-    float farplane  = -30.0f; // Posição do "far plane"
+    float farplane  = -60.0f; // Posição do "far plane"
 
     // Projeção Perspectiva.
     // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
@@ -168,42 +188,12 @@ void Game::Draw(GLFWwindow* window)
     drawWall(level_queue.front(), SOUTH);
     drawWall(level_queue.front(), EAST);
     drawWall(level_queue.front(), WEST);
-    // todo: draw enemies, draw projectiles, draw obstacles... etc
 
     for (unsigned int i = 0; i < obstacles.size(); i++)
         drawObstacle(obstacles[i]);
 
-    //desenha weapon sem weapon ainda
-
-    glm::vec4 v_up = glm::vec4(0.0f,1.0f,0.0f,0.0f);  // Vetor "up" fixado para apontar para o "céu" (eixo Y global)
-
-    glm::vec4 w = Vetor(-player.view);
-    glm::vec4 u = crossproduct(v_up,w);
-
-    w = w / norm(w);
-    u = u / norm(u);
-
-    glm::vec4 v = crossproduct(w,u);
-
-    glm::vec4 vertical_displace   = -v*0.1f;
-    glm::vec4 horizontal_displace =  u*0.3f;
-    glm::vec4 forward_displace    = -w*0.5f;
-
-    glm::vec4 weapon_pos = Ponto(player.pos)+vertical_displace+horizontal_displace+forward_displace;
-    weapon_pos.y += player.neck;
-
-    glm::mat4 model = Matrix_Translate(weapon_pos.x,weapon_pos.y,weapon_pos.z) *
-                      Matrix_Rotate_Y(g_CameraTheta) *
-                      Matrix_Rotate_X(-g_CameraPhi)  *
-                      Matrix_Scale(0.2f, 0.2f, 0.2f);
-
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-
-    resetTextureRepeat();
-    setDiffuseTexture("box");
-    setSpecularTexture("black");
-    DrawVirtualObject("the_bunny");
-
+    // todo: draw enemies
+    // todo: draw projectiles
 
     // se g_ShowInfo = true, mostra as AABBs na tela
     if (g_ShowInfo)
@@ -211,6 +201,34 @@ void Game::Draw(GLFWwindow* window)
         drawAABB(player.getAABB());
         // e outras...
     }
+
+    // Os objetos a seguir sempre serão desenhados na frente; desativa o z-buffer
+    // (aka: as armas não atravessam paredes)
+    glDisable(GL_DEPTH_TEST);
+
+    //PLACEHOLDER
+    drawWeapon(player, WPN_PISTOL, g_CameraTheta, g_CameraPhi);
+
+    // Últimas coisas são desenhadas diretamente em NDC
+    // Desativa matrizes de view e projeção
+    view       = Matrix_Identity();
+    projection = Matrix_Identity();
+
+    glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
+    glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
+
+    // Desenha mira
+    drawCrosshair(g_ScreenRatio);
+
+    // Desenha barra de vida
+    drawBar((float)player.health, (float)player.maxHealth, g_ScreenRatio, "green", "yellow", "red", 0);
+
+    // Desenha barra de cooldown da arma se estiver em cooldown
+    if (player.wpnCooldown > 0)
+        drawBar(player.wpnCooldown, 10.0f, g_ScreenRatio, "white", "white", "white", 1);//10.0f is placeholder
+
+    // Reativa o z-buffer
+    glEnable(GL_DEPTH_TEST);
 
     // (/DESENHA OBJETOS)
 

@@ -31,6 +31,8 @@ struct Level
     std::vector<Obstacle> obstacles;
 
     // etc outros atributos ... todo
+
+    AABB getAABB();
 };
 
 #endif // FCG_LEVEL

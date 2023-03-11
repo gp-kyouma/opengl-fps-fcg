@@ -22,3 +22,15 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+AABB Level::getAABB()
+{
+    AABB result;
+    float halfWidth  = (levelWidth /2.0f);
+    float halfLength = (levelLength/2.0f);
+
+    result.aabb_max = glm::vec3(halfWidth,  levelCeiling, halfLength);
+    result.aabb_min = glm::vec3(-halfWidth, levelFloor,  -halfLength);
+
+    return result;
+}

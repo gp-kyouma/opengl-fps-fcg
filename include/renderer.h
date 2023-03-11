@@ -74,6 +74,14 @@ void PrintObjModelInfo(ObjModel*); // Função para debugging
 // (usado para desenhar AABBs)
 void BuildCubeEdgesAndAddToVirtualScene();
 
+// Constrói as linhas de uma cruz para futura renderização.
+// (usado para desenhar a mira)
+void BuildCrosshairAndAddToVirtualScene();
+
+// Constrói os triângulos de um quadrado para futura renderização.
+// (usado para desenhar a barra de vida)
+void BuildSquareAndAddToVirtualScene();
+
 // Declaração de funções auxiliares para renderizar texto dentro da janela
 // OpenGL. Estas funções estão definidas no arquivo "textrendering.cpp".
 void TextRendering_Init();
@@ -106,8 +114,7 @@ DECLARAÇÃO DE VARIÁVEIS GLOBAIS
 extern std::stack<glm::mat4>  g_MatrixStack;
 
 // Dicionário (map) que associa um ID de textura a um nome
-extern std::map<std::string, GLuint> g_TextureMapDiffuse;
-extern std::map<std::string, GLuint> g_TextureMapSpecular;
+extern std::map<std::string, GLuint> g_TextureMap;
 
 // Variáveis que definem um programa de GPU (shaders). Veja função LoadShadersFromFiles().
 extern GLuint g_GpuProgramID;

@@ -125,30 +125,49 @@ int main(int argc, char* argv[])
     */
 
     // Carregamos imagem para ser utilizada como textura
-    LoadTextureImage("../../data/stone_floor.jpg", "floor");
-    LoadTextureImage("../../data/brick_wall.jpg", "wall");
-    LoadTextureImage("../../data/placeholder_box.jpg", "box");
+    LoadTextureImage("../../data/obstacles/stone_floor.jpg", "floor");
+    LoadTextureImage("../../data/obstacles/japanese_stone_wall.jpg", "wall");
+    LoadTextureImage("../../data/obstacles/square_floor.jpg", "platform");
+    LoadTextureImage("../../data/obstacles/medieval_blocks.jpg", "wall_obstacle");
+    LoadTextureImage("../../data/obstacles/placeholder_box.jpg", "box");
+
+    //LoadTextureImage("../../data/obstacles/stone_floor_spec_manual.jpg", "floor_spec");
+    LoadTextureImage("../../data/obstacles/japanese_stone_wall_spec_manual.jpg", "wall_spec");
+    LoadTextureImage("../../data/obstacles/square_floor_spec_manual.jpg", "platform_spec");
+    LoadTextureImage("../../data/obstacles/medieval_blocks_spec.jpg", "wall_obstacle_spec");
 
     LoadTextureImage("../../data/full_white.jpg", "white");
+    LoadTextureImage("../../data/full_grey.jpg",  "grey");
     LoadTextureImage("../../data/full_black.jpg", "black");
+    LoadTextureImage("../../data/full_green.jpg", "green");
+    LoadTextureImage("../../data/full_yellow.jpg", "yellow");
+    LoadTextureImage("../../data/full_red.jpg", "red");
 
-    ObjModel planemodel("../../data/plane.obj");
+    LoadTextureImage("../../data/weapons/pistol.png", "pistol");
+
+    ObjModel planemodel("../../data/obstacles/plane.obj");
     ComputeNormals(&planemodel);
     BuildTrianglesAndAddToVirtualScene(&planemodel);
 
-    ObjModel cubemodel("../../data/cube.obj");
+    ObjModel cubemodel("../../data/obstacles/cube.obj");
     ComputeNormals(&cubemodel);
     BuildTrianglesAndAddToVirtualScene(&cubemodel);
+
+    ObjModel pistol("../../data/weapons/pistol.obj");
+    ComputeNormals(&pistol);
+    BuildTrianglesAndAddToVirtualScene(&pistol);
 
     ObjModel bnuuy("../../data/bunny.obj");
     ComputeNormals(&bnuuy);
     BuildTrianglesAndAddToVirtualScene(&bnuuy);
 
-    ObjModel mino("../../data/Minotaur.obj");
+    ObjModel mino("../../data/enemies/Minotaur.obj");
     ComputeNormals(&mino);
     BuildTrianglesAndAddToVirtualScene(&mino);
 
     BuildCubeEdgesAndAddToVirtualScene();
+    BuildCrosshairAndAddToVirtualScene();
+    BuildSquareAndAddToVirtualScene();
 
     // Inicializamos o código para renderização de texto.
     TextRendering_Init();

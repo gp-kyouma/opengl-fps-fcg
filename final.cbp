@@ -16,6 +16,7 @@
 					<Add option="-Wall" />
 					<Add option="-std=c++11" />
 					<Add option="-g" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="-static-libstdc++" />
@@ -33,6 +34,7 @@
 					<Add option="-O2" />
 					<Add option="-Wall" />
 					<Add option="-std=c++11" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -52,6 +54,7 @@
 					<Add option="-Wall" />
 					<Add option="-std=c++11" />
 					<Add option="-g" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="lib-linux/libglfw3.a -lrt -lm -ldl -lX11 -lpthread -lXrandr -lXinerama -lXxf86vm -lXcursor" />
@@ -67,6 +70,7 @@
 					<Add option="-Wall" />
 					<Add option="-std=c++11" />
 					<Add option="-g" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="lib-mingw-32\libglfw3.a -lgdi32 -lopengl32" />
@@ -82,6 +86,7 @@
 					<Add option="-O2" />
 					<Add option="-Wall" />
 					<Add option="-std=c++11" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -379,6 +384,7 @@
 		<Unit filename="include/tiny_obj_loader.h" />
 		<Unit filename="include/utils.h" />
 		<Unit filename="include/vec_aux.h" />
+		<Unit filename="include/weapon.h" />
 		<Unit filename="src/collisions.cpp" />
 		<Unit filename="src/draw.cpp" />
 		<Unit filename="src/game.cpp" />
@@ -399,6 +405,7 @@
 		<Unit filename="src/textrendering.cpp" />
 		<Unit filename="src/tiny_obj_loader.cpp" />
 		<Unit filename="src/vec_aux.cpp" />
+		<Unit filename="src/weapon.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

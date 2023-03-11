@@ -23,9 +23,17 @@ struct Player
     bool grounded;    // indica se o jogador está tocando o chão
     float y_velocity; // velocidade do jogador no eixo y
 
-    float speed;      // velocidade em que o jogador se locomove
+    float speed;      // velocidade em que o jogador se move
+
+    const float maxHealth = 100;    // o valor máximo de vida que o jogador pode ter; reseta a cada fase
+    float health;       // vida atual do jogador
+    float dmgCooldown;  // tempo em segundos até que o jogador possa receber dano de novo
+
+    int currentWeapon;  // índice no vetor de armas que determina a arma equipada
+    float wpnCooldown;  // tempo em segundos até que o jogador possa atirar de novo
 
     // etc outros atributos ... todo
+    // vetor de armas vai aqui mesmo
 
     void setView(float theta, float phi);
     void movePos(glm::vec3 offset);
@@ -33,6 +41,10 @@ struct Player
     AABB getAABB();
 
     void doPlayerMovement(float deltaTime);
+
+    //todo:
+    //Weapon getCurrentWeapon();
+    //bool fire(Projectile new_proj);
 
     // etc outros métodos ... todo
 };

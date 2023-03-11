@@ -6,8 +6,7 @@
 std::stack<glm::mat4>  g_MatrixStack;
 
 // Dicionário (map) que associa um ID de textura a um nome
-std::map<std::string, GLuint> g_TextureMapDiffuse;
-std::map<std::string, GLuint> g_TextureMapSpecular;
+std::map<std::string, GLuint> g_TextureMap;
 
 // Variáveis que definem um programa de GPU (shaders). Veja função LoadShadersFromFiles().
 GLuint g_GpuProgramID = 0;
@@ -120,8 +119,7 @@ void LoadTextureImage(const char* filename, std::string name)
 
     stbi_image_free(data);
 
-    g_TextureMapSpecular[name] = g_NumLoadedTextures;
-    g_TextureMapDiffuse[name] = g_NumLoadedTextures;
+    g_TextureMap[name] = g_NumLoadedTextures;
 
     g_NumLoadedTextures += 1;
 }
@@ -212,13 +210,13 @@ void LoadShadersFromFiles()
 // 'Liga' a textura com nome correspondente no dicionário (diffuse)
 void setDiffuseTexture(std::string name)
 {
-    glUniform1i(g_diffuse_texture_image_uniform, g_TextureMapDiffuse[name]);
+    glUniform1i(g_diffuse_texture_image_uniform, g_TextureMap[name]);
 }
 
 // 'Liga' a textura com nome correspondente no dicionário (specular)
 void setSpecularTexture(std::string name)
 {
-    glUniform1i(g_specular_texture_image_uniform, g_TextureMapSpecular[name]);
+    glUniform1i(g_specular_texture_image_uniform, g_TextureMap[name]);
 }
 
 void setTextureRepeat(float u, float v)
@@ -533,6 +531,201 @@ void BuildCubeEdgesAndAddToVirtualScene()
     theobject.bbox_min = bbox_min;
     theobject.bbox_max = bbox_max;
     g_VirtualScene["cube_edges"] = theobject;
+
+    GLuint VBO_model_coefficients_id;
+    glGenBuffers(1, &VBO_model_coefficients_id);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_model_coefficients_id);
+    glBufferData(GL_ARRAY_BUFFER, model_coefficients.size() * sizeof(float), NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, model_coefficients.size() * sizeof(float), model_coefficients.data());
+    GLuint location = 0; // "(location = 0)" em "shader_vertex.glsl"
+    GLint  number_of_dimensions = 4; // vec4 em "shader_vertex.glsl"
+    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(location);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    GLuint VBO_normal_coefficients_id;
+    glGenBuffers(1, &VBO_normal_coefficients_id);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_normal_coefficients_id);
+    glBufferData(GL_ARRAY_BUFFER, normal_coefficients.size() * sizeof(float), NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, normal_coefficients.size() * sizeof(float), normal_coefficients.data());
+    location = 1; // "(location = 1)" em "shader_vertex.glsl"
+    number_of_dimensions = 4; // vec4 em "shader_vertex.glsl"
+    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(location);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    GLuint VBO_texture_coefficients_id;
+    glGenBuffers(1, &VBO_texture_coefficients_id);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_texture_coefficients_id);
+    glBufferData(GL_ARRAY_BUFFER, texture_coefficients.size() * sizeof(float), NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, texture_coefficients.size() * sizeof(float), texture_coefficients.data());
+    location = 2; // "(location = 1)" em "shader_vertex.glsl"
+    number_of_dimensions = 2; // vec2 em "shader_vertex.glsl"
+    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(location);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    GLuint indices_id;
+    glGenBuffers(1, &indices_id);
+
+    // "Ligamos" o buffer. Note que o tipo agora é GL_ELEMENT_ARRAY_BUFFER.
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size() * sizeof(GLuint), indices.data());
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); // XXX Errado!
+    //
+
+    // "Desligamos" o VAO, evitando assim que operações posteriores venham a
+    // alterar o mesmo. Isso evita bugs.
+    glBindVertexArray(0);
+}
+
+// Constrói as linhas de uma cruz para futura renderização.
+// (usado para desenhar a mira)
+void BuildCrosshairAndAddToVirtualScene()
+{
+    GLuint vertex_array_object_id;
+    glGenVertexArrays(1, &vertex_array_object_id);
+    glBindVertexArray(vertex_array_object_id);
+
+    std::vector<float>  model_coefficients = {
+    //    X      Y     Z     W
+        -1.0f,  0.0f,  0.0f, 1.0f, // posição do vértice 0
+         1.0f,  0.0f,  0.0f, 1.0f, // posição do vértice 1
+         0.0f, -1.0f,  0.0f, 1.0f, // posição do vértice 2
+         0.0f,  1.0f,  0.0f, 1.0f, // posição do vértice 3
+    };
+
+    std::vector<GLuint> indices = {
+        0, 1, // linha 1
+        2, 3, // linha 2
+    };
+
+    glm::vec3 bbox_min = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 bbox_max = glm::vec3(0.0f, 0.0f, 0.0f);
+
+    std::vector<float>  normal_coefficients = {
+    //    X      Y     Z     W
+         0.0f,  1.0f,  0.0f, 0.0f,
+         0.0f,  1.0f,  0.0f, 0.0f,
+         0.0f,  1.0f,  0.0f, 0.0f,
+         0.0f,  1.0f,  0.0f, 0.0f,
+    };
+
+    std::vector<float>  texture_coefficients = {
+    //    U      V
+         0.0f,  0.0f,
+         0.0f,  0.0f,
+         0.0f,  0.0f,
+         0.0f,  0.0f,
+    };
+
+    SceneObject theobject;
+    theobject.name           = "crosshair";
+    theobject.first_index    = 0; // Primeiro índice
+    theobject.num_indices    = 4; // Número de indices
+    theobject.rendering_mode = GL_LINES;       // Índices correspondem ao tipo de rasterização GL_LINES.
+    theobject.vertex_array_object_id = vertex_array_object_id;
+    theobject.bbox_min = bbox_min;
+    theobject.bbox_max = bbox_max;
+    g_VirtualScene["crosshair"] = theobject;
+
+    GLuint VBO_model_coefficients_id;
+    glGenBuffers(1, &VBO_model_coefficients_id);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_model_coefficients_id);
+    glBufferData(GL_ARRAY_BUFFER, model_coefficients.size() * sizeof(float), NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, model_coefficients.size() * sizeof(float), model_coefficients.data());
+    GLuint location = 0; // "(location = 0)" em "shader_vertex.glsl"
+    GLint  number_of_dimensions = 4; // vec4 em "shader_vertex.glsl"
+    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(location);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    GLuint VBO_normal_coefficients_id;
+    glGenBuffers(1, &VBO_normal_coefficients_id);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_normal_coefficients_id);
+    glBufferData(GL_ARRAY_BUFFER, normal_coefficients.size() * sizeof(float), NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, normal_coefficients.size() * sizeof(float), normal_coefficients.data());
+    location = 1; // "(location = 1)" em "shader_vertex.glsl"
+    number_of_dimensions = 4; // vec4 em "shader_vertex.glsl"
+    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(location);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    GLuint VBO_texture_coefficients_id;
+    glGenBuffers(1, &VBO_texture_coefficients_id);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_texture_coefficients_id);
+    glBufferData(GL_ARRAY_BUFFER, texture_coefficients.size() * sizeof(float), NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, texture_coefficients.size() * sizeof(float), texture_coefficients.data());
+    location = 2; // "(location = 1)" em "shader_vertex.glsl"
+    number_of_dimensions = 2; // vec2 em "shader_vertex.glsl"
+    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(location);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    GLuint indices_id;
+    glGenBuffers(1, &indices_id);
+
+    // "Ligamos" o buffer. Note que o tipo agora é GL_ELEMENT_ARRAY_BUFFER.
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size() * sizeof(GLuint), indices.data());
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); // XXX Errado!
+    //
+
+    // "Desligamos" o VAO, evitando assim que operações posteriores venham a
+    // alterar o mesmo. Isso evita bugs.
+    glBindVertexArray(0);
+}
+
+// Constrói os triângulos de um quadrado para futura renderização.
+// (usado para desenhar a barra de vida)
+void BuildSquareAndAddToVirtualScene()
+{
+    GLuint vertex_array_object_id;
+    glGenVertexArrays(1, &vertex_array_object_id);
+    glBindVertexArray(vertex_array_object_id);
+
+    std::vector<float>  model_coefficients = {
+    //    X      Y     Z     W
+        -1.0f,  1.0f,  0.0f, 1.0f, // posição do vértice 0
+        -1.0f, -1.0f,  0.0f, 1.0f, // posição do vértice 1
+         1.0f, -1.0f,  0.0f, 1.0f, // posição do vértice 2
+         1.0f,  1.0f,  0.0f, 1.0f, // posição do vértice 3
+    };
+
+    std::vector<GLuint> indices = {
+        0, 1, 2, 3
+    };
+
+    glm::vec3 bbox_min = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 bbox_max = glm::vec3(0.0f, 0.0f, 0.0f);
+
+    std::vector<float>  normal_coefficients = {
+    //    X      Y     Z     W
+         0.0f,  1.0f,  0.0f, 0.0f,
+         0.0f,  1.0f,  0.0f, 0.0f,
+         0.0f,  1.0f,  0.0f, 0.0f,
+         0.0f,  1.0f,  0.0f, 0.0f,
+    };
+
+    std::vector<float>  texture_coefficients = {
+    //    U      V
+         0.0f,  1.0f,
+         0.0f,  0.0f,
+         1.0f,  0.0f,
+         1.0f,  1.0f,
+    };
+
+    SceneObject theobject;
+    theobject.name           = "square";
+    theobject.first_index    = 0; // Primeiro índice
+    theobject.num_indices    = 4; // Número de indices
+    theobject.rendering_mode = GL_TRIANGLE_FAN; // Índices correspondem ao tipo de rasterização GL_TRIANGLE_FAN.
+    theobject.vertex_array_object_id = vertex_array_object_id;
+    theobject.bbox_min = bbox_min;
+    theobject.bbox_max = bbox_max;
+    g_VirtualScene["square"] = theobject;
 
     GLuint VBO_model_coefficients_id;
     glGenBuffers(1, &VBO_model_coefficients_id);

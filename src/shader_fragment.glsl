@@ -76,7 +76,7 @@ void main()
 
     // Expoente especular para o modelo de iluminação de Phong
     float q = 1.0;//placeholder
-    float qlinha = 8*q;
+    float qlinha = 4*q;
 
     // Obtemos a refletância difusa a partir da leitura da imagem TextureImageDiffuse
     vec3 Kd = texture(TextureImageDiffuse, vec2(U,V)).rgb;
@@ -88,7 +88,7 @@ void main()
     vec3 I = vec3(1.0,1.0,1.0); // PREENCHA AQUI o espectro da fonte de luz
 
     // Espectro da luz ambiente
-    vec3 Ia = vec3(0.1,0.1,0.1); // PREENCHA AQUI o espectro da luz ambiente
+    vec3 Ia = vec3(0.08,0.08,0.08); // PREENCHA AQUI o espectro da luz ambiente
 
     // Termo difuso utilizando a lei dos cossenos de Lambert
     vec3 lambert_diffuse_term = Kd*I*max(0,dot(n,l));
@@ -97,9 +97,9 @@ void main()
     vec3 ambient_term = Kd*Ia;
 
     // Termo especular utilizando o modelo de iluminação de BLINN-Phong
-    vec3 phong_specular_term = Ks*I*pow(max(0,dot(n,h)),qlinha);//placeholder
+    vec3 blinn_phong_specular_term = Ks*I*pow(max(0,dot(n,h)),qlinha);
 
-    color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
+    color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
 
     // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
     // necessário:
