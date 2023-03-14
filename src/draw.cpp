@@ -251,7 +251,7 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
     }
 
     glm::vec4 vertical_displace   = -v*displace.y;
-    glm::vec4 horizontal_displace =  u*displace.x;
+    glm::vec4 horizontal_displace =  u*displace.x * (1.0f - player.wpnAnimation);
     glm::vec4 forward_displace    = -w*displace.z;
 
     glm::vec4 weapon_pos = Ponto(player.pos)+vertical_displace+horizontal_displace+forward_displace;

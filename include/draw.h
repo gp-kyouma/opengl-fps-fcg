@@ -30,6 +30,6 @@ void drawWall(Level level, CardinalDirection direction);
 void drawObstacle(Obstacle obstacle);
 void drawWeapon(Player player, WeaponType type, float theta, float phi);
 
-// draw weapon, draw enemy, draw projectile, draw obstacle, etc etc...
+// draw enemy, draw projectile, etc etc...
 
 #endif // FCG_DRAW

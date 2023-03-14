@@ -30,9 +30,14 @@ struct Level
     // obstáculos da fase
     std::vector<Obstacle> obstacles;
 
-    // etc outros atributos ... todo
+    // inimigos da fase
+    // todo
+
+    // etc outros atributos ... todo (?)
 
     AABB getAABB();
+
+    // todo: funções que geram cada fase (we will NOT be reading from files)
 };
 
 #endif // FCG_LEVEL

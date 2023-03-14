@@ -30,20 +30,33 @@ struct Game
     float deltaTime;
 
     Player player;
-    // inimigos, obstáculos, projéteis, etc...
 
     // vetor de obstáculos
     std::vector<Obstacle> obstacles;
 
+    // vetor de inimigos
+    // todo
+
+    // vetor de projéteis
+    // todo
+
     // fila de níveis que o jogo tem
     std::queue<Level> level_queue;
 
-    // etc outros atributos ... todo
+    // se o jogador está morto ou durante a cutscene final, pula o update do jogador, inimigos, etc.
+    //bool noUpdate;
+
+    // atributos referentes à cutscene de fim de jogo
+    //bool endCutscene;
+    //float cutsceneStep;
+
+    // etc outros atributos ... todo?
 
     void updateDeltaTime();
     void Init();
     void Update();
     void Draw(GLFWwindow* window);
+    //void loadTopLevel();
 };
 
 #endif // FCG_GAME

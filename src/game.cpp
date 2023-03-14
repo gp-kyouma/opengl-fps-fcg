@@ -73,9 +73,10 @@ void Game::Init()
     player.speed = 2.0f;
 
     player.health = player.maxHealth;
-    player.dmgCooldown = 0.0f;
-    player.wpnCooldown = 0.0f;
-    player.currentWeapon  = 0; // should be melee
+    player.dmgCooldown  = 0.0f;
+    player.wpnCooldown  = 0.0f;
+    player.wpnAnimation = 0.0f;
+    player.currentWeapon  =  0; // should be melee
 
     // TEMPO
     prevTime = (float)glfwGetTime();
@@ -91,6 +92,30 @@ void Game::Update()
     // faz a movimentação do jogador em função dos inputs do teclado
     player.setView(g_CameraTheta, g_CameraPhi);
     player.doPlayerMovement(deltaTime);
+
+    // atualiza animação da arma
+    // (should this be its own method?)
+    // (also placeholder, as funções de atualizar timer vão ser separadas com ctz)
+    if (g_LeftMouseButtonPressed)
+    {
+        if (player.wpnAnimation < 1.0f)
+        {
+            player.wpnAnimation += deltaTime*4;
+
+            if (player.wpnAnimation > 1.0f)
+                player.wpnAnimation = 1.0f;
+        }
+    }
+    else
+    {
+        if (player.wpnAnimation > 0.0f)
+        {
+            player.wpnAnimation -= deltaTime*4;
+
+            if (player.wpnAnimation < 0.0f)
+                player.wpnAnimation = 0.0f;
+        }
+    }
 
     // testa colisão com obstáculos
     player.grounded = false;

@@ -39,6 +39,7 @@ struct Sphere
 };
 
 // ...e pelo menos mais uma
+// probably Ray
 
 /*
 DECLARAÇÃO DE FUNÇÕES
@@ -56,5 +57,6 @@ bool Collide(Sphere sphere, AABB aabb);
 
 // todo:
 // ...e pelo menos mais uma
+// probably Ray x AABB
 
 #endif // FCG_COLLISIONS

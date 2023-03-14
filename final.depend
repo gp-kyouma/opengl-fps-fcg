@@ -2059,7 +2059,7 @@
 	<cstdio>
 	<cstdlib>
 
-1677966967 c:\users\caosd\documents\github\opengl-fps-fcg\include\collisions.h
+1678757182 c:\users\caosd\documents\github\opengl-fps-fcg\include\collisions.h
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
@@ -2878,7 +2878,7 @@
 1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\gtc\type_ptr.inl
 	<cstring>
 
-1678564421 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\draw.cpp
+1678757652 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\draw.cpp
 	"draw.h"
 	<cmath>
 	<cstdio>
@@ -2897,7 +2897,7 @@
 	"matrices.h"
 	"vec_aux.h"
 
-1678564421 c:\users\caosd\documents\github\opengl-fps-fcg\include\draw.h
+1678757182 c:\users\caosd\documents\github\opengl-fps-fcg\include\draw.h
 	<string>
 	<glad/glad.h>
 	<GLFW/glfw3.h>
@@ -3005,20 +3005,21 @@
 	<glm/vec4.hpp>
 	<glm/gtc/matrix_transform.hpp>
 
-1678563649 c:\users\caosd\documents\github\opengl-fps-fcg\include\player.h
+1678757182 c:\users\caosd\documents\github\opengl-fps-fcg\include\player.h
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
 	"collisions.h"
+	"weapon.h"
 
-1678553694 c:\users\caosd\documents\github\opengl-fps-fcg\include\level.h
+1678757182 c:\users\caosd\documents\github\opengl-fps-fcg\include\level.h
 	<vector>
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
 	"obstacle.h"
 
-1678564432 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\game.cpp
+1678757688 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\game.cpp
 	"game.h"
 	<cstdio>
 	<cstdlib>
@@ -3028,7 +3029,7 @@
 	"draw.h"
 	"vec_aux.h"
 
-1678557420 c:\users\caosd\documents\github\opengl-fps-fcg\include\game.h
+1678757182 c:\users\caosd\documents\github\opengl-fps-fcg\include\game.h
 	<queue>
 	<vector>
 	<glad/glad.h>
@@ -3194,7 +3195,7 @@
 	<cstdio>
 	<cstdlib>
 
-1678563649 c:\users\caosd\documents\github\opengl-fps-fcg\include\weapon.h
+1678757182 c:\users\caosd\documents\github\opengl-fps-fcg\include\weapon.h
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>

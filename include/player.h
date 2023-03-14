@@ -7,6 +7,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "collisions.h"
+#include "weapon.h"
+//#include "projectile.h"
 
 /*
 STRUCTS/CLASSES
@@ -31,9 +33,11 @@ struct Player
 
     int currentWeapon;  // índice no vetor de armas que determina a arma equipada
     float wpnCooldown;  // tempo em segundos até que o jogador possa atirar de novo
+    float wpnAnimation; // valor entre 0.0f e 1.0f, defina a animação da arma quando está pressionada o botão esquerdo do mouse
 
     // etc outros atributos ... todo
     // vetor de armas vai aqui mesmo
+    //std::vector<Weapon> weapons;
 
     void setView(float theta, float phi);
     void movePos(glm::vec3 offset);
