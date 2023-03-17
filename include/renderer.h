@@ -125,6 +125,8 @@ extern GLint g_object_id_uniform;
 extern GLint g_bbox_min_uniform;
 extern GLint g_bbox_max_uniform;
 extern GLint g_repeat_uniform;
+extern GLint g_ignore_lighting_uniform;
+extern GLint g_use_gouraud_uniform;
 extern GLuint g_diffuse_texture_image_uniform;
 extern GLuint g_specular_texture_image_uniform;
 

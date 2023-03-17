@@ -70,7 +70,7 @@ void Game::Init()
     player.grounded   = false;
     player.y_velocity = 0.0f;
 
-    player.speed = 2.0f;
+    player.speed = 3.0f;
 
     player.health = player.maxHealth;
     player.dmgCooldown  = 0.0f;
@@ -94,28 +94,7 @@ void Game::Update()
     player.doPlayerMovement(deltaTime);
 
     // atualiza animação da arma
-    // (should this be its own method?)
-    // (also placeholder, as funções de atualizar timer vão ser separadas com ctz)
-    if (g_LeftMouseButtonPressed)
-    {
-        if (player.wpnAnimation < 1.0f)
-        {
-            player.wpnAnimation += deltaTime*4;
-
-            if (player.wpnAnimation > 1.0f)
-                player.wpnAnimation = 1.0f;
-        }
-    }
-    else
-    {
-        if (player.wpnAnimation > 0.0f)
-        {
-            player.wpnAnimation -= deltaTime*4;
-
-            if (player.wpnAnimation < 0.0f)
-                player.wpnAnimation = 0.0f;
-        }
-    }
+    player.doWeaponAnimation(deltaTime);
 
     // testa colisão com obstáculos
     player.grounded = false;
@@ -148,7 +127,11 @@ void Game::Update()
     // testa colisão com a fase
     playerWithinLevel(player, level_queue.front());
 
-    // todo: everything else xdddzs
+    // todo:
+    // PROJECTILES
+    // ENEMIES
+    // CHECK LEVEL END
+    // and idk what else
 }
 
 void Game::Draw(GLFWwindow* window)
@@ -227,12 +210,26 @@ void Game::Draw(GLFWwindow* window)
         // e outras...
     }
 
-    // Os objetos a seguir sempre serão desenhados na frente; desativa o z-buffer
-    // (aka: as armas não atravessam paredes)
-    glDisable(GL_DEPTH_TEST);
+    // sphere gouraud test
+    //EPIC
+    glm::mat4 model = Matrix_Translate(-6.0f, 3.0f, -6.0f) *
+                      Matrix_Scale(1.0f, 1.0f, 1.0f);
 
+    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+
+    glUniform1i(g_use_gouraud_uniform, true);
+    setDiffuseTexture("black");
+    setSpecularTexture("white");
+    DrawVirtualObject("the_sphere");
+    glUniform1i(g_use_gouraud_uniform, false);
+
+    // Desenha arma
+    // TODO: descobrir como não atravessar parede kk
     //PLACEHOLDER
     drawWeapon(player, WPN_PISTOL, g_CameraTheta, g_CameraPhi);
+
+    // Os objetos a seguir sempre serão desenhados na frente; desativa o z-buffer
+    glDisable(GL_DEPTH_TEST);
 
     // Últimas coisas são desenhadas diretamente em NDC
     // Desativa matrizes de view e projeção

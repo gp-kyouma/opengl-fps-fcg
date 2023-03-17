@@ -45,6 +45,7 @@ struct Player
     AABB getAABB();
 
     void doPlayerMovement(float deltaTime);
+    void doWeaponAnimation(float deltaTime);
 
     //todo:
     //Weapon getCurrentWeapon();

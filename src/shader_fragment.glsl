@@ -13,6 +13,11 @@ in vec4 position_model;
 // Coordenadas de textura obtidas do arquivo OBJ (se existirem!)
 in vec2 texcoords;
 
+// gouraud
+in vec3 gouraudDiffuse;
+in vec3 gouraudSpecular;
+in vec3 gouraudAmbient;
+
 // Matrizes computadas no código C++ e enviadas para a GPU
 uniform mat4 model;
 uniform mat4 view;
@@ -27,6 +32,13 @@ uniform sampler2D TextureImageDiffuse;
 uniform sampler2D TextureImageSpecular;
 
 uniform vec2 repeat;
+
+// se true, ignora cálculos de iluminação e usa textura diretamente
+uniform bool ignoreLighting;
+
+// usa modelo de iluminação Gouraud (vértice) se true
+// usa Phong (pixel) se false
+uniform bool useGouraud;
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec4 color;
@@ -54,11 +66,16 @@ void main()
     vec4 n = normalize(normal);
 
     // Vetor que define o sentido da fonte de luz em relação ao ponto atual.
-    vec4 l = normalize(vec4(0.0,1.0,0.0,0.0));
-             //normalize(camera_position - p);
+    vec4 l = //normalize(vec4(0.0,1.0,0.0,0.0));
+             normalize(camera_position - p);
 
     // Vetor que define o sentido da câmera em relação ao ponto atual.
     vec4 v = normalize(camera_position - p);
+
+    // distância da câmera ao ponto
+    float camera_dist = length(camera_position - p);
+    // decaimento de luz à base da distância
+    float coeficiente = 1/(0.5*camera_dist + 0.05*pow(camera_dist,2));
 
     // Vetor que define o sentido da reflexão especular ideal.
     vec4 r = -l + 2*n*dot(n,l);
@@ -75,8 +92,8 @@ void main()
     V = texcoords.y * repeat.y;
 
     // Expoente especular para o modelo de iluminação de Phong
-    float q = 1.0;//placeholder
-    float qlinha = 4*q;
+    float q = 2.0;//placeholder
+    float qlinha = 4*q; // conversão para blinn-phong
 
     // Obtemos a refletância difusa a partir da leitura da imagem TextureImageDiffuse
     vec3 Kd = texture(TextureImageDiffuse, vec2(U,V)).rgb;
@@ -91,15 +108,36 @@ void main()
     vec3 Ia = vec3(0.08,0.08,0.08); // PREENCHA AQUI o espectro da luz ambiente
 
     // Termo difuso utilizando a lei dos cossenos de Lambert
-    vec3 lambert_diffuse_term = Kd*I*max(0,dot(n,l));
+    vec3 lambert_diffuse_term;
 
     // Termo ambiente
-    vec3 ambient_term = Kd*Ia;
+    vec3 ambient_term;
 
     // Termo especular utilizando o modelo de iluminação de BLINN-Phong
-    vec3 blinn_phong_specular_term = Ks*I*pow(max(0,dot(n,h)),qlinha);
+    vec3 blinn_phong_specular_term;
 
-    color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
+    if (useGouraud) // usa modelo de Gouraud calculado em shader_vertex
+    {
+        lambert_diffuse_term      = Kd*gouraudDiffuse;
+        ambient_term              = Kd*gouraudAmbient;
+        blinn_phong_specular_term = Ks*gouraudSpecular;
+    }
+    else    // usa modelo de Phong
+    {
+        // Termo difuso utilizando a lei dos cossenos de Lambert
+        lambert_diffuse_term = Kd*I*max(0,dot(n,l));
+
+        // Termo ambiente
+        ambient_term = Kd*Ia;
+
+        // Termo especular utilizando o modelo de iluminação de BLINN-Phong
+        blinn_phong_specular_term = Ks*I*pow(max(0,dot(n,h)),qlinha);
+    }
+
+    if (ignoreLighting)
+        color.rgb = Kd; // direto da textura
+    else
+        color.rgb = (lambert_diffuse_term + ambient_term + blinn_phong_specular_term) * coeficiente;
 
     // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
     // necessário:

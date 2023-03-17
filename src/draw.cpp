@@ -32,10 +32,12 @@ void drawAABB(AABB aabb) // para razões de debug
 
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
 
+    glUniform1i(g_ignore_lighting_uniform, true);
     setDiffuseTexture("white");
     setSpecularTexture("black");
     glLineWidth(4.0f);
     DrawVirtualObject("cube_edges");
+    glUniform1i(g_ignore_lighting_uniform, false);
 }
 
 void drawCrosshair(float aspect)
@@ -46,10 +48,12 @@ void drawCrosshair(float aspect)
 
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
 
+    glUniform1i(g_ignore_lighting_uniform, true);
     setDiffuseTexture("white");
     setSpecularTexture("black");
     glLineWidth(2.0f);
     DrawVirtualObject("crosshair");
+    glUniform1i(g_ignore_lighting_uniform, false);
 }
 
 // Desenha uma progress bar
@@ -73,6 +77,7 @@ void drawBar(float value, float maxValue, float aspect, std::string tex1, std::s
 
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
 
+    glUniform1i(g_ignore_lighting_uniform, true);
     setDiffuseTexture("grey");
     setSpecularTexture("black");
     DrawVirtualObject("square");
@@ -97,6 +102,7 @@ void drawBar(float value, float maxValue, float aspect, std::string tex1, std::s
 
     setSpecularTexture("black");
     DrawVirtualObject("square");
+    glUniform1i(g_ignore_lighting_uniform, false);
 }
 
 void drawFloor(Level level)

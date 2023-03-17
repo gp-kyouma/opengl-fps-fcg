@@ -157,9 +157,9 @@ int main(int argc, char* argv[])
     ComputeNormals(&pistol);
     BuildTrianglesAndAddToVirtualScene(&pistol);
 
-    ObjModel bnuuy("../../data/bunny.obj");
-    ComputeNormals(&bnuuy);
-    BuildTrianglesAndAddToVirtualScene(&bnuuy);
+    ObjModel sphere("../../data/weapons/sphere.obj");
+    ComputeNormals(&sphere);
+    BuildTrianglesAndAddToVirtualScene(&sphere);
 
     ObjModel mino("../../data/enemies/Minotaur.obj");
     ComputeNormals(&mino);
@@ -179,6 +179,9 @@ int main(int argc, char* argv[])
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
+
+    glUniform1i(g_ignore_lighting_uniform, false);
+    glUniform1i(g_use_gouraud_uniform, false);
 
     // GAME
     Game game;

@@ -17,6 +17,8 @@ GLint g_object_id_uniform;
 GLint g_bbox_min_uniform;
 GLint g_bbox_max_uniform;
 GLint g_repeat_uniform;
+GLint g_ignore_lighting_uniform;
+GLint g_use_gouraud_uniform;
 GLuint g_diffuse_texture_image_uniform;
 GLuint g_specular_texture_image_uniform;
 
@@ -205,6 +207,9 @@ void LoadShadersFromFiles()
     // Variáveis em "shader_fragment.glsl" para acesso das imagens de textura
     g_diffuse_texture_image_uniform  = glGetUniformLocation(g_GpuProgramID, "TextureImageDiffuse");
     g_specular_texture_image_uniform = glGetUniformLocation(g_GpuProgramID, "TextureImageSpecular");
+
+    g_ignore_lighting_uniform = glGetUniformLocation(g_GpuProgramID, "ignoreLighting");
+    g_use_gouraud_uniform     = glGetUniformLocation(g_GpuProgramID, "useGouraud");
 }
 
 // 'Liga' a textura com nome correspondente no dicionário (diffuse)

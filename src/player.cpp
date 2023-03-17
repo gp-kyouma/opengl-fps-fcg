@@ -87,3 +87,29 @@ void Player::doPlayerMovement(float deltaTime)
 
     movePos(toVec3(offset));
 }
+
+void Player::doWeaponAnimation(float deltaTime)
+{
+    if (g_LeftMouseButtonPressed)
+    {
+        // placeholder, will become function
+        if (wpnAnimation < 1.0f)
+        {
+            wpnAnimation += deltaTime*4;
+
+            if (wpnAnimation > 1.0f)
+                wpnAnimation = 1.0f;
+        }
+    }
+    else
+    {
+        // placeholder, will become function
+        if (wpnAnimation > 0.0f)
+        {
+            wpnAnimation -= deltaTime*4;
+
+            if (wpnAnimation < 0.0f)
+                wpnAnimation = 0.0f;
+        }
+    }
+}
