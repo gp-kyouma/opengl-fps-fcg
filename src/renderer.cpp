@@ -19,6 +19,7 @@ GLint g_bbox_max_uniform;
 GLint g_repeat_uniform;
 GLint g_ignore_lighting_uniform;
 GLint g_use_gouraud_uniform;
+GLint g_use_spherical_uv_uniform;
 GLuint g_diffuse_texture_image_uniform;
 GLuint g_specular_texture_image_uniform;
 
@@ -208,8 +209,9 @@ void LoadShadersFromFiles()
     g_diffuse_texture_image_uniform  = glGetUniformLocation(g_GpuProgramID, "TextureImageDiffuse");
     g_specular_texture_image_uniform = glGetUniformLocation(g_GpuProgramID, "TextureImageSpecular");
 
-    g_ignore_lighting_uniform = glGetUniformLocation(g_GpuProgramID, "ignoreLighting");
-    g_use_gouraud_uniform     = glGetUniformLocation(g_GpuProgramID, "useGouraud");
+    g_ignore_lighting_uniform  = glGetUniformLocation(g_GpuProgramID, "ignoreLighting");
+    g_use_gouraud_uniform      = glGetUniformLocation(g_GpuProgramID, "useGouraud");
+    g_use_spherical_uv_uniform = glGetUniformLocation(g_GpuProgramID, "useSphericalUV");
 }
 
 // 'Liga' a textura com nome correspondente no dicionário (diffuse)
@@ -634,6 +636,97 @@ void BuildCrosshairAndAddToVirtualScene()
     theobject.bbox_min = bbox_min;
     theobject.bbox_max = bbox_max;
     g_VirtualScene["crosshair"] = theobject;
+
+    GLuint VBO_model_coefficients_id;
+    glGenBuffers(1, &VBO_model_coefficients_id);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_model_coefficients_id);
+    glBufferData(GL_ARRAY_BUFFER, model_coefficients.size() * sizeof(float), NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, model_coefficients.size() * sizeof(float), model_coefficients.data());
+    GLuint location = 0; // "(location = 0)" em "shader_vertex.glsl"
+    GLint  number_of_dimensions = 4; // vec4 em "shader_vertex.glsl"
+    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(location);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    GLuint VBO_normal_coefficients_id;
+    glGenBuffers(1, &VBO_normal_coefficients_id);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_normal_coefficients_id);
+    glBufferData(GL_ARRAY_BUFFER, normal_coefficients.size() * sizeof(float), NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, normal_coefficients.size() * sizeof(float), normal_coefficients.data());
+    location = 1; // "(location = 1)" em "shader_vertex.glsl"
+    number_of_dimensions = 4; // vec4 em "shader_vertex.glsl"
+    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(location);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    GLuint VBO_texture_coefficients_id;
+    glGenBuffers(1, &VBO_texture_coefficients_id);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO_texture_coefficients_id);
+    glBufferData(GL_ARRAY_BUFFER, texture_coefficients.size() * sizeof(float), NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, texture_coefficients.size() * sizeof(float), texture_coefficients.data());
+    location = 2; // "(location = 1)" em "shader_vertex.glsl"
+    number_of_dimensions = 2; // vec2 em "shader_vertex.glsl"
+    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(location);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    GLuint indices_id;
+    glGenBuffers(1, &indices_id);
+
+    // "Ligamos" o buffer. Note que o tipo agora é GL_ELEMENT_ARRAY_BUFFER.
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size() * sizeof(GLuint), indices.data());
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); // XXX Errado!
+    //
+
+    // "Desligamos" o VAO, evitando assim que operações posteriores venham a
+    // alterar o mesmo. Isso evita bugs.
+    glBindVertexArray(0);
+}
+
+// Constrói uma linha de comprimento 1, iniciando na origem e apontando para +z, para futura renderização.
+// (usado para desenhar hitscan)
+void BuildLineAndAddToVirtualScene()
+{
+    GLuint vertex_array_object_id;
+    glGenVertexArrays(1, &vertex_array_object_id);
+    glBindVertexArray(vertex_array_object_id);
+
+    std::vector<float>  model_coefficients = {
+    //    X      Y     Z     W
+         0.0f,  0.0f,  0.0f, 1.0f, // posição do vértice 0
+         0.0f,  0.0f,  1.0f, 1.0f, // posição do vértice 1
+    };
+
+    std::vector<GLuint> indices = {
+        0, 1 // linha 1
+    };
+
+    glm::vec3 bbox_min = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 bbox_max = glm::vec3(0.0f, 0.0f, 0.0f);
+
+    std::vector<float>  normal_coefficients = {
+    //    X      Y     Z     W
+         0.0f,  0.0f, -1.0f, 0.0f,
+         0.0f,  0.0f,  1.0f, 0.0f,
+    };
+
+    std::vector<float>  texture_coefficients = {
+    //    U      V
+         0.0f,  0.0f,
+         1.0f,  1.0f,
+    };
+
+    SceneObject theobject;
+    theobject.name           = "line";
+    theobject.first_index    = 0; // Primeiro índice
+    theobject.num_indices    = 2; // Número de indices
+    theobject.rendering_mode = GL_LINES;       // Índices correspondem ao tipo de rasterização GL_LINES.
+    theobject.vertex_array_object_id = vertex_array_object_id;
+    theobject.bbox_min = bbox_min;
+    theobject.bbox_max = bbox_max;
+    g_VirtualScene["line"] = theobject;
 
     GLuint VBO_model_coefficients_id;
     glGenBuffers(1, &VBO_model_coefficients_id);

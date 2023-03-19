@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Laboratorio_5" />
+		<Option title="final" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
@@ -381,6 +381,7 @@
 		<Unit filename="include/renderer.h" />
 		<Unit filename="include/scene.h" />
 		<Unit filename="include/stb_image.h" />
+		<Unit filename="include/timer_aux.h" />
 		<Unit filename="include/tiny_obj_loader.h" />
 		<Unit filename="include/utils.h" />
 		<Unit filename="include/vec_aux.h" />
@@ -403,6 +404,7 @@
 		<Unit filename="src/shader_vertex.glsl" />
 		<Unit filename="src/stb_image.cpp" />
 		<Unit filename="src/textrendering.cpp" />
+		<Unit filename="src/timer_aux.cpp" />
 		<Unit filename="src/tiny_obj_loader.cpp" />
 		<Unit filename="src/vec_aux.cpp" />
 		<Unit filename="src/weapon.cpp" />

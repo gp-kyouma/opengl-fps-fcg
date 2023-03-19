@@ -121,29 +121,37 @@ int main(int argc, char* argv[])
     LoadShadersFromFiles();
 
     /*
-    todo: carregamento de todos os assets (vai aqui)
+    carregamento de todos os assets
     */
 
     // Carregamos imagem para ser utilizada como textura
-    LoadTextureImage("../../data/obstacles/stone_floor.jpg", "floor");
+    LoadTextureImage("../../data/obstacles/stone_floor.jpg",         "floor");
     LoadTextureImage("../../data/obstacles/japanese_stone_wall.jpg", "wall");
-    LoadTextureImage("../../data/obstacles/square_floor.jpg", "platform");
-    LoadTextureImage("../../data/obstacles/medieval_blocks.jpg", "wall_obstacle");
-    LoadTextureImage("../../data/obstacles/placeholder_box.jpg", "box");
+    LoadTextureImage("../../data/obstacles/square_floor.jpg",        "platform");
+    LoadTextureImage("../../data/obstacles/medieval_blocks.jpg",     "wall_obstacle");
+    LoadTextureImage("../../data/obstacles/box.jpg",                 "box");
 
-    //LoadTextureImage("../../data/obstacles/stone_floor_spec_manual.jpg", "floor_spec");
     LoadTextureImage("../../data/obstacles/japanese_stone_wall_spec_manual.jpg", "wall_spec");
-    LoadTextureImage("../../data/obstacles/square_floor_spec_manual.jpg", "platform_spec");
-    LoadTextureImage("../../data/obstacles/medieval_blocks_spec.jpg", "wall_obstacle_spec");
+    LoadTextureImage("../../data/obstacles/square_floor_spec_manual.jpg",        "platform_spec");
+    LoadTextureImage("../../data/obstacles/medieval_blocks_spec.jpg",            "wall_obstacle_spec");
 
-    LoadTextureImage("../../data/full_white.jpg", "white");
-    LoadTextureImage("../../data/full_grey.jpg",  "grey");
-    LoadTextureImage("../../data/full_black.jpg", "black");
-    LoadTextureImage("../../data/full_green.jpg", "green");
+    LoadTextureImage("../../data/full_white.jpg",  "white");
+    LoadTextureImage("../../data/full_grey.jpg",   "grey");
+    LoadTextureImage("../../data/full_black.jpg",  "black");
+    LoadTextureImage("../../data/full_green.jpg",  "green");
     LoadTextureImage("../../data/full_yellow.jpg", "yellow");
-    LoadTextureImage("../../data/full_red.jpg", "red");
+    LoadTextureImage("../../data/full_red.jpg",    "red");
 
-    LoadTextureImage("../../data/weapons/pistol.png", "pistol");
+    LoadTextureImage("../../data/weapons/bullet_silver.jpg", "silver");
+
+    LoadTextureImage("../../data/weapons/pistol.png",       "pistol");
+    LoadTextureImage("../../data/weapons/sniper.png",       "sniper");
+    LoadTextureImage("../../data/weapons/sniper_spec.png",  "sniper_spec");
+    LoadTextureImage("../../data/weapons/minigun.png",      "minigun");
+    LoadTextureImage("../../data/weapons/minigun_spec.png", "minigun_spec");
+    LoadTextureImage("../../data/weapons/sword.png",        "sword");
+    LoadTextureImage("../../data/weapons/sword_spec.png",   "sword_spec");
+    LoadTextureImage("../../data/weapons/shotgun.png",      "shotgun");
 
     ObjModel planemodel("../../data/obstacles/plane.obj");
     ComputeNormals(&planemodel);
@@ -157,6 +165,22 @@ int main(int argc, char* argv[])
     ComputeNormals(&pistol);
     BuildTrianglesAndAddToVirtualScene(&pistol);
 
+    ObjModel sniper("../../data/weapons/sniper.obj");
+    ComputeNormals(&sniper);
+    BuildTrianglesAndAddToVirtualScene(&sniper);
+
+    ObjModel minigun("../../data/weapons/minigun.obj");
+    ComputeNormals(&minigun);
+    BuildTrianglesAndAddToVirtualScene(&minigun);
+
+    ObjModel sword("../../data/weapons/sword.obj");
+    ComputeNormals(&sword);
+    BuildTrianglesAndAddToVirtualScene(&sword);
+
+    ObjModel shotgun("../../data/weapons/shotgun.obj");
+    ComputeNormals(&shotgun);
+    BuildTrianglesAndAddToVirtualScene(&shotgun);
+
     ObjModel sphere("../../data/weapons/sphere.obj");
     ComputeNormals(&sphere);
     BuildTrianglesAndAddToVirtualScene(&sphere);
@@ -167,6 +191,7 @@ int main(int argc, char* argv[])
 
     BuildCubeEdgesAndAddToVirtualScene();
     BuildCrosshairAndAddToVirtualScene();
+    BuildLineAndAddToVirtualScene();
     BuildSquareAndAddToVirtualScene();
 
     // Inicializamos o código para renderização de texto.
@@ -182,6 +207,7 @@ int main(int argc, char* argv[])
 
     glUniform1i(g_ignore_lighting_uniform, false);
     glUniform1i(g_use_gouraud_uniform, false);
+    glUniform1i(g_use_spherical_uv_uniform, false);
 
     // GAME
     Game game;

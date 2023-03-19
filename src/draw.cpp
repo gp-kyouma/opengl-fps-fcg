@@ -93,7 +93,7 @@ void drawBar(float value, float maxValue, float aspect, std::string tex1, std::s
 
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
 
-    if (barRatio > 0.66f)
+    if (barRatio >= 0.66f)
         setDiffuseTexture(tex1);
     else if (barRatio < 0.66f && barRatio > 0.33f)
         setDiffuseTexture(tex2);
@@ -230,8 +230,7 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
     switch (type)
     {
         case WPN_SWORD:
-            //PLACEHOLDER
-            displace = glm::vec3(0.3f,  0.15f, 0.4f);
+            displace = glm::vec3(0.3f,  0.15f, 0.5f);
             scale    = glm::vec3(0.02f, 0.02f, 0.02f);
             break;
         case WPN_PISTOL:
@@ -239,18 +238,15 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
             scale    = glm::vec3(0.02f, 0.02f, 0.02f);
             break;
         case WPN_SHOTGUN:
-            //PLACEHOLDER
-            displace = glm::vec3(0.3f,  0.15f, 0.4f);
-            scale    = glm::vec3(0.02f, 0.02f, 0.02f);
+            displace = glm::vec3(0.3f,  0.15f, 0.65f);
+            scale    = glm::vec3(0.01f, 0.01f, 0.01f);
             break;
         case WPN_MINIGUN:
-            //PLACEHOLDER
-            displace = glm::vec3(0.3f,  0.15f, 0.4f);
-            scale    = glm::vec3(0.02f, 0.02f, 0.02f);
+            displace = glm::vec3(0.3f,  0.13f, 0.4f);
+            scale    = glm::vec3(0.50f, 0.50f, 0.50f);
             break;
         case WPN_SNIPER:
-            //PLACEHOLDER
-            displace = glm::vec3(0.3f,  0.15f, 0.4f);
+            displace = glm::vec3(0.3f,  0.20f, 0.54f);
             scale    = glm::vec3(0.02f, 0.02f, 0.02f);
             break;
         default: break;
@@ -263,11 +259,20 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
     glm::vec4 weapon_pos = Ponto(player.pos)+vertical_displace+horizontal_displace+forward_displace;
     weapon_pos.y += player.neck;
 
-    glm::mat4 model = Matrix_Translate(weapon_pos.x,weapon_pos.y,weapon_pos.z) *
-                      Matrix_Rotate_Y(theta)    *
-                      Matrix_Rotate_X(-phi)     *
-                      Matrix_Rotate_Y(pi2)      *
-                      Matrix_Scale(scale.x, scale.y, scale.z);
+    glm::mat4 model;
+
+    // arma melee tem uma animação extra
+    if (type == WPN_SWORD)
+        model = Matrix_Rotate_Z(-pi2 + player.wpnAnimation * pi2);
+    else
+        model = Matrix_Identity();
+
+    model = Matrix_Translate(weapon_pos.x,weapon_pos.y,weapon_pos.z) *
+            Matrix_Rotate_Y(theta)  *
+            Matrix_Rotate_X(-phi)   *
+            Matrix_Rotate_Y(pi2)    *
+            model                   *
+            Matrix_Scale(scale.x, scale.y, scale.z);
 
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
 
@@ -276,33 +281,29 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
     switch (type)
     {
         case WPN_SWORD:
-            //PLACEHOLDER
-            setDiffuseTexture("black");
-            setSpecularTexture("grey");
-            DrawVirtualObject("the_bunny");
+            setDiffuseTexture("sword");
+            setSpecularTexture("sword_spec");
+            DrawVirtualObject("sword");
             break;
         case WPN_PISTOL:
             setDiffuseTexture("pistol");
-            setSpecularTexture("grey");
+            setSpecularTexture("black");
             DrawVirtualObject("pistol");
             break;
         case WPN_SHOTGUN:
-            //PLACEHOLDER
-            setDiffuseTexture("black");
-            setSpecularTexture("grey");
-            DrawVirtualObject("the_bunny");
+            setDiffuseTexture("shotgun");
+            setSpecularTexture("black");
+            DrawVirtualObject("shotgun");
             break;
         case WPN_MINIGUN:
-            //PLACEHOLDER
-            setDiffuseTexture("black");
-            setSpecularTexture("grey");
-            DrawVirtualObject("the_bunny");
+            setDiffuseTexture("minigun");
+            setSpecularTexture("minigun_spec");
+            DrawVirtualObject("minigun");
             break;
         case WPN_SNIPER:
-            //PLACEHOLDER
-            setDiffuseTexture("black");
-            setSpecularTexture("grey");
-            DrawVirtualObject("the_bunny");
+            setDiffuseTexture("sniper");
+            setSpecularTexture("sniper_spec");
+            DrawVirtualObject("sniper");
             break;
         default: break;
     }

@@ -19,6 +19,14 @@ enum WeaponType
     WPN_SNIPER,
 };
 
+enum WeaponEffect
+{
+    NO_EFFECT,
+    SCATTER_5,
+    SLOWDOWN,
+    RANDOM_SPREAD_01,
+};
+
 struct Weapon
 {
     WeaponType wpn_type; // define o modelo e animação
@@ -27,6 +35,7 @@ struct Weapon
 
     int damage;
     float cooldown;
+    WeaponEffect effect; // efeito extra causado pela arma
 
     //todo:
     //Projectile fire(glm::vec3 pos, glm::vec3 dir);

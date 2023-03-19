@@ -20,6 +20,13 @@ enum CardinalDirection
     DOWN,   // y-
 };
 
+enum HitboxTypes
+{
+    BOX,
+    SPHERE,
+    RAY
+};
+
 // Estrutura que descreve uma AABB (axis-aligned bounding box) de um objeto
 struct AABB
 {
@@ -38,8 +45,12 @@ struct Sphere
     float radius;
 };
 
-// ...e pelo menos mais uma
-// probably Ray
+// Estrutura que descreve um raio partindo de um ponto
+struct Ray
+{
+    glm::vec3 origin;
+    glm::vec3 direction;
+};
 
 /*
 DECLARAÇÃO DE FUNÇÕES
@@ -56,7 +67,7 @@ bool Collide(AABB aabb1, AABB aabb2, glm::vec3 &desloc);
 bool Collide(Sphere sphere, AABB aabb);
 
 // todo:
-// ...e pelo menos mais uma
-// probably Ray x AABB
+// Ray x AABB
+// return closest distance as extra parameter maybe idk
 
 #endif // FCG_COLLISIONS

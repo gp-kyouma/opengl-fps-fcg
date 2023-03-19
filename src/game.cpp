@@ -9,6 +9,7 @@
 #include "input.h"
 #include "draw.h"
 #include "vec_aux.h"
+#include "timer_aux.h"
 
 // protótipos de funções auxiliares
 void playerWithinLevel(Player &player, Level level);
@@ -17,47 +18,12 @@ void Game::Init()
 {
     // LEVELS
     Level test_level;   // placeholder for test purposes
-    test_level.levelLength = 20.0f;//10 goes up to 40
-    test_level.levelWidth  = 20.0f;//8  goes up to 40
-    test_level.player_pos  = glm::vec3(0.0f,6.0f,0.0f);
-    test_level.player_view = glm::vec3(0.0f,0.0f,1.0f);
 
-    Obstacle ob1, ob2, ob3, ob4, ob5, ob6;
-
-    ob1.o_size = glm::vec3(1.0f,1.0f,1.0f);
-    ob1.pos    = glm::vec3(3.0f,1.5f,4.0f);
-    ob1.type   = OBSTACLE_BOX;
-
-    ob2.o_size = glm::vec3(3.0f,0.5f,3.0f);
-    ob2.pos    = glm::vec3(1.0f,3.5f,0.0f);
-    ob2.type   = OBSTACLE_PLATFORM;
-
-    ob3.o_size = glm::vec3(1.5f,0.5f,1.5f);
-    ob3.pos    = glm::vec3(-0.5f,5.5f,-3.5f);
-    ob3.type   = OBSTACLE_PLATFORM;
-
-    ob4.o_size = glm::vec3(1.5f,0.5f,1.5f);
-    ob4.pos    = glm::vec3(-1.5f,7.5f,-5.5f);
-    ob4.type   = OBSTACLE_PLATFORM;
-
-    ob5.o_size = glm::vec3(1.0f,8.0f,4.0f);
-    ob5.pos    = glm::vec3(-2.0f,5.0f,-2.0f);
-    ob5.type   = OBSTACLE_WALL;
-
-    ob6.o_size = glm::vec3(1.0f,10.0f,4.0f);
-    ob6.pos    = glm::vec3(-5.0f,6.0f,-2.0f);
-    ob6.type   = OBSTACLE_WALL;
-
-    test_level.obstacles.push_back(ob1);
-    test_level.obstacles.push_back(ob2);
-    test_level.obstacles.push_back(ob3);
-    test_level.obstacles.push_back(ob4);
-    test_level.obstacles.push_back(ob5);
-    test_level.obstacles.push_back(ob6);
+    test_level.createTestLevel();
 
     level_queue.push(test_level);
 
-    //placeholder
+    //placeholder, loadLevel will become its own function
     obstacles = level_queue.front().obstacles;
 
     // PLAYER
@@ -72,11 +38,51 @@ void Game::Init()
 
     player.speed = 3.0f;
 
-    player.health = player.maxHealth;
+    player.resetHealth();
     player.dmgCooldown  = 0.0f;
     player.wpnCooldown  = 0.0f;
     player.wpnAnimation = 0.0f;
-    player.currentWeapon  =  0; // should be melee
+    player.currentWeapon  =  0; // melee
+
+    // WEAPONS
+    Weapon sword;
+    Weapon pistol;
+    Weapon shotgun;
+    Weapon minigun;
+    Weapon sniper;
+
+    player.weapons.clear();
+
+    sword.wpn_type = WPN_SWORD;
+    sword.cooldown = 0.5f;
+    sword.damage   = 25;
+    sword.effect   = NO_EFFECT;
+
+    pistol.wpn_type = WPN_PISTOL;
+    pistol.cooldown = 0.625f;
+    pistol.damage   = 15;
+    pistol.effect   = NO_EFFECT;
+
+    shotgun.wpn_type = WPN_SHOTGUN;
+    shotgun.cooldown = 0.875f;
+    shotgun.damage   = 8;
+    shotgun.effect   = SCATTER_5;
+
+    minigun.wpn_type = WPN_MINIGUN;
+    minigun.cooldown = 0.20f;
+    minigun.damage   = 8;
+    minigun.effect   = RANDOM_SPREAD_01;
+
+    sniper.wpn_type = WPN_SNIPER;
+    sniper.cooldown = 1.125f;
+    sniper.damage   = 50;
+    sniper.effect   = SLOWDOWN;
+
+    player.weapons.push_back(sword);
+    player.weapons.push_back(pistol);
+    player.weapons.push_back(shotgun);
+    player.weapons.push_back(minigun);
+    player.weapons.push_back(sniper);
 
     // TEMPO
     prevTime = (float)glfwGetTime();
@@ -95,6 +101,18 @@ void Game::Update()
 
     // atualiza animação da arma
     player.doWeaponAnimation(deltaTime);
+
+    // atualiza arma e cooldown da arma
+    player.doWeaponCooldown(deltaTime);
+    player.doWeaponSwitch();
+
+    // atualiza cooldown de dano
+    player.doDamageCooldown(deltaTime);
+
+    // FAT PLACEHOLDER
+    // this will be inside player::fire()
+    if (player.wpnCooldown == 0.0f && g_LeftMouseButtonPressed)
+        player.wpnCooldown = player.getCurrentWeapon().cooldown;
 
     // testa colisão com obstáculos
     player.grounded = false;
@@ -126,6 +144,17 @@ void Game::Update()
 
     // testa colisão com a fase
     playerWithinLevel(player, level_queue.front());
+
+    // HEALTH TEST REMOVE LATER
+    static float dmgTimer = 0.1f;
+    decrementTimer(dmgTimer, deltaTime, 0.0f);
+    if (dmgTimer == 0.0f)
+    {
+        player.takeDamage(10);
+        if (player.isDead())
+            player.resetHealth();
+        dmgTimer = 0.1f;
+    }
 
     // todo:
     // PROJECTILES
@@ -211,22 +240,29 @@ void Game::Draw(GLFWwindow* window)
     }
 
     // sphere gouraud test
+    // also spherical projection test
     //EPIC
     glm::mat4 model = Matrix_Translate(-6.0f, 3.0f, -6.0f) *
-                      Matrix_Scale(1.0f, 1.0f, 1.0f);
+                      Matrix_Scale(0.5f, 0.5f, 0.5f);
 
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
 
     glUniform1i(g_use_gouraud_uniform, true);
-    setDiffuseTexture("black");
-    setSpecularTexture("white");
+    glUniform1i(g_use_spherical_uv_uniform, true);
+    //setDiffuseTexture("black");
+    //setSpecularTexture("white");
+    setDiffuseTexture("silver");
+    setSpecularTexture("silver");
     DrawVirtualObject("the_sphere");
     glUniform1i(g_use_gouraud_uniform, false);
+    glUniform1i(g_use_spherical_uv_uniform, false);
+
+    // Resetamos todos os pixels do Z-buffer (depth buffer)
+    // Assim a arma não atravessa as paredes
+    glClear(GL_DEPTH_BUFFER_BIT);
 
     // Desenha arma
-    // TODO: descobrir como não atravessar parede kk
-    //PLACEHOLDER
-    drawWeapon(player, WPN_PISTOL, g_CameraTheta, g_CameraPhi);
+    drawWeapon(player, player.getCurrentWeapon().wpn_type, g_CameraTheta, g_CameraPhi);
 
     // Os objetos a seguir sempre serão desenhados na frente; desativa o z-buffer
     glDisable(GL_DEPTH_TEST);
@@ -247,7 +283,7 @@ void Game::Draw(GLFWwindow* window)
 
     // Desenha barra de cooldown da arma se estiver em cooldown
     if (player.wpnCooldown > 0)
-        drawBar(player.wpnCooldown, 10.0f, g_ScreenRatio, "white", "white", "white", 1);//10.0f is placeholder
+        drawBar(player.wpnCooldown, player.getCurrentWeapon().cooldown, g_ScreenRatio, "white", "white", "white", 1);
 
     // Reativa o z-buffer
     glEnable(GL_DEPTH_TEST);

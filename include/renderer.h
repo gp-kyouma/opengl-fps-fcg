@@ -78,6 +78,10 @@ void BuildCubeEdgesAndAddToVirtualScene();
 // (usado para desenhar a mira)
 void BuildCrosshairAndAddToVirtualScene();
 
+// Constrói uma linha de comprimento 1, iniciando na origem e apontando para +z, para futura renderização.
+// (usado para desenhar hitscan)
+void BuildLineAndAddToVirtualScene();
+
 // Constrói os triângulos de um quadrado para futura renderização.
 // (usado para desenhar a barra de vida)
 void BuildSquareAndAddToVirtualScene();
@@ -127,6 +131,7 @@ extern GLint g_bbox_max_uniform;
 extern GLint g_repeat_uniform;
 extern GLint g_ignore_lighting_uniform;
 extern GLint g_use_gouraud_uniform;
+extern GLint g_use_spherical_uv_uniform;
 extern GLuint g_diffuse_texture_image_uniform;
 extern GLuint g_specular_texture_image_uniform;
 

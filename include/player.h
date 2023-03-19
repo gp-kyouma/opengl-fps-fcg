@@ -1,6 +1,8 @@
 #ifndef FCG_PLAYER
 #define FCG_PLAYER
 
+#include <vector>
+
 // Headers da biblioteca GLM: criação de matrizes e vetores.
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
@@ -27,17 +29,17 @@ struct Player
 
     float speed;      // velocidade em que o jogador se move
 
-    const float maxHealth = 100;    // o valor máximo de vida que o jogador pode ter; reseta a cada fase
-    float health;       // vida atual do jogador
+    const int maxHealth = 100;  // o valor máximo de vida que o jogador pode ter; reseta a cada fase
+    int health;         // vida atual do jogador
     float dmgCooldown;  // tempo em segundos até que o jogador possa receber dano de novo
 
     int currentWeapon;  // índice no vetor de armas que determina a arma equipada
     float wpnCooldown;  // tempo em segundos até que o jogador possa atirar de novo
     float wpnAnimation; // valor entre 0.0f e 1.0f, defina a animação da arma quando está pressionada o botão esquerdo do mouse
 
+    std::vector<Weapon> weapons;    // armas disponíveis ao jogador
+
     // etc outros atributos ... todo
-    // vetor de armas vai aqui mesmo
-    //std::vector<Weapon> weapons;
 
     void setView(float theta, float phi);
     void movePos(glm::vec3 offset);
@@ -45,11 +47,19 @@ struct Player
     AABB getAABB();
 
     void doPlayerMovement(float deltaTime);
+    void doDamageCooldown(float deltaTime);
     void doWeaponAnimation(float deltaTime);
+    void doWeaponCooldown(float deltaTime);
+    void doWeaponSwitch();
+
+    Weapon getCurrentWeapon();
 
     //todo:
-    //Weapon getCurrentWeapon();
-    //bool fire(Projectile new_proj);
+    //bool fire(Projectile &new_proj);
+
+    void resetHealth();
+    void takeDamage(int dmg);
+    bool isDead();
 
     // etc outros métodos ... todo
 };

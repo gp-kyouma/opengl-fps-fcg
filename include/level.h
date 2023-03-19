@@ -37,7 +37,12 @@ struct Level
 
     AABB getAABB();
 
-    // todo: funções que geram cada fase (we will NOT be reading from files)
+    // funções que geram cada fase
+    void createTestLevel();
+    //void createLevel1();
+    //void createLevel2();
+    //void createLevel3();
+    //void createBossLevel();
 };
 
 #endif // FCG_LEVEL

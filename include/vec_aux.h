@@ -12,4 +12,8 @@ glm::vec4 Vetor(glm::vec3 v);
 // Função que trasnforma um vec4 de volta em vec3
 glm::vec3 toVec3(glm::vec4 v);
 
+// Funções que calculam theta e phi a partir de um vetor
+float getTheta(glm::vec3 v);
+float getPhi(glm::vec3 v);
+
 #endif // FCG_VEC_AUX

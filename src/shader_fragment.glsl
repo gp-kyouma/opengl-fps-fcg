@@ -40,6 +40,9 @@ uniform bool ignoreLighting;
 // usa Phong (pixel) se false
 uniform bool useGouraud;
 
+// Usa projeção esférica de texturas se true
+uniform bool useSphericalUV;
+
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec4 color;
 
@@ -87,9 +90,25 @@ void main()
     float U = 0.0;
     float V = 0.0;
 
-    // Coordenadas de textura do plano, obtidas do arquivo OBJ.
-    U = texcoords.x * repeat.x;
-    V = texcoords.y * repeat.y;
+    if (useSphericalUV)
+    {
+        vec4 bbox_center = (bbox_min + bbox_max) / 2.0;
+
+        vec4 plinha = bbox_center + (position_model - bbox_center)/length(position_model - bbox_center);
+        vec4 pvetor = plinha - bbox_center;
+
+        float theta = atan(pvetor.x,pvetor.z);
+        float phi   = asin(pvetor.y);
+
+        U = (theta + M_PI) / (2*M_PI);
+        V = (phi + M_PI_2) / M_PI;
+    }
+    else
+    {
+        // Coordenadas de textura do plano, obtidas do arquivo OBJ.
+        U = texcoords.x * repeat.x;
+        V = texcoords.y * repeat.y;
+    }
 
     // Expoente especular para o modelo de iluminação de Phong
     float q = 2.0;//placeholder

@@ -77,6 +77,15 @@ glm::mat4 Matrix_Scale(float sx, float sy, float sz)
     );
 }
 
+// CUSTOM:
+// Faz o escalamento de um ponto tal que ele fique de um tamanho exato especificado
+glm::mat4 Matrix_Resize(glm::vec3 original_size, glm::vec3 new_size)
+{
+    glm::vec3 resize_scale = new_size/original_size;
+
+    return Matrix_Scale(resize_scale.x, resize_scale.y, resize_scale.z);
+}
+
 // Matriz R de "rotação de um ponto" em relação à origem do sistema de
 // coordenadas e em torno do eixo X (primeiro vetor da base do sistema de
 // coordenadas). Seja p=[px,py,pz,pw] um ponto em coordenadas homogêneas.
