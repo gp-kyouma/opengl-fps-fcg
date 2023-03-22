@@ -378,6 +378,7 @@
 		<Unit filename="include/matrices.h" />
 		<Unit filename="include/obstacle.h" />
 		<Unit filename="include/player.h" />
+		<Unit filename="include/projectile.h" />
 		<Unit filename="include/renderer.h" />
 		<Unit filename="include/scene.h" />
 		<Unit filename="include/stb_image.h" />
@@ -398,6 +399,7 @@
 		<Unit filename="src/matrices.cpp" />
 		<Unit filename="src/obstacle.cpp" />
 		<Unit filename="src/player.cpp" />
+		<Unit filename="src/projectile.cpp" />
 		<Unit filename="src/renderer.cpp" />
 		<Unit filename="src/scene.cpp" />
 		<Unit filename="src/shader_fragment.glsl" />
@@ -410,6 +412,9 @@
 		<Unit filename="src/weapon.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
+			<code_completion />
+			<envvars />
+			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

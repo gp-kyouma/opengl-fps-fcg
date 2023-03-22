@@ -18,6 +18,7 @@
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
+#include <ctime>
 
 // Headers abaixo são específicos de C++
 #include <map>
@@ -153,6 +154,9 @@ int main(int argc, char* argv[])
     LoadTextureImage("../../data/weapons/sword_spec.png",   "sword_spec");
     LoadTextureImage("../../data/weapons/shotgun.png",      "shotgun");
 
+    LoadTextureImage("../../data/enemies/Minotaur_diffuse.jpg", "minotaur");
+    LoadTextureImage("../../data/enemies/Pants_diffuse.jpg", "pants");
+
     ObjModel planemodel("../../data/obstacles/plane.obj");
     ComputeNormals(&planemodel);
     BuildTrianglesAndAddToVirtualScene(&planemodel);
@@ -189,6 +193,10 @@ int main(int argc, char* argv[])
     ComputeNormals(&mino);
     BuildTrianglesAndAddToVirtualScene(&mino);
 
+    ObjModel skeleton("../../data/enemies/skeleton.obj");
+    ComputeNormals(&skeleton);
+    BuildTrianglesAndAddToVirtualScene(&skeleton);
+
     BuildCubeEdgesAndAddToVirtualScene();
     BuildCrosshairAndAddToVirtualScene();
     BuildLineAndAddToVirtualScene();
@@ -208,6 +216,8 @@ int main(int argc, char* argv[])
     glUniform1i(g_ignore_lighting_uniform, false);
     glUniform1i(g_use_gouraud_uniform, false);
     glUniform1i(g_use_spherical_uv_uniform, false);
+
+    srand(time(0));
 
     // GAME
     Game game;

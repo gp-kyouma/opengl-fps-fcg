@@ -17,6 +17,7 @@
 #include "level.h"
 #include "obstacle.h"
 #include "weapon.h"
+#include "projectile.h"
 
 /*
 STRUCTS/CLASSES
@@ -35,10 +36,10 @@ struct Game
     std::vector<Obstacle> obstacles;
 
     // vetor de inimigos
-    // todo
+    // std::vector<Enemy> enemies;
 
     // vetor de projéteis
-    // todo
+    std::vector<Projectile> projectiles;
 
     // fila de níveis que o jogo tem
     std::queue<Level> level_queue;
@@ -47,8 +48,8 @@ struct Game
     //bool noUpdate;
 
     // atributos referentes à cutscene de fim de jogo
-    //bool endCutscene;
-    //float cutsceneStep;
+    //bool finalCutscene;
+    //float cutsceneStep; // determina em qual parte da cutscene está; [0.0f, 5.0f](?)
 
     // etc outros atributos ... todo?
 
@@ -56,6 +57,7 @@ struct Game
     void Init();
     void Update();
     void Draw(GLFWwindow* window);
+    //void DrawCutscene(GLFWwindow* window);
     //void loadTopLevel();
 };
 

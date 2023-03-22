@@ -26,6 +26,9 @@ void Game::Init()
     //placeholder, loadLevel will become its own function
     obstacles = level_queue.front().obstacles;
 
+    //placeholder, will be in load level
+    projectiles.clear();
+
     // PLAYER
     player.pos  = level_queue.front().player_pos;
     player.view = level_queue.front().player_view;
@@ -53,30 +56,35 @@ void Game::Init()
 
     player.weapons.clear();
 
-    sword.wpn_type = WPN_SWORD;
-    sword.cooldown = 0.5f;
-    sword.damage   = 25;
-    sword.effect   = NO_EFFECT;
+    sword.wpn_type  = WPN_SWORD;
+    sword.proj_type = PROJ_MELEE_INVISIBLE;
+    sword.cooldown  = 0.5f;
+    sword.damage    = 25;
+    sword.effect    = NO_EFFECT;
 
-    pistol.wpn_type = WPN_PISTOL;
-    pistol.cooldown = 0.625f;
-    pistol.damage   = 15;
-    pistol.effect   = NO_EFFECT;
+    pistol.wpn_type  = WPN_PISTOL;
+    pistol.proj_type = PROJ_HITSCAN;
+    pistol.cooldown  = 0.625f;
+    pistol.damage    = 15;
+    pistol.effect    = NO_EFFECT;
 
-    shotgun.wpn_type = WPN_SHOTGUN;
-    shotgun.cooldown = 0.875f;
-    shotgun.damage   = 8;
-    shotgun.effect   = SCATTER_5;
+    shotgun.wpn_type  = WPN_SHOTGUN;
+    shotgun.proj_type = PROJ_HITSCAN;
+    shotgun.cooldown  = 0.875f;
+    shotgun.damage    = 8;
+    shotgun.effect    = SCATTER_5;
 
-    minigun.wpn_type = WPN_MINIGUN;
-    minigun.cooldown = 0.20f;
-    minigun.damage   = 8;
-    minigun.effect   = RANDOM_SPREAD_01;
+    minigun.wpn_type  = WPN_MINIGUN;
+    minigun.proj_type = PROJ_HITSCAN;
+    minigun.cooldown  = 0.20f;
+    minigun.damage    = 8;
+    minigun.effect    = RANDOM_SPREAD_01;
 
-    sniper.wpn_type = WPN_SNIPER;
-    sniper.cooldown = 1.125f;
-    sniper.damage   = 50;
-    sniper.effect   = SLOWDOWN;
+    sniper.wpn_type  = WPN_SNIPER;
+    sniper.proj_type = PROJ_BULLET;
+    sniper.cooldown  = 1.125f;
+    sniper.damage    = 50;
+    sniper.effect    = SLOWDOWN;
 
     player.weapons.push_back(sword);
     player.weapons.push_back(pistol);
@@ -109,10 +117,55 @@ void Game::Update()
     // atualiza cooldown de dano
     player.doDamageCooldown(deltaTime);
 
-    // FAT PLACEHOLDER
-    // this will be inside player::fire()
-    if (player.wpnCooldown == 0.0f && g_LeftMouseButtonPressed)
-        player.wpnCooldown = player.getCurrentWeapon().cooldown;
+    // testa se deve atirar
+    Projectile new_proj;
+    bool shoot = player.fire(new_proj);
+    if (shoot)
+    {
+        if (player.getCurrentWeapon().effect == SCATTER_5 || player.getCurrentWeapon().effect == RANDOM_SPREAD_01)
+        {
+            // cria novos projéteis/faz alterações
+            // baseadas no projétil que acabou de ser atirado:
+            // obtém o "sistema de coordenadas" do projétil
+            glm::vec4 v_up = glm::vec4(0.0f,1.0f,0.0f,0.0f);  // Vetor "up" fixado para apontar para o "céu" (eixo Y global)
+
+            glm::vec4 w = Vetor(-player.view);
+            glm::vec4 u = crossproduct(v_up,w);
+
+            w = w / norm(w);
+            u = u / norm(u);
+
+            glm::vec4 v = crossproduct(w,u);
+
+            const float pi24 = 3.141592f / 24.0f;
+
+            if (player.getCurrentWeapon().effect == SCATTER_5)
+            {
+                Projectile spread1 = new_proj;
+                Projectile spread2 = new_proj;
+                Projectile spread3 = new_proj;
+                Projectile spread4 = new_proj;
+
+                // rotaciona
+                spread1.dir = toVec3(Matrix_Rotate( pi24*2, v) * Vetor(spread1.dir));
+                spread2.dir = toVec3(Matrix_Rotate( pi24,   v) * Vetor(spread2.dir));
+                spread3.dir = toVec3(Matrix_Rotate(-pi24,   v) * Vetor(spread3.dir));
+                spread4.dir = toVec3(Matrix_Rotate(-pi24*2, v) * Vetor(spread4.dir));
+
+                projectiles.push_back(spread1);
+                projectiles.push_back(spread2);
+                projectiles.push_back(spread3);
+                projectiles.push_back(spread4);
+            }
+            else if (player.getCurrentWeapon().effect == RANDOM_SPREAD_01)
+            {
+                float offset_random = ((float)(rand() % 20) - (float)(rand() % 20)) / 100.0f;
+                new_proj.dir = toVec3(Matrix_Rotate(offset_random*pi24, v) * Matrix_Rotate(offset_random*pi24, u) * Vetor(new_proj.dir));
+            }
+        }
+
+        projectiles.push_back(new_proj);
+    }
 
     // testa colisão com obstáculos
     player.grounded = false;
@@ -145,19 +198,46 @@ void Game::Update()
     // testa colisão com a fase
     playerWithinLevel(player, level_queue.front());
 
-    // HEALTH TEST REMOVE LATER
-    static float dmgTimer = 0.1f;
-    decrementTimer(dmgTimer, deltaTime, 0.0f);
-    if (dmgTimer == 0.0f)
+    // PROJECTILES
+    unsigned int i_proj = 0;
+    while (i_proj < projectiles.size())
     {
-        player.takeDamage(10);
-        if (player.isDead())
-            player.resetHealth();
-        dmgTimer = 0.1f;
+        projectiles[i_proj].update(deltaTime);
+
+        // testa colisão com obstáculos
+        for (unsigned int i = 0; i < obstacles.size(); i++)
+        {
+            float min_dist;
+            bool result;
+            if (projectiles[i_proj].lifespan > 0.0f)
+                switch (projectiles[i_proj].hit_type)
+                {
+                    case BOX:   // o único projétil que usa box é o melee então ignora
+                        break;
+                    case SPHERE:
+                        result = Collide(projectiles[i_proj].getHitsphere(),obstacles[i].getAABB());
+                        if (result)
+                            projectiles[i_proj].lifespan = 0.0f;
+                        break;
+                    case RAY:
+                        result = Collide(projectiles[i_proj].getHitscan(),obstacles[i].getAABB(),projectiles[i_proj].p_size.z,min_dist);
+                        if (result && min_dist < projectiles[i_proj].p_size.z)
+                            projectiles[i_proj].p_size.z = min_dist;
+                        break;
+                }
+        }
+
+        // testa colisão com inimigos
+        //todo
+
+        // deleta projéteis "velhos"
+        if (projectiles[i_proj].isDead())
+            projectiles.erase(projectiles.begin()+i_proj);
+        else
+            i_proj++;
     }
 
     // todo:
-    // PROJECTILES
     // ENEMIES
     // CHECK LEVEL END
     // and idk what else
@@ -184,6 +264,9 @@ void Game::Draw(GLFWwindow* window)
     // Pedimos para a GPU utilizar o programa de GPU criado (contendo
     // os shaders de vértice e fragmentos).
     glUseProgram(g_GpuProgramID);
+
+    // Se estiver na cutscene, entra em DrawCutscene e aborta
+    //todo
 
     // Variáveis da câmera virtual
     glm::vec4 camera_pos  = Ponto(player.pos);  // Ponto "c", centro da câmera
@@ -229,33 +312,42 @@ void Game::Draw(GLFWwindow* window)
     for (unsigned int i = 0; i < obstacles.size(); i++)
         drawObstacle(obstacles[i]);
 
+    for (unsigned int i = 0; i < projectiles.size(); i++)
+        drawProjectile(projectiles[i]);
+
     // todo: draw enemies
-    // todo: draw projectiles
 
     // se g_ShowInfo = true, mostra as AABBs na tela
     if (g_ShowInfo)
     {
         drawAABB(player.getAABB());
-        // e outras...
+
+        for (unsigned int i = 0; i < projectiles.size(); i++)
+            if (projectiles[i].hit_type == BOX)
+                drawAABB(projectiles[i].getHitbox());
+
+        // todo: enemy aabb and i think thats it
     }
 
-    // sphere gouraud test
-    // also spherical projection test
+    // MINOTAUR test
     //EPIC
-    glm::mat4 model = Matrix_Translate(-6.0f, 3.0f, -6.0f) *
-                      Matrix_Scale(0.5f, 0.5f, 0.5f);
+    glm::vec3 og_size = glm::vec3(1.0f,1.9f,0.6f);
+    glm::vec3 nu_size = glm::vec3(2.5f,5.0f,1.5f);
+
+    glm::mat4 model = Matrix_Translate(-6.0f, 3.6f, -6.0f) *
+                      Matrix_Rotate_Y(1.57079632679)       *
+                      Matrix_Resize(og_size,nu_size);
 
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
 
     glUniform1i(g_use_gouraud_uniform, true);
-    glUniform1i(g_use_spherical_uv_uniform, true);
-    //setDiffuseTexture("black");
-    //setSpecularTexture("white");
-    setDiffuseTexture("silver");
-    setSpecularTexture("silver");
-    DrawVirtualObject("the_sphere");
+    setDiffuseTexture("minotaur");
+    setSpecularTexture("red");
+    DrawVirtualObject("minotaur");
+    setDiffuseTexture("pants");
+    setSpecularTexture("red");
+    DrawVirtualObject("pants");
     glUniform1i(g_use_gouraud_uniform, false);
-    glUniform1i(g_use_spherical_uv_uniform, false);
 
     // Resetamos todos os pixels do Z-buffer (depth buffer)
     // Assim a arma não atravessa as paredes

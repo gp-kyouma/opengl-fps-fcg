@@ -20,7 +20,7 @@ enum CardinalDirection
     DOWN,   // y-
 };
 
-enum HitboxTypes
+enum HitboxType
 {
     BOX,
     SPHERE,
@@ -66,8 +66,8 @@ bool Collide(AABB aabb1, AABB aabb2, glm::vec3 &desloc);
 // Sphere x AABB
 bool Collide(Sphere sphere, AABB aabb);
 
-// todo:
 // Ray x AABB
-// return closest distance as extra parameter maybe idk
+// Retorna distância mínima como parâmetro extra
+bool Collide(Ray ray, AABB aabb, float max_range, float &min_dist);
 
 #endif // FCG_COLLISIONS

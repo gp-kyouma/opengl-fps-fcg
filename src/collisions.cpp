@@ -4,6 +4,8 @@
 #include <cstdio>
 #include <cstdlib>
 
+#include <algorithm>
+
 glm::vec3 AABB::getSize()
 {
     return aabb_max - aabb_min;
@@ -71,5 +73,109 @@ bool Collide(AABB aabb1, AABB aabb2, glm::vec3 &desloc)
 // Sphere x AABB
 bool Collide(Sphere sphere, AABB aabb)
 {
-    //
+    // FONTE:
+    // https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_collision_detection
+
+    // get box closest point to sphere center by clamping
+    float x = std::max(aabb.aabb_min.x, std::min(sphere.center.x, aabb.aabb_max.x));
+    float y = std::max(aabb.aabb_min.y, std::min(sphere.center.y, aabb.aabb_max.y));
+    float z = std::max(aabb.aabb_min.z, std::min(sphere.center.z, aabb.aabb_max.z));
+
+    // this is the same as isPointInsideSphere
+    float distance = (float) sqrt(
+        (x - sphere.center.x) * (x - sphere.center.x) +
+        (y - sphere.center.y) * (y - sphere.center.y) +
+        (z - sphere.center.z) * (z - sphere.center.z)
+    );
+
+    return (distance < sphere.radius);
+}
+
+// Ray x AABB
+// Retorna distância mínima como parâmetro extra
+bool Collide(Ray ray, AABB aabb, float max_range, float &min_dist)
+{
+    const float epsilon = 0.00001f;
+
+    float tmin = 0.0f;
+    float tmax = max_range;
+
+    // código baseado em FONTE:
+    // https://github.com/juj/MathGeoLib/blob/2940b99b99cfe575dd45103ef20f4019dee15b54/src/Geometry/AABB.cpp#L725
+
+    // EIXO X
+    if (!(fabs(ray.direction.x) < epsilon))
+	{
+		float recipDir = (1/ray.direction.x);
+		float t1 = (aabb.aabb_min.x - ray.origin.x) * recipDir;
+		float t2 = (aabb.aabb_max.x - ray.origin.x) * recipDir;
+
+		if (t1 < t2)
+        {
+            tmin = std::max(t1, tmin);
+            tmax = std::min(t2, tmax);
+        }
+		else // Swap t1 and t2
+		{
+            tmin = std::max(t2, tmin);
+            tmax = std::min(t1, tmax);
+		}
+
+		if (tmin > tmax)
+			return false; // Box is missed since we "exit" before entering it.
+	}
+	else if (ray.origin.x < aabb.aabb_min.x || ray.origin.x > aabb.aabb_max.x)
+		return false; // The ray can't possibly enter the box, abort.
+
+	// EIXO Y
+    if (!(fabs(ray.direction.y) < epsilon))
+	{
+		float recipDir = (1/ray.direction.y);
+		float t1 = (aabb.aabb_min.y - ray.origin.y) * recipDir;
+		float t2 = (aabb.aabb_max.y - ray.origin.y) * recipDir;
+
+		if (t1 < t2)
+        {
+            tmin = std::max(t1, tmin);
+            tmax = std::min(t2, tmax);
+        }
+		else // Swap t1 and t2
+		{
+            tmin = std::max(t2, tmin);
+            tmax = std::min(t1, tmax);
+		}
+
+		if (tmin > tmax)
+			return false; // Box is missed since we "exit" before entering it.
+	}
+	else if (ray.origin.y < aabb.aabb_min.y || ray.origin.y > aabb.aabb_max.y)
+		return false; // The ray can't possibly enter the box, abort.
+
+	// EIXO Z
+    if (!(fabs(ray.direction.z) < epsilon))
+	{
+		float recipDir = (1/ray.direction.z);
+		float t1 = (aabb.aabb_min.z - ray.origin.z) * recipDir;
+		float t2 = (aabb.aabb_max.z - ray.origin.z) * recipDir;
+
+		if (t1 < t2)
+        {
+            tmin = std::max(t1, tmin);
+            tmax = std::min(t2, tmax);
+        }
+		else // Swap t1 and t2
+		{
+            tmin = std::max(t2, tmin);
+            tmax = std::min(t1, tmax);
+		}
+
+		if (tmin > tmax)
+			return false; // Box is missed since we "exit" before entering it.
+	}
+	else if (ray.origin.z < aabb.aabb_min.z || ray.origin.z > aabb.aabb_max.z)
+		return false; // The ray can't possibly enter the box, abort.
+
+    min_dist = tmin;
+
+	return tmin <= tmax;
 }

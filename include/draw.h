@@ -15,6 +15,7 @@
 #include "obstacle.h"
 #include "level.h"
 #include "weapon.h"
+#include "projectile.h"
 
 /*
 DECLARAÇÃO DE FUNÇÕES
@@ -24,12 +25,13 @@ void drawAABB(AABB aabb); // para razões de debug
 
 void drawCrosshair(float aspect);
 void drawBar(float value, float maxValue, float aspect, std::string tex1, std::string tex2, std::string tex3, int position);
+//void drawBanner(float aspect ,std::string tex); // used for game over, you won, etc...
 
 void drawFloor(Level level);
 void drawWall(Level level, CardinalDirection direction);
 void drawObstacle(Obstacle obstacle);
 void drawWeapon(Player player, WeaponType type, float theta, float phi);
-
-// draw enemy, draw projectile, etc etc...
+void drawProjectile(Projectile proj);
+//void drawEnemy(Enemy enemy);
 
 #endif // FCG_DRAW

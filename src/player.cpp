@@ -3,6 +3,8 @@
 #include <cstdio>
 #include <cstdlib>
 
+#include <algorithm>
+
 #include "input.h"
 #include "vec_aux.h"
 
@@ -83,7 +85,11 @@ void Player::doPlayerMovement(float deltaTime)
         y_velocity -= (gravity * deltaTime);
     }
 
-    offset   *= (speed      * deltaTime);
+    float trueSpeed = speed;
+    if (getCurrentWeapon().effect == SLOWDOWN && wpnCooldown > 0.0f)
+        trueSpeed *= std::max(0.5f,1.0f-(wpnCooldown/2.0f));
+
+    offset   *= (trueSpeed  * deltaTime);
     offset.y += (y_velocity * deltaTime);
 
     movePos(toVec3(offset));
@@ -92,9 +98,9 @@ void Player::doPlayerMovement(float deltaTime)
 void Player::doWeaponAnimation(float deltaTime)
 {
     if (g_LeftMouseButtonPressed)
-        incrementTimer(wpnAnimation, deltaTime*4, 1.0f);
+        incrementTimer(wpnAnimation, deltaTime*6, 1.0f);
     else
-        decrementTimer(wpnAnimation, deltaTime*4, 0.0f);
+        decrementTimer(wpnAnimation, deltaTime*6, 0.0f);
 }
 
 void Player::doDamageCooldown(float deltaTime)
@@ -119,6 +125,21 @@ void Player::doWeaponCooldown(float deltaTime)
 Weapon Player::getCurrentWeapon()
 {
     return weapons[currentWeapon];
+}
+
+bool Player::fire(Projectile &new_proj)
+{
+    if (wpnCooldown == 0.0f && wpnAnimation == 1.0f && g_LeftMouseButtonPressed)
+    {
+        glm::vec3 proj_pos = pos;
+        proj_pos.y += neck/1.5f;
+
+        new_proj = getCurrentWeapon().fire(proj_pos,view);
+
+        wpnCooldown = getCurrentWeapon().cooldown;
+        return true;
+    }
+    else return false;
 }
 
 void Player::resetHealth()

@@ -10,7 +10,7 @@
 
 #include "collisions.h"
 #include "weapon.h"
-//#include "projectile.h"
+#include "projectile.h"
 
 /*
 STRUCTS/CLASSES
@@ -54,8 +54,7 @@ struct Player
 
     Weapon getCurrentWeapon();
 
-    //todo:
-    //bool fire(Projectile &new_proj);
+    bool fire(Projectile &new_proj);
 
     void resetHealth();
     void takeDamage(int dmg);

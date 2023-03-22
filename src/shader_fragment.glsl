@@ -52,39 +52,14 @@ out vec4 color;
 
 void main()
 {
-    // Obtemos a posição da câmera utilizando a inversa da matriz que define o
-    // sistema de coordenadas da câmera.
-    vec4 origin = vec4(0.0, 0.0, 0.0, 1.0);
-    vec4 camera_position = inverse(view) * origin;
+    // Termo difuso utilizando a lei dos cossenos de Lambert
+    vec3 lambert_diffuse_term;
 
-    // O fragmento atual é coberto por um ponto que percente à superfície de um
-    // dos objetos virtuais da cena. Este ponto, p, possui uma posição no
-    // sistema de coordenadas global (World coordinates). Esta posição é obtida
-    // através da interpolação, feita pelo rasterizador, da posição de cada
-    // vértice.
-    vec4 p = position_world;
+    // Termo ambiente
+    vec3 ambient_term;
 
-    // Normal do fragmento atual, interpolada pelo rasterizador a partir das
-    // normais de cada vértice.
-    vec4 n = normalize(normal);
-
-    // Vetor que define o sentido da fonte de luz em relação ao ponto atual.
-    vec4 l = //normalize(vec4(0.0,1.0,0.0,0.0));
-             normalize(camera_position - p);
-
-    // Vetor que define o sentido da câmera em relação ao ponto atual.
-    vec4 v = normalize(camera_position - p);
-
-    // distância da câmera ao ponto
-    float camera_dist = length(camera_position - p);
-    // decaimento de luz à base da distância
-    float coeficiente = 1/(0.5*camera_dist + 0.05*pow(camera_dist,2));
-
-    // Vetor que define o sentido da reflexão especular ideal.
-    vec4 r = -l + 2*n*dot(n,l);
-
-    // Half vector (blinn-phong)
-    vec4 h = normalize(v+l);
+    // Termo especular utilizando o modelo de iluminação de BLINN-Phong
+    vec3 blinn_phong_specular_term;
 
     // Coordenadas de textura U e V
     float U = 0.0;
@@ -110,30 +85,28 @@ void main()
         V = texcoords.y * repeat.y;
     }
 
-    // Expoente especular para o modelo de iluminação de Phong
-    float q = 2.0;//placeholder
-    float qlinha = 4*q; // conversão para blinn-phong
-
     // Obtemos a refletância difusa a partir da leitura da imagem TextureImageDiffuse
     vec3 Kd = texture(TextureImageDiffuse, vec2(U,V)).rgb;
 
     // Obtemos a refletância especular a partir da leitura da imagem TextureImageSpecular
     vec3 Ks = texture(TextureImageSpecular, vec2(U,V)).rgb;
 
-    // Espectro da fonte de iluminação
-    vec3 I = vec3(1.0,1.0,1.0); // PREENCHA AQUI o espectro da fonte de luz
+    // Obtemos a posição da câmera utilizando a inversa da matriz que define o
+    // sistema de coordenadas da câmera.
+    vec4 origin = vec4(0.0, 0.0, 0.0, 1.0);
+    vec4 camera_position = inverse(view) * origin;
 
-    // Espectro da luz ambiente
-    vec3 Ia = vec3(0.08,0.08,0.08); // PREENCHA AQUI o espectro da luz ambiente
+    // O fragmento atual é coberto por um ponto que percente à superfície de um
+    // dos objetos virtuais da cena. Este ponto, p, possui uma posição no
+    // sistema de coordenadas global (World coordinates). Esta posição é obtida
+    // através da interpolação, feita pelo rasterizador, da posição de cada
+    // vértice.
+    vec4 p = position_world;
 
-    // Termo difuso utilizando a lei dos cossenos de Lambert
-    vec3 lambert_diffuse_term;
-
-    // Termo ambiente
-    vec3 ambient_term;
-
-    // Termo especular utilizando o modelo de iluminação de BLINN-Phong
-    vec3 blinn_phong_specular_term;
+    // distância da câmera ao ponto
+    float camera_dist = length(camera_position - p);
+    // decaimento de luz à base da distância
+    float coeficiente = 1/(0.5*camera_dist + 0.05*pow(camera_dist,2));
 
     if (useGouraud) // usa modelo de Gouraud calculado em shader_vertex
     {
@@ -143,6 +116,33 @@ void main()
     }
     else    // usa modelo de Phong
     {
+        // Normal do fragmento atual, interpolada pelo rasterizador a partir das
+        // normais de cada vértice.
+        vec4 n = normalize(normal);
+
+        // Vetor que define o sentido da fonte de luz em relação ao ponto atual.
+        vec4 l = //normalize(vec4(0.0,1.0,0.0,0.0));
+                 normalize(camera_position - p);
+
+        // Vetor que define o sentido da câmera em relação ao ponto atual.
+        vec4 v = normalize(camera_position - p);
+
+        // Vetor que define o sentido da reflexão especular ideal.
+        vec4 r = -l + 2*n*dot(n,l);
+
+        // Half vector (blinn-phong)
+        vec4 h = normalize(v+l);
+
+        // Expoente especular para o modelo de iluminação de Phong
+        float q = 2.0;//placeholder
+        float qlinha = 4*q; // conversão para blinn-phong
+
+        // Espectro da fonte de iluminação
+        vec3 I = vec3(1.0,1.0,1.0); // PREENCHA AQUI o espectro da fonte de luz
+
+        // Espectro da luz ambiente
+        vec3 Ia = vec3(0.08,0.08,0.08); // PREENCHA AQUI o espectro da luz ambiente
+
         // Termo difuso utilizando a lei dos cossenos de Lambert
         lambert_diffuse_term = Kd*I*max(0,dot(n,l));
 

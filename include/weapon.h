@@ -6,6 +6,8 @@
 #include <glm/vec4.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "projectile.h"
+
 /*
 STRUCTS/CLASSES
 */
@@ -30,15 +32,13 @@ enum WeaponEffect
 struct Weapon
 {
     WeaponType wpn_type; // define o modelo e animação
-    //todo:
-    //ProjectileType proj_type;
+    ProjectileType proj_type;
 
     int damage;
     float cooldown;
     WeaponEffect effect; // efeito extra causado pela arma
 
-    //todo:
-    //Projectile fire(glm::vec3 pos, glm::vec3 dir);
+    Projectile fire(glm::vec3 pos, glm::vec3 dir);
 };
 
 #endif // FCG_WEAPON

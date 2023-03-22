@@ -4,6 +4,15 @@
 #include <cstdio>
 #include <cstdlib>
 
-//#include "projectile.h"
+Projectile Weapon::fire(glm::vec3 pos, glm::vec3 dir)
+{
+    Projectile result;
 
-//stuff
+    result.setProjectileData(proj_type);
+
+    result.pos = pos + dir;
+    result.dir = dir;
+    result.damage = damage;
+
+    return result;
+}

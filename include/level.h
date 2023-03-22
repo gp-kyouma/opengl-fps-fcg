@@ -31,9 +31,7 @@ struct Level
     std::vector<Obstacle> obstacles;
 
     // inimigos da fase
-    // todo
-
-    // etc outros atributos ... todo (?)
+    // std::vector<Enemy> enemies;
 
     AABB getAABB();
 

@@ -308,3 +308,48 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
         default: break;
     }
 }
+
+void drawProjectile(Projectile proj)
+{
+    if (proj.type == PROJ_MELEE_INVISIBLE)
+        return;
+
+    const float pi = 3.141592f;
+
+    float width  = (proj.p_size.x);
+    float length = (proj.p_size.z);
+    float height = (proj.p_size.y);
+
+    glm::mat4 model;
+
+    if (proj.type == PROJ_BULLET)
+        model = Matrix_Rotate_Y(pi);
+    else
+        model = Matrix_Identity();
+
+    model = Matrix_Translate(proj.pos.x, proj.pos.y, proj.pos.z) *
+            Matrix_Rotate_Y(getTheta(proj.dir))  *
+            Matrix_Rotate_X(-getPhi(proj.dir))   *
+            model                                *
+            Matrix_Scale(width, height, length);
+
+    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+
+    switch (proj.type)
+    {
+        case PROJ_HITSCAN:
+            setDiffuseTexture("red");
+            setSpecularTexture("white");
+            glLineWidth(4.0f);
+            DrawVirtualObject("line");
+            break;
+        case PROJ_BULLET:
+            glUniform1i(g_use_spherical_uv_uniform, true);
+            setDiffuseTexture("silver");
+            setSpecularTexture("silver");
+            DrawVirtualObject("the_sphere");
+            glUniform1i(g_use_spherical_uv_uniform, false);
+            break;
+        default: break;
+    }
+}
