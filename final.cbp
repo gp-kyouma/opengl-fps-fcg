@@ -109,6 +109,7 @@
 		<Unit filename="include/collisions.h" />
 		<Unit filename="include/dejavufont.h" />
 		<Unit filename="include/draw.h" />
+		<Unit filename="include/enemy.h" />
 		<Unit filename="include/game.h" />
 		<Unit filename="include/glad/glad.h" />
 		<Unit filename="include/glm/CMakeLists.txt" />
@@ -389,6 +390,7 @@
 		<Unit filename="include/weapon.h" />
 		<Unit filename="src/collisions.cpp" />
 		<Unit filename="src/draw.cpp" />
+		<Unit filename="src/enemy.cpp" />
 		<Unit filename="src/game.cpp" />
 		<Unit filename="src/glad.c">
 			<Option compilerVar="CC" />
@@ -412,9 +414,6 @@
 		<Unit filename="src/weapon.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
-			<code_completion />
-			<envvars />
-			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

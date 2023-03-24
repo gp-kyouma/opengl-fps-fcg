@@ -16,4 +16,7 @@ glm::vec3 toVec3(glm::vec4 v);
 float getTheta(glm::vec3 v);
 float getPhi(glm::vec3 v);
 
+// Função que calcula a distância entre 2 pontos
+float distance(glm::vec3 p1, glm::vec3 p2);
+
 #endif // FCG_VEC_AUX

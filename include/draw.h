@@ -16,6 +16,7 @@
 #include "level.h"
 #include "weapon.h"
 #include "projectile.h"
+#include "enemy.h"
 
 /*
 DECLARAÇÃO DE FUNÇÕES
@@ -32,6 +33,6 @@ void drawWall(Level level, CardinalDirection direction);
 void drawObstacle(Obstacle obstacle);
 void drawWeapon(Player player, WeaponType type, float theta, float phi);
 void drawProjectile(Projectile proj);
-//void drawEnemy(Enemy enemy);
+void drawEnemy(Enemy enemy);
 
 #endif // FCG_DRAW

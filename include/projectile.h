@@ -6,7 +6,11 @@
 #include <glm/vec4.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <collisions.h>
+#include "collisions.h"
+
+/*
+STRUCTS/CLASSES
+*/
 
 enum ProjectileType
 {

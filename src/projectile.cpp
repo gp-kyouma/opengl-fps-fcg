@@ -21,7 +21,7 @@ void Projectile::setProjectileData(ProjectileType type)
         case PROJ_BULLET:
             hit_type = SPHERE;
             p_size = glm::vec3(0.1f,0.1f,0.1f);
-            speed = 2;//10;
+            speed = 10;
             lifespan = 4.0f;
             break;
         case PROJ_MELEE_INVISIBLE:

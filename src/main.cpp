@@ -156,6 +156,8 @@ int main(int argc, char* argv[])
 
     LoadTextureImage("../../data/enemies/Minotaur_diffuse.jpg", "minotaur");
     LoadTextureImage("../../data/enemies/Pants_diffuse.jpg", "pants");
+    LoadTextureImage("../../data/enemies/Minotaur_specular.png", "minotaur_spec");
+    LoadTextureImage("../../data/enemies/Pants_specular.png", "pants_spec");
 
     ObjModel planemodel("../../data/obstacles/plane.obj");
     ComputeNormals(&planemodel);

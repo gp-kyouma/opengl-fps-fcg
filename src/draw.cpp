@@ -353,3 +353,65 @@ void drawProjectile(Projectile proj)
         default: break;
     }
 }
+
+void drawEnemy(Enemy enemy)
+{
+    const float pi2 = 1.57079632679;
+
+    glm::vec3 og_size;
+    switch (enemy.type)
+    {
+        case ENEMY_SKELETON:
+            og_size = glm::vec3(3.2f,7.2f,3.2f);
+            break;
+        case ENEMY_MINOTAUR:
+            og_size = glm::vec3(1.0f,1.9f,0.6f);
+            break;
+        default: break;
+    }
+
+    glm::mat4 model = Matrix_Translate(enemy.pos.x, enemy.pos.y, enemy.pos.z) *
+                      Matrix_Rotate_Y(getTheta(enemy.view) + pi2)             *
+                      Matrix_Resize(og_size, enemy.model_size);
+
+    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+
+    bool isInCooldown = enemy.dmgCooldown > 0.0f;
+
+    // inimigos são desenhados usando GOURAUD
+    glUniform1i(g_use_gouraud_uniform, true);
+
+    switch (enemy.type)
+    {
+        case ENEMY_SKELETON:
+            setDiffuseTexture("white");
+
+            if (isInCooldown)
+                setSpecularTexture("red");
+            else
+                setSpecularTexture("grey");
+
+            DrawVirtualObject("skeleton");
+            break;
+        case ENEMY_MINOTAUR:
+            setDiffuseTexture("minotaur");
+
+            if (isInCooldown)
+                setSpecularTexture("red");
+            else
+                setSpecularTexture("minotaur_spec");
+
+            DrawVirtualObject("minotaur");
+
+            setDiffuseTexture("pants");
+
+            if (!isInCooldown)
+                setSpecularTexture("pants_spec");
+
+            DrawVirtualObject("pants");
+            break;
+        default: break;
+    }
+
+    glUniform1i(g_use_gouraud_uniform, false);
+}

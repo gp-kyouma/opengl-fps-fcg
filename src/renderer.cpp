@@ -709,7 +709,7 @@ void BuildLineAndAddToVirtualScene()
     std::vector<float>  normal_coefficients = {
     //    X      Y     Z     W
          0.0f,  0.0f, -1.0f, 0.0f,
-         0.0f,  0.0f,  1.0f, 0.0f,
+         0.0f,  0.0f, -1.0f, 0.0f,
     };
 
     std::vector<float>  texture_coefficients = {

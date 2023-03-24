@@ -9,13 +9,19 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "obstacle.h"
+#include "enemy.h"
 
 /*
 STRUCTS/CLASSES
 */
 
-// todo:
-// obstacle data, enemy data...
+struct EnemyData
+{
+    glm::vec3 pos;
+    EnemyType type;
+
+    Enemy buildEnemy();
+};
 
 struct Level
 {
@@ -31,7 +37,7 @@ struct Level
     std::vector<Obstacle> obstacles;
 
     // inimigos da fase
-    // std::vector<Enemy> enemies;
+    std::vector<EnemyData> enemies;
 
     AABB getAABB();
 

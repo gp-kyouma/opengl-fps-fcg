@@ -2,6 +2,8 @@
 
 #include <math.h>
 
+#include "matrices.h"
+
 // Funções que transformam vec3s em pontos ou vetores para renderização (vec4s)
 glm::vec4 Ponto(glm::vec3 v)
 {
@@ -29,4 +31,10 @@ float getTheta(glm::vec3 v)
 float getPhi(glm::vec3 v)
 {
     return (float)asin(v.y);
+}
+
+// Função que calcula a distância entre 2 pontos
+float distance(glm::vec3 p1, glm::vec3 p2)
+{
+    return norm(Ponto(p2) - Ponto(p1));
 }

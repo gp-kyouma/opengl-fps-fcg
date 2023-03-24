@@ -23,6 +23,23 @@
 #include <glm/vec4.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+Enemy EnemyData::buildEnemy()
+{
+    Enemy enemy;
+
+    enemy.setEnemyData(type);
+
+    enemy.dmgCooldown = 0.0f;
+
+    enemy.grounded    = false;
+    enemy.y_velocity  = 0.0f;
+
+    enemy.pos         = pos;
+    enemy.view        = glm::vec3(0.0f,0.0f,-1.0f);
+
+    return enemy;
+}
+
 AABB Level::getAABB()
 {
     AABB result;
@@ -74,4 +91,15 @@ void Level::createTestLevel()
     obstacles.push_back(ob4);
     obstacles.push_back(ob5);
     obstacles.push_back(ob6);
+
+    EnemyData test_enemy1;
+    test_enemy1.pos  = glm::vec3(6.0f, 6.0f, 6.0f);
+    test_enemy1.type = ENEMY_SKELETON;
+
+    EnemyData test_enemy2;
+    test_enemy2.pos  = glm::vec3(-6.0f, 6.0f, 6.0f);
+    test_enemy2.type = ENEMY_SKELETON;
+
+    enemies.push_back(test_enemy1);
+    enemies.push_back(test_enemy2);
 }

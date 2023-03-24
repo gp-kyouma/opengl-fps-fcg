@@ -39,8 +39,6 @@ struct Player
 
     std::vector<Weapon> weapons;    // armas disponíveis ao jogador
 
-    // etc outros atributos ... todo
-
     void setView(float theta, float phi);
     void movePos(glm::vec3 offset);
 
@@ -59,8 +57,6 @@ struct Player
     void resetHealth();
     void takeDamage(int dmg);
     bool isDead();
-
-    // etc outros métodos ... todo
 };
 
 #endif // FCG_PLAYER

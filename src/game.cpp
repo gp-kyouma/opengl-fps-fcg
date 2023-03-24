@@ -13,6 +13,7 @@
 
 // protótipos de funções auxiliares
 void playerWithinLevel(Player &player, Level level);
+void enemyWithinLevel(Enemy &enemy, Level level);
 
 void Game::Init()
 {
@@ -23,28 +24,14 @@ void Game::Init()
 
     level_queue.push(test_level);
 
-    //placeholder, loadLevel will become its own function
-    obstacles = level_queue.front().obstacles;
-
-    //placeholder, will be in load level
-    projectiles.clear();
+    loadTopLevel();
 
     // PLAYER
-    player.pos  = level_queue.front().player_pos;
-    player.view = level_queue.front().player_view;
 
     player.p_size = glm::vec3(1.0f,2.0f,1.0f);
     player.neck   = 0.5f;
+    player.speed  = 3.0f;
 
-    player.grounded   = false;
-    player.y_velocity = 0.0f;
-
-    player.speed = 3.0f;
-
-    player.resetHealth();
-    player.dmgCooldown  = 0.0f;
-    player.wpnCooldown  = 0.0f;
-    player.wpnAnimation = 0.0f;
     player.currentWeapon  =  0; // melee
 
     // WEAPONS
@@ -170,11 +157,11 @@ void Game::Update()
     // testa colisão com obstáculos
     player.grounded = false;
 
-    bool col_result;
-    glm::vec3 resolve;
-
     for (unsigned int i = 0; i < obstacles.size(); i++)
     {
+        bool col_result;
+        glm::vec3 resolve;
+
         col_result = Collide(player.getAABB(),obstacles[i].getAABB(),resolve);
         if (col_result)
         {
@@ -194,11 +181,14 @@ void Game::Update()
         }
     }
 
-
     // testa colisão com a fase
     playerWithinLevel(player, level_queue.front());
 
     // PROJECTILES
+
+    // vetor utilizado para contabilizar o dano levado por cada inimigo nesse frame
+    std::vector<int> damageTaken(enemies.size(),0);
+
     unsigned int i_proj = 0;
     while (i_proj < projectiles.size())
     {
@@ -228,7 +218,31 @@ void Game::Update()
         }
 
         // testa colisão com inimigos
-        //todo
+        for (unsigned int i = 0; i < enemies.size(); i++)
+        {
+            float min_dist;
+            bool result;
+
+            if (projectiles[i_proj].lifespan > 0.0f)
+                switch (projectiles[i_proj].hit_type)
+                {
+                    case BOX:
+                        result = Collide(projectiles[i_proj].getHitbox(),enemies[i].getAABB());
+                        if (result)
+                            damageTaken[i] += (projectiles[i_proj].damage);
+                        break;
+                    case SPHERE:
+                        result = Collide(projectiles[i_proj].getHitsphere(),enemies[i].getAABB());
+                        if (result)
+                            damageTaken[i] += (projectiles[i_proj].damage);
+                        break;
+                    case RAY:
+                        result = Collide(projectiles[i_proj].getHitscan(),enemies[i].getAABB(),projectiles[i_proj].p_size.z,min_dist);
+                        if (result && min_dist < projectiles[i_proj].p_size.z)
+                            damageTaken[i] += (projectiles[i_proj].damage);
+                        break;
+                }
+        }
 
         // deleta projéteis "velhos"
         if (projectiles[i_proj].isDead())
@@ -237,8 +251,74 @@ void Game::Update()
             i_proj++;
     }
 
-    // todo:
     // ENEMIES
+
+    // dá o dano contabilizado na fase dos projéteis
+    for (unsigned int i = 0; i < enemies.size(); i++)
+        if (damageTaken[i] > 0)
+            enemies[i].takeDamage(damageTaken[i]);
+
+    // deleta inimigos cuja vida foi reduzida a 0
+    unsigned int i_enemy = 0;
+    while (i_enemy < enemies.size())
+    {
+        if (enemies[i_enemy].isDead())
+            enemies.erase(enemies.begin()+i_enemy);
+        else
+            i_enemy++;
+    }
+
+    for (unsigned int i = 0; i < enemies.size(); i++)
+    {
+        // faz a movimentação do inimigo se o jogador estiver perto
+        if (enemies[i].isWithinRange(player.pos))
+        {
+            enemies[i].updateView(player.pos);
+            enemies[i].doEnemyMovement(deltaTime);
+        }
+
+        // inimgo é afetado por gravidade independente do jogador estar perto
+        enemies[i].doEnemyGravity(deltaTime);
+
+        // atualiza cooldown de dano do inimigo
+        enemies[i].doDamageCooldown(deltaTime);
+
+        // testa colisão com obstáculos
+        enemies[i].grounded = false;
+
+        bool col_result;
+        glm::vec3 resolve;
+
+        for (unsigned int j = 0; j < obstacles.size(); j++)
+        {
+            col_result = Collide(enemies[i].getAABB(),obstacles[j].getAABB(),resolve);
+            if (col_result)
+            {
+                enemies[i].pos += resolve;
+                if (resolve.y > 0) // colisão em cima
+                {
+                    enemies[i].grounded = true;
+                    enemies[i].y_velocity = 0.0f;
+                }
+            }
+        }
+
+        // testa colisão com a fase
+        enemyWithinLevel(enemies[i], level_queue.front());
+
+        // testa colisão com o jogador (dá dano)
+        col_result = Collide(enemies[i].getAABB(),player.getAABB(),resolve);
+        if (col_result)
+        {
+            enemies[i].pos += resolve/2.0f;
+            player.movePos(-resolve/2.0f);
+            player.takeDamage(enemies[i].damage);
+        }
+    }
+
+
+
+    //todo:
     // CHECK LEVEL END
     // and idk what else
 }
@@ -315,7 +395,8 @@ void Game::Draw(GLFWwindow* window)
     for (unsigned int i = 0; i < projectiles.size(); i++)
         drawProjectile(projectiles[i]);
 
-    // todo: draw enemies
+    for (unsigned int i = 0; i < enemies.size(); i++)
+        drawEnemy(enemies[i]);
 
     // se g_ShowInfo = true, mostra as AABBs na tela
     if (g_ShowInfo)
@@ -326,28 +407,9 @@ void Game::Draw(GLFWwindow* window)
             if (projectiles[i].hit_type == BOX)
                 drawAABB(projectiles[i].getHitbox());
 
-        // todo: enemy aabb and i think thats it
+        for (unsigned int i = 0; i < enemies.size(); i++)
+            drawAABB(enemies[i].getAABB());
     }
-
-    // MINOTAUR test
-    //EPIC
-    glm::vec3 og_size = glm::vec3(1.0f,1.9f,0.6f);
-    glm::vec3 nu_size = glm::vec3(2.5f,5.0f,1.5f);
-
-    glm::mat4 model = Matrix_Translate(-6.0f, 3.6f, -6.0f) *
-                      Matrix_Rotate_Y(1.57079632679)       *
-                      Matrix_Resize(og_size,nu_size);
-
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-
-    glUniform1i(g_use_gouraud_uniform, true);
-    setDiffuseTexture("minotaur");
-    setSpecularTexture("red");
-    DrawVirtualObject("minotaur");
-    setDiffuseTexture("pants");
-    setSpecularTexture("red");
-    DrawVirtualObject("pants");
-    glUniform1i(g_use_gouraud_uniform, false);
 
     // Resetamos todos os pixels do Z-buffer (depth buffer)
     // Assim a arma não atravessa as paredes
@@ -432,10 +494,75 @@ void playerWithinLevel(Player &player, Level level)
     }
 }
 
+// Checa se o inimigo está dentro dos limites da fase e ajusta sua posição se não estiver
+// Como não é uma função entre dois corpos (AABB x AABB, etc) fica fora de collisions.cpp
+void enemyWithinLevel(Enemy &enemy, Level level)
+{
+    AABB hitbox = enemy.getAABB();
+
+    float halfWidth  = (level.levelWidth /2.0f);
+    float halfLength = (level.levelLength/2.0f);
+
+    glm::vec3 halfSize = (enemy.hitbox_size / 2.0f);
+
+    if (hitbox.aabb_min.x < -halfWidth)
+    {
+        enemy.pos.x = -halfWidth + halfSize.x;
+    }
+    else if (hitbox.aabb_max.x > halfWidth)
+    {
+        enemy.pos.x =  halfWidth - halfSize.x;
+    }
+
+    if (hitbox.aabb_min.z < -halfLength)
+    {
+        enemy.pos.z = -halfLength + halfSize.z;
+    }
+    else if (hitbox.aabb_max.z > halfLength)
+    {
+        enemy.pos.z =  halfLength - halfSize.z;
+    }
+
+    if (hitbox.aabb_min.y < level.levelFloor)
+    {
+        enemy.pos.y = level.levelFloor + halfSize.y;
+        enemy.grounded = true;
+        enemy.y_velocity = 0.0f;
+    }
+}
+
 // Calcula o time step atual
 void Game::updateDeltaTime()
 {
     float currentTime = (float)glfwGetTime();
     deltaTime = currentTime - prevTime;
     prevTime  = currentTime;
+}
+
+// Carrega os dados da fase na frente da fila de fases
+void Game::loadTopLevel()
+{
+    obstacles.clear();
+    enemies.clear();
+    projectiles.clear();
+
+    obstacles = level_queue.front().obstacles;
+
+    for (unsigned int i = 0; i < level_queue.front().enemies.size(); i++)
+    {
+        enemies.push_back(level_queue.front().enemies[i].buildEnemy());
+    }
+
+    // carrega/reseta dados do jogador
+    player.pos  = level_queue.front().player_pos;
+    player.view = level_queue.front().player_view;
+
+    player.grounded   = false;
+    player.y_velocity = 0.0f;
+
+    player.dmgCooldown  = 0.0f;
+    player.wpnCooldown  = 0.0f;
+    player.wpnAnimation = 0.0f;
+
+    player.resetHealth();
 }

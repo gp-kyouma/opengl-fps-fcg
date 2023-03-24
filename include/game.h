@@ -18,6 +18,7 @@
 #include "obstacle.h"
 #include "weapon.h"
 #include "projectile.h"
+#include "enemy.h"
 
 /*
 STRUCTS/CLASSES
@@ -36,7 +37,7 @@ struct Game
     std::vector<Obstacle> obstacles;
 
     // vetor de inimigos
-    // std::vector<Enemy> enemies;
+    std::vector<Enemy> enemies;
 
     // vetor de projéteis
     std::vector<Projectile> projectiles;
@@ -51,14 +52,13 @@ struct Game
     //bool finalCutscene;
     //float cutsceneStep; // determina em qual parte da cutscene está; [0.0f, 5.0f](?)
 
-    // etc outros atributos ... todo?
-
     void updateDeltaTime();
     void Init();
     void Update();
     void Draw(GLFWwindow* window);
-    //void DrawCutscene(GLFWwindow* window);
-    //void loadTopLevel();
+    //void initCutscene();
+    //void drawCutscene(GLFWwindow* window);
+    void loadTopLevel();
 };
 
 #endif // FCG_GAME
