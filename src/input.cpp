@@ -17,6 +17,7 @@ bool g_AKeyPressed        = false;
 bool g_SKeyPressed        = false;
 bool g_DKeyPressed        = false;
 bool g_SpaceBarKeyPressed = false;
+bool g_EnterKeyPressed    = false;
 
 // Variável que segura qual tecla numérica o usuário pressionou por último, -1
 int g_LastNumberPressed = 0;
@@ -199,6 +200,13 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
             g_SpaceBarKeyPressed = true;
         if (action == GLFW_RELEASE)
             g_SpaceBarKeyPressed = false;
+    }
+    if (key == GLFW_KEY_ENTER)
+    {
+        if (action == GLFW_PRESS)
+            g_EnterKeyPressed = true;
+        if (action == GLFW_RELEASE)
+            g_EnterKeyPressed = false;
     }
 
     // Se o usuário apertar uma tecla numérica de 1 a 5, atualiza variável global

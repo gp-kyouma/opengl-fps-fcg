@@ -56,6 +56,7 @@ extern bool g_AKeyPressed;
 extern bool g_SKeyPressed;
 extern bool g_DKeyPressed;
 extern bool g_SpaceBarKeyPressed;
+extern bool g_EnterKeyPressed;
 
 // Variável que segura qual tecla numérica o usuário pressionou por último, -1
 extern int g_LastNumberPressed;
