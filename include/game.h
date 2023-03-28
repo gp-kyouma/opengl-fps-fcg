@@ -45,7 +45,8 @@ struct Game
     // fila de níveis que o jogo tem
     std::queue<Level> level_queue;
 
-    // se o jogador está morto, ao fim de fase, ou durante a cutscene final, pula o update do jogador, inimigos, etc.
+    // se o jogador está morto, ao fim de fase, ou durante a cutscene final:
+    // pula o update do jogador, inimigos, etc.
     bool noUpdate;
 
     // atributos referentes à cutscene de fim de jogo

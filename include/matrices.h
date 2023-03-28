@@ -9,8 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 /*
-Definições das funções movidas para matrices.cpp,
-porque senão o linker não colabora kk
+Definições das funções movidas para matrices.cpp
 */
 
 // Esta função Matrix() auxilia na criação de matrizes usando a biblioteca GLM.
@@ -133,4 +132,3 @@ void PrintMatrixVectorProduct(glm::mat4 M, glm::vec4 v);
 void PrintMatrixVectorProductDivW(glm::mat4 M, glm::vec4 v);
 
 #endif // _MATRICES_H
-// vim: set spell spelllang=pt_br :

@@ -22,7 +22,7 @@ struct Player
     glm::vec3 pos;    // posição do jogador no mundo
     glm::vec3 p_size; // tamanho da hitbox do jogador
     glm::vec3 view;   // onde o jogador está olhando
-    float neck;       // offset no eixo y em relação a world_pos que define onde a câmera vai ser posicionada
+    float neck;       // offset no eixo y em relação a pos que define onde a câmera vai ser posicionada
 
     bool grounded;    // indica se o jogador está tocando o chão
     float y_velocity; // velocidade do jogador no eixo y
@@ -35,7 +35,7 @@ struct Player
 
     int currentWeapon;  // índice no vetor de armas que determina a arma equipada
     float wpnCooldown;  // tempo em segundos até que o jogador possa atirar de novo
-    float wpnAnimation; // valor entre 0.0f e 1.0f, defina a animação da arma quando está pressionada o botão esquerdo do mouse
+    float wpnAnimation; // valor entre 0.0f e 1.0f, define a animação da arma quando está pressionado o botão esquerdo do mouse
 
     std::vector<Weapon> weapons;    // armas disponíveis ao jogador
 

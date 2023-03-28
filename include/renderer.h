@@ -79,7 +79,7 @@ void BuildCrosshairAndAddToVirtualScene();
 void BuildLineAndAddToVirtualScene();
 
 // Constrói os triângulos de um quadrado para futura renderização.
-// (usado para desenhar a barra de vida)
+// (usado para desenhar a barra de vida/cooldown e banners)
 void BuildSquareAndAddToVirtualScene();
 
 // Declaração de funções auxiliares para renderizar texto dentro da janela
