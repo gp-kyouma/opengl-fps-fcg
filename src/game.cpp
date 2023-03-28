@@ -21,10 +21,6 @@ void Game::Init()
     // LEVELS
     Level level;
 
-    //level.createTestLevel();
-
-    //level_queue.push(level);
-
     level.createLevel1();
 
     level_queue.push(level);
@@ -73,12 +69,12 @@ void Game::Init()
     shotgun.wpn_type  = WPN_SHOTGUN;
     shotgun.proj_type = PROJ_HITSCAN;
     shotgun.cooldown  = 0.875f;
-    shotgun.damage    = 12; // 8 --> 12 deals actually decent damage
+    shotgun.damage    = 12;
     shotgun.effect    = SCATTER_5;
 
     minigun.wpn_type  = WPN_MINIGUN;
     minigun.proj_type = PROJ_HITSCAN;
-    minigun.cooldown  = 0.10f; // 0.20 --> 0.10 feels way better
+    minigun.cooldown  = 0.10f;
     minigun.damage    = 8;
     minigun.effect    = RANDOM_SPREAD_01;
 
