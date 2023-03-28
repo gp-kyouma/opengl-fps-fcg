@@ -13,25 +13,25 @@ void Enemy::setEnemyData(EnemyType type)
         case ENEMY_SKELETON:
             model_size  = glm::vec3(1.0f,2.0f,1.0f);
             hitbox_size = glm::vec3(1.0f,2.0f,1.0f);
-            speed       = 0.5f;
+            speed       = 1.5f;     // 0.5 --> 1 rattle me bones
             health      = 50;
-            damage      = 5;
-            followRange = 10.0f;
+            damage      = 10;       // 5 --> 10 it's not meant to be dark souls but still, too easy
+            followRange = 20.0f;    // 10 --> 20 skellingtons too blind for melee
             break;
         case ENEMY_BIG_SKELETON:
             model_size  = glm::vec3(1.5f,3.0f,1.5f);
             hitbox_size = glm::vec3(1.5f,3.0f,1.5f);
-            speed       = 0.35f;
-            health      = 250;
-            damage      = 10;
-            followRange = 20.0f;
+            speed       = 1.0f;     // 0.35 --> 0.75 now not quite so slow
+            health      = 250;       // very tanky, but maybe that's good
+            damage      = 20;       // 10 --> 20 upgrade
+            followRange = 30.0f;    // 20 --> naturally gotta be buffed as well
             break;
         case ENEMY_MINOTAUR:
             model_size  = glm::vec3(2.5f,5.0f,1.5f);
             hitbox_size = glm::vec3(2.0f,5.0f,2.0f);
             speed       = 0.8f;
             health      = 600;
-            damage      = 15;
+            damage      = 45;       // 15 -->45 upgrade
             followRange = 40.0f;
             break;
     }

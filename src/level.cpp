@@ -104,19 +104,180 @@ void Level::createTestLevel()
     enemies.push_back(test_enemy2);
 }
 
-void Level::createLevel1()
+void Level::createLevel1() //long corridor, sword + shotgun, skeletons drop!
 {
-    //IDK
+    obstacles.clear();
+    enemies.clear();
+
+    levelLength = 30.0f;// goes up to 40
+    levelWidth  = 10.0f;// goes up to 40
+    player_pos  = glm::vec3(0.0f,1.0f,-15.0f);
+    player_view = glm::vec3(0.0f,0.0f,1.0f);
+
+    Obstacle ob1, ob2, ob3, ob4;
+
+    ob1.o_size = glm::vec3(5.0f,4.0f,1.0f);
+    ob1.pos    = glm::vec3(1.0f,1.5f,-10.0f);
+    ob1.type   = OBSTACLE_WALL;
+    ob2.o_size = glm::vec3(1.0f,1.0f,1.0f);
+    ob2.pos    = glm::vec3(-3.0f,1.5f,6.0f);
+    ob2.type   = OBSTACLE_BOX;
+    ob3.o_size = glm::vec3(1.0f,1.0f,1.0f);
+    ob3.pos    = glm::vec3(3.0f,1.5f,6.0f);
+    ob3.type   = OBSTACLE_BOX;
+    ob4.o_size = glm::vec3(9.0f,0.5f,5.0f);
+    ob4.pos    = glm::vec3(0.0f,4.5f,15.0f);
+    ob4.type   = OBSTACLE_PLATFORM;
+
+    obstacles.push_back(ob1);
+    obstacles.push_back(ob2);
+    obstacles.push_back(ob3);
+    obstacles.push_back(ob4);
+
+    EnemyData enemy1, enemy2, enemy3, enemy4, enemy5, enemy6;
+    enemy1.pos  = glm::vec3(1.0f, 2.0f, -8.0f); //sneaky
+    enemy1.type = ENEMY_SKELETON;
+    enemy2.pos  = glm::vec3(3.0f, 2.0f, 8.0f);  //escort 1
+    enemy2.type = ENEMY_SKELETON;
+    enemy3.pos  = glm::vec3(0.0f, 2.0f, 8.0f);  //big guy
+    enemy3.type = ENEMY_BIG_SKELETON;
+    enemy4.pos  = glm::vec3(-3.0f, 2.0f, 8.0f); //escort 2
+    enemy4.type = ENEMY_SKELETON;
+    enemy5.pos  = glm::vec3(-3.0f, 5.0f, 15.0f);//platformer 1
+    enemy5.type = ENEMY_SKELETON;
+    enemy6.pos  = glm::vec3(3.0f, 5.0f, 15.0f); //platformer 2
+    enemy6.type = ENEMY_SKELETON;
+
+    enemies.push_back(enemy1);
+    enemies.push_back(enemy2);
+    enemies.push_back(enemy3);
+    enemies.push_back(enemy4);
+    enemies.push_back(enemy5);
+    enemies.push_back(enemy6);
+
+
 }
 
-void Level::createLevel2()
+void Level::createLevel2() // surprise room, skelehorde, minigun?
 {
-    //IDK
+    obstacles.clear();
+    enemies.clear();
+
+    levelLength = 20.0f;// goes up to 40
+    levelWidth  = 20.0f;// goes up to 40
+    player_pos  = glm::vec3(15.0f,1.0f,-15.0f);
+    player_view = glm::vec3(0.0f,0.0f,1.0f);
+
+    Obstacle ob1, ob2, ob3, ob4, ob5, ob6;
+
+    ob1.o_size = glm::vec3(1.0f,1.0f,2.0f);
+    ob1.pos    = glm::vec3(-12.0f,1.5f,6.0f);
+    ob1.type   = OBSTACLE_BOX;
+    ob2.o_size = glm::vec3(1.0f,1.0f,2.0f);
+    ob2.pos    = glm::vec3(3.0f,1.5f,6.0f);
+    ob2.type   = OBSTACLE_BOX;
+    ob3.o_size = glm::vec3(1.0f,6.0f,2.0f);
+    ob3.pos    = glm::vec3(4.0f,1.5f,10.0f);
+    ob3.type   = OBSTACLE_WALL;
+    ob4.o_size = glm::vec3(1.0f,6.0f,2.0f);
+    ob4.pos    = glm::vec3(-4.0f,1.5f,10.0f);
+    ob4.type   = OBSTACLE_WALL;
+    ob5.o_size = glm::vec3(20.0f,8.0f,2.0f);
+    ob5.pos    = glm::vec3(6.0f,1.5f,-6.0f);
+    ob5.type   = OBSTACLE_WALL;
+    ob6.o_size = glm::vec3(2.0f,8.0f,20.0f);
+    ob6.pos    = glm::vec3(-6.0f,1.5f,6.0f);
+    ob6.type   = OBSTACLE_WALL;
+
+    obstacles.push_back(ob1);
+    obstacles.push_back(ob2);
+    obstacles.push_back(ob3);
+    obstacles.push_back(ob4);
+    obstacles.push_back(ob5);
+    obstacles.push_back(ob6);
+
+    EnemyData enemy1, enemy2, enemy3, enemy4, enemy5, enemy6, enemy7, enemy8, enemy9; //horde!! + 1 hidden boneyman
+    enemy1.pos  = glm::vec3(8.0f, 2.0f, 6.0f);
+    enemy1.type = ENEMY_SKELETON;
+    enemy2.pos  = glm::vec3(-8.0f, 2.0f, 6.0f);
+    enemy2.type = ENEMY_SKELETON;
+    enemy3.pos  = glm::vec3(4.0f, 2.0f, 8.0f);
+    enemy3.type = ENEMY_SKELETON;
+    enemy4.pos  = glm::vec3(-4.0f, 2.0f, 8.0f);
+    enemy4.type = ENEMY_SKELETON;
+    enemy5.pos  = glm::vec3(2.0f, 2.0f, 10.0f);
+    enemy5.type = ENEMY_SKELETON;
+    enemy6.pos  = glm::vec3(-2.0f, 2.0f, 10.0f);
+    enemy6.type = ENEMY_SKELETON;
+    enemy7.pos  = glm::vec3(3.0f, 2.0f, 9.0f);
+    enemy7.type = ENEMY_SKELETON;
+    enemy8.pos  = glm::vec3(-3.0f, 2.0f, 9.0f);
+    enemy8.type = ENEMY_SKELETON;
+    enemy9.pos  = glm::vec3(0.0f, 2.0f, 9.0f);
+    enemy6.type = ENEMY_SKELETON;
+
+    enemies.push_back(enemy1);
+    enemies.push_back(enemy2);
+    enemies.push_back(enemy3);
+    enemies.push_back(enemy4);
+    enemies.push_back(enemy5);
+    enemies.push_back(enemy6);
+    enemies.push_back(enemy7);
+    enemies.push_back(enemy8);
+    enemies.push_back(enemy9);
+
+
 }
 
-void Level::createLevel3()
+void Level::createLevel3() //very thin corridor, start at platform, fall into surprise, sniper penetration lesson
 {
-    //IDK
+    obstacles.clear();
+    enemies.clear();
+
+    levelLength = 30.0f;// goes up to 40
+    levelWidth  = 4.0f;// goes up to 40
+    player_pos  = glm::vec3(0.0f,8.0f,-15.0f);
+    player_view = glm::vec3(0.0f,0.0f,1.0f);
+
+    Obstacle ob1, ob2, ob3; // you vill drop from ze platform
+    ob1.o_size = glm::vec3(6.0f,0.5f,6.0f);
+    ob1.pos    = glm::vec3(0.0f,7.0f,-16.0f);
+    ob1.type   = OBSTACLE_PLATFORM;
+    ob2.o_size = glm::vec3(6.0f,3.0f,3.0f);
+    ob2.pos    = glm::vec3(0.0f,8.0f,-10.0f);
+    ob2.type   = OBSTACLE_WALL;
+
+    obstacles.push_back(ob1);
+    obstacles.push_back(ob2);
+
+
+    EnemyData enemy1, enemy2, enemy3, enemy4, enemy5, enemy6, enemy7, enemy8;
+    enemy1.pos  = glm::vec3(1.0f, 2.0f, 6.0f);
+    enemy1.type = ENEMY_SKELETON;
+    enemy2.pos  = glm::vec3(-1.0f, 2.0f, 6.0f);
+    enemy2.type = ENEMY_SKELETON;
+    enemy3.pos  = glm::vec3(2.0f, 2.0f, 8.0f);
+    enemy3.type = ENEMY_BIG_SKELETON;
+    enemy4.pos  = glm::vec3(-2.0f, 2.0f, 8.0f);
+    enemy4.type = ENEMY_BIG_SKELETON;
+    enemy5.pos  = glm::vec3(1.0f, 2.0f, 10.0f);
+    enemy5.type = ENEMY_SKELETON;
+    enemy6.pos  = glm::vec3(-1.0f, 2.0f, 10.0f);
+    enemy6.type = ENEMY_SKELETON;
+    enemy7.pos  = glm::vec3(3.0f, 2.0f, 12.0f);
+    enemy7.type = ENEMY_BIG_SKELETON;
+    enemy8.pos  = glm::vec3(-3.0f, 2.0f, 12.0f);
+    enemy8.type = ENEMY_BIG_SKELETON;
+
+    enemies.push_back(enemy1);
+    enemies.push_back(enemy2);
+    enemies.push_back(enemy3);
+    enemies.push_back(enemy4);
+    enemies.push_back(enemy5);
+    enemies.push_back(enemy6);
+    enemies.push_back(enemy7);
+    enemies.push_back(enemy8);
+
 }
 
 void Level::createBossLevel()
