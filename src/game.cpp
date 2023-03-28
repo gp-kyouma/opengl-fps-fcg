@@ -33,6 +33,10 @@ void Game::Init()
 
     level_queue.push(level);
 
+    level.createBossLevel();
+
+    level_queue.push(level);
+
     loadTopLevel();
 
     finalCutscene = false;

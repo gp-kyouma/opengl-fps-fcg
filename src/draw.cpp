@@ -201,7 +201,10 @@ void drawObstacle(Obstacle obstacle)
     switch (obstacle.type)
     {
         case OBSTACLE_PLATFORM:
-            resetTextureRepeat();
+            if (width > length)
+                setTextureRepeat(width/length,1);
+            else
+                setTextureRepeat(1,length/width);
             setDiffuseTexture("platform");
             setSpecularTexture("platform_spec");
             break;
@@ -239,8 +242,8 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
 
     glm::vec4 v = crossproduct(w,u);
 
-    glm::vec3 displace;
-    glm::vec3 scale;
+    glm::vec3 displace = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 scale    = glm::vec3(0.0f, 0.0f, 0.0f);
 
     switch (type)
     {

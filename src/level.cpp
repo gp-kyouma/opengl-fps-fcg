@@ -281,10 +281,62 @@ void Level::createLevel3()
 
 void Level::createBossLevel()
 {
-    //IDK
-    //"make a big central platform
-    //put a few big skeletons
-    //and the boss"
-    // or maybe original idea (just the boss in the arena)
-    // hmm idk
+    obstacles.clear();
+    enemies.clear();
+
+    levelLength = 26.0f;
+    levelWidth  = 26.0f;
+    player_pos  = glm::vec3(0.0f,2.0f,-10.0f);
+    player_view = glm::vec3(0.0f,0.0f,1.0f);
+
+    Obstacle ob1, ob2, ob3, ob4, ob5, ob6, ob7, ob8;
+
+    // platforms
+    ob1.o_size = glm::vec3(26.0f,0.5f,3.0f);
+    ob1.pos    = glm::vec3(0.0f,5.75f,-11.5f);
+    ob1.type   = OBSTACLE_PLATFORM;
+    ob2.o_size = glm::vec3(26.0f,0.5f,3.0f);
+    ob2.pos    = glm::vec3(0.0f,5.75f,11.5f);
+    ob2.type   = OBSTACLE_PLATFORM;
+    ob3.o_size = glm::vec3(3.0f,0.5f,20.0f);
+    ob3.pos    = glm::vec3(-11.5f,5.75f,0.0f);
+    ob3.type   = OBSTACLE_PLATFORM;
+    ob4.o_size = glm::vec3(3.0f,0.5f,20.0f);
+    ob4.pos    = glm::vec3(11.5f,5.75f,0.0f);
+    ob4.type   = OBSTACLE_PLATFORM;
+
+    // "pillars"
+    ob5.o_size = glm::vec3(1.0f,10.0f,1.0f);
+    ob5.pos    = glm::vec3(7.0f,6.0f,7.0f);
+    ob5.type   = OBSTACLE_WALL;
+    ob6.o_size = glm::vec3(1.0f,10.0f,1.0f);
+    ob6.pos    = glm::vec3(7.0f,6.0f,-7.0f);
+    ob6.type   = OBSTACLE_WALL;
+    ob7.o_size = glm::vec3(1.0f,10.0f,1.0f);
+    ob7.pos    = glm::vec3(-7.0f,6.0f,7.0f);
+    ob7.type   = OBSTACLE_WALL;
+    ob8.o_size = glm::vec3(1.0f,10.0f,1.0f);
+    ob8.pos    = glm::vec3(-7.0f,6.0f,-7.0f);
+    ob8.type   = OBSTACLE_WALL;
+
+    obstacles.push_back(ob1);
+    obstacles.push_back(ob2);
+    obstacles.push_back(ob3);
+    obstacles.push_back(ob4);
+    obstacles.push_back(ob5);
+    obstacles.push_back(ob6);
+    obstacles.push_back(ob7);
+    obstacles.push_back(ob8);
+
+    EnemyData enemy1, enemy2, enemy3;
+    enemy1.pos  = glm::vec3(0.0f, 8.5f, 11.0f);
+    enemy1.type = ENEMY_MINOTAUR;
+    enemy2.pos  = glm::vec3(-10.0f, 7.5f, 6.0f);
+    enemy2.type = ENEMY_BIG_SKELETON;
+    enemy3.pos  = glm::vec3( 10.0f, 7.5f, 6.0f);
+    enemy3.type = ENEMY_BIG_SKELETON;
+
+    enemies.push_back(enemy1);
+    enemies.push_back(enemy2);
+    enemies.push_back(enemy3);
 }

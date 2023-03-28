@@ -2879,7 +2879,7 @@
 1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\gtc\type_ptr.inl
 	<cstring>
 
-1679964977 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\draw.cpp
+1680034120 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\draw.cpp
 	"draw.h"
 	<cmath>
 	<cstdio>
@@ -3025,7 +3025,7 @@
 	"obstacle.h"
 	"enemy.h"
 
-1679973338 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\game.cpp
+1680010528 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\game.cpp
 	"game.h"
 	<cstdio>
 	<cstdlib>
@@ -3086,7 +3086,7 @@
 1679964276 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\input.cpp
 	"input.h"
 
-1679964758 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\level.cpp
+1680010532 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\level.cpp
 	"level.h"
 	<cmath>
 	<cstdio>
@@ -3104,7 +3104,7 @@
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
 
-1679964977 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\main.cpp
+1680033657 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\main.cpp
 	<cmath>
 	<cstdio>
 	<cstdlib>
@@ -3216,50 +3216,51 @@
 	<glm/gtc/type_ptr.hpp>
 	"projectile.h"
 
-1678757839 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\collisions.cpp
+1679974004 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\collisions.cpp
 	"collisions.h"
 	<cmath>
 	<cstdio>
 	<cstdlib>
+	<algorithm>
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\collisions.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\collisions.h
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\mat4x4.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\mat4x4.hpp
 	"./ext/matrix_double4x4.hpp"
 	"./ext/matrix_double4x4_precision.hpp"
 	"./ext/matrix_float4x4.hpp"
 	"./ext/matrix_float4x4_precision.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double4x4.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double4x4.hpp
 	"../detail/type_mat4x4.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat4x4.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat4x4.hpp
 	"type_vec4.hpp"
 	<limits>
 	<cstddef>
 	"type_mat4x4.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_vec4.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_vec4.hpp
 	"qualifier.hpp"
 	"_swizzle.hpp"
 	"_swizzle_func.hpp"
 	<cstddef>
 	"type_vec4.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\qualifier.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\qualifier.hpp
 	"setup.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\setup.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\setup.hpp
 	<cassert>
 	<cstddef>
 	"../simd/platform.h"
 	<cstdint>
 	<type_traits>
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\simd\platform.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\simd\platform.h
 	<cuda.h>
 	<immintrin.h>
 	<immintrin.h>
@@ -3270,25 +3271,25 @@
 	<pmmintrin.h>
 	<emmintrin.h>
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\_swizzle.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\_swizzle.hpp
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\_swizzle_func.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\_swizzle_func.hpp
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_vec4.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_vec4.inl
 	"compute_vector_relational.hpp"
 	"type_vec4_simd.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\compute_vector_relational.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\compute_vector_relational.hpp
 	"setup.hpp"
 	<limits>
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_vec4_simd.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_vec4_simd.inl
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat4x4.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat4x4.inl
 	"../matrix.hpp"
 	"type_mat4x4_simd.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\matrix.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\matrix.hpp
 	"detail/qualifier.hpp"
 	"detail/setup.hpp"
 	"vec2.hpp"
@@ -3305,7 +3306,7 @@
 	"mat4x4.hpp"
 	"detail/func_matrix.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\vec2.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\vec2.hpp
 	"./ext/vector_bool2.hpp"
 	"./ext/vector_bool2_precision.hpp"
 	"./ext/vector_float2.hpp"
@@ -3317,47 +3318,47 @@
 	"./ext/vector_uint2.hpp"
 	"./ext/vector_uint2_precision.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_bool2.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_bool2.hpp
 	"../detail/type_vec2.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_vec2.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_vec2.hpp
 	"qualifier.hpp"
 	"_swizzle.hpp"
 	"_swizzle_func.hpp"
 	<cstddef>
 	"type_vec2.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_vec2.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_vec2.inl
 	"./compute_vector_relational.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_bool2_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_bool2_precision.hpp
 	"../detail/type_vec2.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_float2.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_float2.hpp
 	"../detail/type_vec2.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_float2_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_float2_precision.hpp
 	"../detail/type_vec2.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_double2.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_double2.hpp
 	"../detail/type_vec2.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_double2_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_double2_precision.hpp
 	"../detail/type_vec2.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_int2.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_int2.hpp
 	"../detail/type_vec2.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_int2_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_int2_precision.hpp
 	"../detail/type_vec2.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_uint2.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_uint2.hpp
 	"../detail/type_vec2.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_uint2_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_uint2_precision.hpp
 	"../detail/type_vec2.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\vec3.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\vec3.hpp
 	"./ext/vector_bool3.hpp"
 	"./ext/vector_bool3_precision.hpp"
 	"./ext/vector_float3.hpp"
@@ -3369,47 +3370,47 @@
 	"./ext/vector_uint3.hpp"
 	"./ext/vector_uint3_precision.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_bool3.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_bool3.hpp
 	"../detail/type_vec3.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_vec3.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_vec3.hpp
 	"qualifier.hpp"
 	"_swizzle.hpp"
 	"_swizzle_func.hpp"
 	<cstddef>
 	"type_vec3.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_vec3.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_vec3.inl
 	"compute_vector_relational.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_bool3_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_bool3_precision.hpp
 	"../detail/type_vec3.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_float3.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_float3.hpp
 	"../detail/type_vec3.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_float3_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_float3_precision.hpp
 	"../detail/type_vec3.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_double3.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_double3.hpp
 	"../detail/type_vec3.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_double3_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_double3_precision.hpp
 	"../detail/type_vec3.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_int3.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_int3.hpp
 	"../detail/type_vec3.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_int3_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_int3_precision.hpp
 	"../detail/type_vec3.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_uint3.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_uint3.hpp
 	"../detail/type_vec3.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_uint3_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_uint3_precision.hpp
 	"../detail/type_vec3.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\vec4.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\vec4.hpp
 	"./ext/vector_bool4.hpp"
 	"./ext/vector_bool4_precision.hpp"
 	"./ext/vector_float4.hpp"
@@ -3421,268 +3422,268 @@
 	"./ext/vector_uint4.hpp"
 	"./ext/vector_uint4_precision.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_bool4.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_bool4.hpp
 	"../detail/type_vec4.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_bool4_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_bool4_precision.hpp
 	"../detail/type_vec4.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_float4.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_float4.hpp
 	"../detail/type_vec4.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_float4_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_float4_precision.hpp
 	"../detail/type_vec4.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_double4.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_double4.hpp
 	"../detail/type_vec4.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_double4_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_double4_precision.hpp
 	"../detail/setup.hpp"
 	"../detail/type_vec4.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_int4.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_int4.hpp
 	"../detail/type_vec4.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_int4_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_int4_precision.hpp
 	"../detail/type_vec4.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_uint4.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_uint4.hpp
 	"../detail/type_vec4.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_uint4_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_uint4_precision.hpp
 	"../detail/type_vec4.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\mat2x2.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\mat2x2.hpp
 	"./ext/matrix_double2x2.hpp"
 	"./ext/matrix_double2x2_precision.hpp"
 	"./ext/matrix_float2x2.hpp"
 	"./ext/matrix_float2x2_precision.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double2x2.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double2x2.hpp
 	"../detail/type_mat2x2.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat2x2.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat2x2.hpp
 	"type_vec2.hpp"
 	<limits>
 	<cstddef>
 	"type_mat2x2.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat2x2.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat2x2.inl
 	"../matrix.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double2x2_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double2x2_precision.hpp
 	"../detail/type_mat2x2.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float2x2.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float2x2.hpp
 	"../detail/type_mat2x2.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float2x2_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float2x2_precision.hpp
 	"../detail/type_mat2x2.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\mat2x3.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\mat2x3.hpp
 	"./ext/matrix_double2x3.hpp"
 	"./ext/matrix_double2x3_precision.hpp"
 	"./ext/matrix_float2x3.hpp"
 	"./ext/matrix_float2x3_precision.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double2x3.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double2x3.hpp
 	"../detail/type_mat2x3.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat2x3.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat2x3.hpp
 	"type_vec2.hpp"
 	"type_vec3.hpp"
 	<limits>
 	<cstddef>
 	"type_mat2x3.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat2x3.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat2x3.inl
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double2x3_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double2x3_precision.hpp
 	"../detail/type_mat2x3.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float2x3.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float2x3.hpp
 	"../detail/type_mat2x3.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float2x3_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float2x3_precision.hpp
 	"../detail/type_mat2x3.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\mat2x4.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\mat2x4.hpp
 	"./ext/matrix_double2x4.hpp"
 	"./ext/matrix_double2x4_precision.hpp"
 	"./ext/matrix_float2x4.hpp"
 	"./ext/matrix_float2x4_precision.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double2x4.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double2x4.hpp
 	"../detail/type_mat2x4.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat2x4.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat2x4.hpp
 	"type_vec2.hpp"
 	"type_vec4.hpp"
 	<limits>
 	<cstddef>
 	"type_mat2x4.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat2x4.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat2x4.inl
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double2x4_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double2x4_precision.hpp
 	"../detail/type_mat2x4.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float2x4.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float2x4.hpp
 	"../detail/type_mat2x4.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float2x4_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float2x4_precision.hpp
 	"../detail/type_mat2x4.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\mat3x2.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\mat3x2.hpp
 	"./ext/matrix_double3x2.hpp"
 	"./ext/matrix_double3x2_precision.hpp"
 	"./ext/matrix_float3x2.hpp"
 	"./ext/matrix_float3x2_precision.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double3x2.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double3x2.hpp
 	"../detail/type_mat3x2.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat3x2.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat3x2.hpp
 	"type_vec2.hpp"
 	"type_vec3.hpp"
 	<limits>
 	<cstddef>
 	"type_mat3x2.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat3x2.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat3x2.inl
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double3x2_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double3x2_precision.hpp
 	"../detail/type_mat3x2.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float3x2.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float3x2.hpp
 	"../detail/type_mat3x2.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float3x2_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float3x2_precision.hpp
 	"../detail/type_mat3x2.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\mat3x3.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\mat3x3.hpp
 	"./ext/matrix_double3x3.hpp"
 	"./ext/matrix_double3x3_precision.hpp"
 	"./ext/matrix_float3x3.hpp"
 	"./ext/matrix_float3x3_precision.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double3x3.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double3x3.hpp
 	"../detail/type_mat3x3.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat3x3.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat3x3.hpp
 	"type_vec3.hpp"
 	<limits>
 	<cstddef>
 	"type_mat3x3.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat3x3.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat3x3.inl
 	"../matrix.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double3x3_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double3x3_precision.hpp
 	"../detail/type_mat3x3.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float3x3.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float3x3.hpp
 	"../detail/type_mat3x3.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float3x3_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float3x3_precision.hpp
 	"../detail/type_mat3x3.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\mat3x4.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\mat3x4.hpp
 	"./ext/matrix_double3x4.hpp"
 	"./ext/matrix_double3x4_precision.hpp"
 	"./ext/matrix_float3x4.hpp"
 	"./ext/matrix_float3x4_precision.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double3x4.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double3x4.hpp
 	"../detail/type_mat3x4.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat3x4.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat3x4.hpp
 	"type_vec3.hpp"
 	"type_vec4.hpp"
 	<limits>
 	<cstddef>
 	"type_mat3x4.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat3x4.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat3x4.inl
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double3x4_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double3x4_precision.hpp
 	"../detail/type_mat3x4.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float3x4.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float3x4.hpp
 	"../detail/type_mat3x4.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float3x4_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float3x4_precision.hpp
 	"../detail/type_mat3x4.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\mat4x2.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\mat4x2.hpp
 	"./ext/matrix_double4x2.hpp"
 	"./ext/matrix_double4x2_precision.hpp"
 	"./ext/matrix_float4x2.hpp"
 	"./ext/matrix_float4x2_precision.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double4x2.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double4x2.hpp
 	"../detail/type_mat4x2.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat4x2.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat4x2.hpp
 	"type_vec2.hpp"
 	"type_vec4.hpp"
 	<limits>
 	<cstddef>
 	"type_mat4x2.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat4x2.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat4x2.inl
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double4x2_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double4x2_precision.hpp
 	"../detail/type_mat4x2.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float4x2.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float4x2.hpp
 	"../detail/type_mat4x2.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float4x2_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float4x2_precision.hpp
 	"../detail/type_mat2x2.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\mat4x3.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\mat4x3.hpp
 	"./ext/matrix_double4x3.hpp"
 	"./ext/matrix_double4x3_precision.hpp"
 	"./ext/matrix_float4x3.hpp"
 	"./ext/matrix_float4x3_precision.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double4x3.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double4x3.hpp
 	"../detail/type_mat4x3.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat4x3.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat4x3.hpp
 	"type_vec3.hpp"
 	"type_vec4.hpp"
 	<limits>
 	<cstddef>
 	"type_mat4x3.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat4x3.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat4x3.inl
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double4x3_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double4x3_precision.hpp
 	"../detail/type_mat4x3.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float4x3.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float4x3.hpp
 	"../detail/type_mat4x3.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float4x3_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float4x3_precision.hpp
 	"../detail/type_mat4x3.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_matrix.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_matrix.inl
 	"../geometric.hpp"
 	<limits>
 	"func_matrix_simd.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\geometric.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\geometric.hpp
 	"detail/type_vec3.hpp"
 	"detail/func_geometric.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_geometric.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_geometric.inl
 	"../exponential.hpp"
 	"../common.hpp"
 	"func_geometric_simd.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\exponential.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\exponential.hpp
 	"detail/type_vec1.hpp"
 	"detail/type_vec2.hpp"
 	"detail/type_vec3.hpp"
@@ -3690,17 +3691,17 @@
 	<cmath>
 	"detail/func_exponential.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_vec1.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_vec1.hpp
 	"qualifier.hpp"
 	"_swizzle.hpp"
 	"_swizzle_func.hpp"
 	<cstddef>
 	"type_vec1.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_vec1.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_vec1.inl
 	"./compute_vector_relational.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_exponential.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_exponential.inl
 	"../vector_relational.hpp"
 	"_vectorize.hpp"
 	<limits>
@@ -3708,33 +3709,33 @@
 	<cassert>
 	"func_exponential_simd.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\vector_relational.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\vector_relational.hpp
 	"detail/qualifier.hpp"
 	"detail/setup.hpp"
 	"detail/func_vector_relational.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_vector_relational.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_vector_relational.inl
 	"func_vector_relational_simd.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_vector_relational_simd.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_vector_relational_simd.inl
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\_vectorize.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\_vectorize.hpp
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_exponential_simd.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_exponential_simd.inl
 	"../simd/exponential.h"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\simd\exponential.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\simd\exponential.h
 	"platform.h"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\common.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\common.hpp
 	"detail/qualifier.hpp"
 	"detail/_fixes.hpp"
 	"detail/func_common.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\_fixes.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\_fixes.hpp
 	<cmath>
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_common.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_common.inl
 	"../vector_relational.hpp"
 	"compute_common.hpp"
 	"type_vec1.hpp"
@@ -3745,44 +3746,44 @@
 	<limits>
 	"func_common_simd.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\compute_common.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\compute_common.hpp
 	"setup.hpp"
 	<limits>
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_common_simd.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_common_simd.inl
 	"../simd/common.h"
 	<immintrin.h>
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\simd\common.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\simd\common.h
 	"platform.h"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_geometric_simd.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_geometric_simd.inl
 	"../simd/geometric.h"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\simd\geometric.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\simd\geometric.h
 	"common.h"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_matrix_simd.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_matrix_simd.inl
 	"type_mat4x4.hpp"
 	"../geometric.hpp"
 	"../simd/matrix.h"
 	<cstring>
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\simd\matrix.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\simd\matrix.h
 	"geometric.h"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat4x4_simd.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_mat4x4_simd.inl
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double4x4_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_double4x4_precision.hpp
 	"../detail/type_mat4x4.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float4x4.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float4x4.hpp
 	"../detail/type_mat4x4.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float4x4_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_float4x4_precision.hpp
 	"../detail/type_mat4x4.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\type_ptr.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\type_ptr.hpp
 	"../gtc/quaternion.hpp"
 	"../gtc/vec1.hpp"
 	"../vec2.hpp"
@@ -3800,7 +3801,7 @@
 	<cstring>
 	"type_ptr.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\quaternion.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\quaternion.hpp
 	"../gtc/constants.hpp"
 	"../gtc/matrix_transform.hpp"
 	"../ext/vector_relational.hpp"
@@ -3819,20 +3820,20 @@
 	"../detail/type_vec4.hpp"
 	"quaternion.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\constants.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\constants.hpp
 	"../ext/scalar_constants.hpp"
 	"constants.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\scalar_constants.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\scalar_constants.hpp
 	"../detail/setup.hpp"
 	"scalar_constants.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\scalar_constants.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\scalar_constants.inl
 	<limits>
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\constants.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\constants.inl
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\matrix_transform.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\matrix_transform.hpp
 	"../mat4x4.hpp"
 	"../vec2.hpp"
 	"../vec3.hpp"
@@ -3842,64 +3843,64 @@
 	"../ext/matrix_transform.hpp"
 	"matrix_transform.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_projection.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_projection.hpp
 	"../gtc/constants.hpp"
 	"../geometric.hpp"
 	"../trigonometric.hpp"
 	"../matrix.hpp"
 	"matrix_projection.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\trigonometric.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\trigonometric.hpp
 	"detail/setup.hpp"
 	"detail/qualifier.hpp"
 	"detail/func_trigonometric.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_trigonometric.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_trigonometric.inl
 	"_vectorize.hpp"
 	<cmath>
 	<limits>
 	"func_trigonometric_simd.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_trigonometric_simd.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\func_trigonometric_simd.inl
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_projection.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_projection.inl
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_clip_space.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_clip_space.hpp
 	"../ext/scalar_constants.hpp"
 	"../geometric.hpp"
 	"../trigonometric.hpp"
 	"matrix_clip_space.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_clip_space.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_clip_space.inl
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_transform.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_transform.hpp
 	"../gtc/constants.hpp"
 	"../geometric.hpp"
 	"../trigonometric.hpp"
 	"../matrix.hpp"
 	"matrix_transform.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_transform.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\matrix_transform.inl
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\matrix_transform.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\matrix_transform.inl
 	"../geometric.hpp"
 	"../trigonometric.hpp"
 	"../matrix.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_relational.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_relational.hpp
 	"../detail/qualifier.hpp"
 	"vector_relational.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_relational.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_relational.inl
 	"../vector_relational.hpp"
 	"../common.hpp"
 	"../detail/qualifier.hpp"
 	"../detail/type_float.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_float.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_float.hpp
 	"setup.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_common.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_common.hpp
 	"../ext/scalar_constants.hpp"
 	"../ext/quaternion_geometric.hpp"
 	"../common.hpp"
@@ -3908,23 +3909,23 @@
 	<limits>
 	"quaternion_common.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_geometric.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_geometric.hpp
 	"../geometric.hpp"
 	"../exponential.hpp"
 	"../ext/vector_relational.hpp"
 	"quaternion_geometric.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_geometric.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_geometric.inl
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_common.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_common.inl
 	"quaternion_common_simd.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_common_simd.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_common_simd.inl
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_float.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_float.hpp
 	"../detail/type_quat.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_quat.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_quat.hpp
 	"../detail/type_mat3x3.hpp"
 	"../detail/type_mat4x4.hpp"
 	"../detail/type_vec3.hpp"
@@ -3935,31 +3936,31 @@
 	"../gtc/matrix_transform.hpp"
 	"type_quat.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_relational.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_relational.hpp
 	"../vector_relational.hpp"
 	"quaternion_relational.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_relational.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_relational.inl
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_quat.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_quat.inl
 	"../trigonometric.hpp"
 	"../exponential.hpp"
 	"../ext/quaternion_geometric.hpp"
 	<limits>
 	"type_quat_simd.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_quat_simd.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\detail\type_quat_simd.inl
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_float_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_float_precision.hpp
 	"../detail/type_quat.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_double.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_double.hpp
 	"../detail/type_quat.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_double_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_double_precision.hpp
 	"../detail/type_quat.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_trigonometric.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_trigonometric.hpp
 	"../trigonometric.hpp"
 	"../exponential.hpp"
 	"scalar_constants.hpp"
@@ -3967,17 +3968,17 @@
 	<limits>
 	"quaternion_trigonometric.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_trigonometric.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_trigonometric.inl
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_transform.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_transform.hpp
 	"../common.hpp"
 	"../trigonometric.hpp"
 	"../geometric.hpp"
 	"quaternion_transform.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_transform.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\quaternion_transform.inl
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\quaternion.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\quaternion.inl
 	"../trigonometric.hpp"
 	"../geometric.hpp"
 	"../exponential.hpp"
@@ -3985,18 +3986,18 @@
 	<limits>
 	"quaternion_simd.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\epsilon.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\epsilon.hpp
 	"../detail/setup.hpp"
 	"../detail/qualifier.hpp"
 	"epsilon.inl"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\epsilon.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\epsilon.inl
 	"../vector_relational.hpp"
 	"../common.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\quaternion_simd.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\quaternion_simd.inl
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\vec1.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\vec1.hpp
 	"../ext/vector_bool1.hpp"
 	"../ext/vector_bool1_precision.hpp"
 	"../ext/vector_float1.hpp"
@@ -4008,40 +4009,40 @@
 	"../ext/vector_uint1.hpp"
 	"../ext/vector_uint1_precision.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_bool1.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_bool1.hpp
 	"../detail/type_vec1.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_bool1_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_bool1_precision.hpp
 	"../detail/type_vec1.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_float1.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_float1.hpp
 	"../detail/type_vec1.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_float1_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_float1_precision.hpp
 	"../detail/type_vec1.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_double1.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_double1.hpp
 	"../detail/type_vec1.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_double1_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_double1_precision.hpp
 	"../detail/type_vec1.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_int1.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_int1.hpp
 	"../detail/type_vec1.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_int1_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_int1_precision.hpp
 	"../detail/type_vec1.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_uint1.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_uint1.hpp
 	"../detail/type_vec1.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_uint1_precision.hpp
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\ext\vector_uint1_precision.hpp
 	"../detail/type_vec1.hpp"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\type_ptr.inl
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glm\gtc\type_ptr.inl
 	<cstring>
 
-1678805273 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\draw.cpp
+1679974004 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\draw.cpp
 	"draw.h"
 	<cmath>
 	<cstdio>
@@ -4060,7 +4061,7 @@
 	"matrices.h"
 	"vec_aux.h"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\draw.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\draw.h
 	<string>
 	<glad/glad.h>
 	<GLFW/glfw3.h>
@@ -4070,8 +4071,10 @@
 	"obstacle.h"
 	"level.h"
 	"weapon.h"
+	"projectile.h"
+	"enemy.h"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glad\glad.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glad\glad.h
 	<windows.h>
 	<stddef.h>
 	<KHR/khrplatform.h>
@@ -4082,13 +4085,13 @@
 	<stdint.h>
 	<inttypes.h>
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\khr\khrplatform.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\khr\khrplatform.h
 	<sys/cdefs.h>
 	<stdint.h>
 	<inttypes.h>
 	<stdint.h>
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glfw\glfw3.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\glfw\glfw3.h
 	<stddef.h>
 	<stdint.h>
 	<OpenGL/gl3.h>
@@ -4109,7 +4112,7 @@
 	<GL/glext.h>
 	<GL/glu.h>
 
-1678804207 c:\users\aluno\downloads\opengl-fps-fcg-main\include\renderer.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\renderer.h
 	<cmath>
 	<cstdio>
 	<cstdlib>
@@ -4131,7 +4134,7 @@
 	<stb_image.h>
 	"matrices.h"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\tiny_obj_loader.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\tiny_obj_loader.h
 	<map>
 	<string>
 	<vector>
@@ -4145,7 +4148,7 @@
 	<fstream>
 	<sstream>
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\stb_image.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\stb_image.h
 	"stb_image.h"
 	<stdio.h>
 	<stdarg.h>
@@ -4161,44 +4164,48 @@
 	<intrin.h>
 	<arm_neon.h>
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\matrices.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\matrices.h
 	<cstdio>
 	<cstdlib>
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/matrix_transform.hpp>
 
-1678805273 c:\users\aluno\downloads\opengl-fps-fcg-main\include\player.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\player.h
+	<vector>
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
 	"collisions.h"
 	"weapon.h"
+	"projectile.h"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\weapon.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\weapon.h
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
+	"projectile.h"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\obstacle.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\obstacle.h
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
-	<collisions.h>
+	"collisions.h"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\level.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\level.h
 	<vector>
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
 	"obstacle.h"
+	"enemy.h"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\vec_aux.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\vec_aux.h
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
 
-1678805273 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\game.cpp
+1680010527 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\game.cpp
 	"game.h"
 	<cstdio>
 	<cstdlib>
@@ -4207,8 +4214,10 @@
 	"input.h"
 	"draw.h"
 	"vec_aux.h"
+	"timer_aux.h"
+	"bezier.h"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\game.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\game.h
 	<queue>
 	<vector>
 	<glad/glad.h>
@@ -4220,8 +4229,10 @@
 	"level.h"
 	"obstacle.h"
 	"weapon.h"
+	"projectile.h"
+	"enemy.h"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\input.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\input.h
 	<cmath>
 	<cstdio>
 	<cstdlib>
@@ -4236,10 +4247,10 @@
 	<GLFW/glfw3.h>
 	"utils.h"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\utils.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\utils.h
 	<cstdio>
 
-1678757839 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\glad.c
+1679974004 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\glad.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -4247,10 +4258,10 @@
 	<windows.h>
 	<dlfcn.h>
 
-1678757839 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\input.cpp
+1679974004 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\input.cpp
 	"input.h"
 
-1678757839 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\level.cpp
+1680010530 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\level.cpp
 	"level.h"
 	<cmath>
 	<cstdio>
@@ -4268,10 +4279,11 @@
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
 
-1678804320 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\main.cpp
+1680010533 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\main.cpp
 	<cmath>
 	<cstdio>
 	<cstdlib>
+	<ctime>
 	<map>
 	<stack>
 	<string>
@@ -4291,7 +4303,7 @@
 	"input.h"
 	"game.h"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\scene.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\scene.h
 	<cmath>
 	<cstdio>
 	<cstdlib>
@@ -4303,10 +4315,10 @@
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
 
-1678757839 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\matrices.cpp
+1679974004 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\matrices.cpp
 	"matrices.h"
 
-1678757839 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\obstacle.cpp
+1679974004 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\obstacle.cpp
 	"obstacle.h"
 	<cmath>
 	<cstdio>
@@ -4319,26 +4331,28 @@
 	<stdexcept>
 	<algorithm>
 
-1678805273 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\player.cpp
+1679974004 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\player.cpp
 	"player.h"
 	<cstdio>
 	<cstdlib>
+	<algorithm>
 	"input.h"
 	"vec_aux.h"
 	"matrices.h"
+	"timer_aux.h"
 
-1678804207 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\renderer.cpp
+1679974004 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\renderer.cpp
 	"renderer.h"
 	"scene.h"
 	"input.h"
 
-1678757839 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\scene.cpp
+1679974004 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\scene.cpp
 	"scene.h"
 
-1678757839 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\stb_image.cpp
+1679974004 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\stb_image.cpp
 	"stb_image.h"
 
-1678757839 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\textrendering.cpp
+1679974004 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\textrendering.cpp
 	<string>
 	<glad/glad.h>
 	<GLFW/glfw3.h>
@@ -4347,17 +4361,19 @@
 	"utils.h"
 	"dejavufont.h"
 
-1678757839 c:\users\aluno\downloads\opengl-fps-fcg-main\include\dejavufont.h
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\dejavufont.h
 	<stddef.h>
 	<stdint.h>
 
-1678757839 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\tiny_obj_loader.cpp
+1679974004 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\tiny_obj_loader.cpp
 	"tiny_obj_loader.h"
 
-1678757839 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\vec_aux.cpp
+1679974004 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\vec_aux.cpp
 	"vec_aux.h"
+	<math.h>
+	"matrices.h"
 
-1678757839 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\weapon.cpp
+1679974004 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\weapon.cpp
 	"weapon.h"
 	<cmath>
 	<cstdio>
@@ -5559,7 +5575,7 @@
 	<glm/gtc/type_ptr.hpp>
 	"collisions.h"
 
-1679973338 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\enemy.cpp
+1680010672 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\enemy.cpp
 	"enemy.h"
 	"timer_aux.h"
 	"vec_aux.h"
@@ -5572,4 +5588,1215 @@
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
+
+1679974004 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\bezier.cpp
+	"bezier.h"
+
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\bezier.h
+	<glm/mat4x4.hpp>
+	<glm/vec4.hpp>
+	<glm/gtc/type_ptr.hpp>
+
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\projectile.h
+	<glm/mat4x4.hpp>
+	<glm/vec4.hpp>
+	<glm/gtc/type_ptr.hpp>
+	"collisions.h"
+
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\enemy.h
+	<glm/mat4x4.hpp>
+	<glm/vec4.hpp>
+	<glm/gtc/type_ptr.hpp>
+	"collisions.h"
+
+1680010670 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\enemy.cpp
+	"enemy.h"
+	"timer_aux.h"
+	"vec_aux.h"
+	"matrices.h"
+
+1679974004 c:\users\aluno\downloads\opengl-fps-fcg-main\include\timer_aux.h
+
+1679974004 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\projectile.cpp
+	"projectile.h"
+	<algorithm>
+	"timer_aux.h"
+
+1679974004 source:c:\users\aluno\downloads\opengl-fps-fcg-main\src\timer_aux.cpp
+	"timer_aux.h"
+
+1679974004 source:e:\fcg\opengl-fps-fcg-main\src\bezier.cpp
+	"bezier.h"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\bezier.h
+	<glm/mat4x4.hpp>
+	<glm/vec4.hpp>
+	<glm/gtc/type_ptr.hpp>
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\mat4x4.hpp
+	"./ext/matrix_double4x4.hpp"
+	"./ext/matrix_double4x4_precision.hpp"
+	"./ext/matrix_float4x4.hpp"
+	"./ext/matrix_float4x4_precision.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_double4x4.hpp
+	"../detail/type_mat4x4.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_mat4x4.hpp
+	"type_vec4.hpp"
+	<limits>
+	<cstddef>
+	"type_mat4x4.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_vec4.hpp
+	"qualifier.hpp"
+	"_swizzle.hpp"
+	"_swizzle_func.hpp"
+	<cstddef>
+	"type_vec4.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\qualifier.hpp
+	"setup.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\setup.hpp
+	<cassert>
+	<cstddef>
+	"../simd/platform.h"
+	<cstdint>
+	<type_traits>
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\simd\platform.h
+	<cuda.h>
+	<immintrin.h>
+	<immintrin.h>
+	<popcntintrin.h>
+	<nmmintrin.h>
+	<smmintrin.h>
+	<tmmintrin.h>
+	<pmmintrin.h>
+	<emmintrin.h>
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\_swizzle.hpp
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\_swizzle_func.hpp
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_vec4.inl
+	"compute_vector_relational.hpp"
+	"type_vec4_simd.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\compute_vector_relational.hpp
+	"setup.hpp"
+	<limits>
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_vec4_simd.inl
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_mat4x4.inl
+	"../matrix.hpp"
+	"type_mat4x4_simd.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\matrix.hpp
+	"detail/qualifier.hpp"
+	"detail/setup.hpp"
+	"vec2.hpp"
+	"vec3.hpp"
+	"vec4.hpp"
+	"mat2x2.hpp"
+	"mat2x3.hpp"
+	"mat2x4.hpp"
+	"mat3x2.hpp"
+	"mat3x3.hpp"
+	"mat3x4.hpp"
+	"mat4x2.hpp"
+	"mat4x3.hpp"
+	"mat4x4.hpp"
+	"detail/func_matrix.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\vec2.hpp
+	"./ext/vector_bool2.hpp"
+	"./ext/vector_bool2_precision.hpp"
+	"./ext/vector_float2.hpp"
+	"./ext/vector_float2_precision.hpp"
+	"./ext/vector_double2.hpp"
+	"./ext/vector_double2_precision.hpp"
+	"./ext/vector_int2.hpp"
+	"./ext/vector_int2_precision.hpp"
+	"./ext/vector_uint2.hpp"
+	"./ext/vector_uint2_precision.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_bool2.hpp
+	"../detail/type_vec2.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_vec2.hpp
+	"qualifier.hpp"
+	"_swizzle.hpp"
+	"_swizzle_func.hpp"
+	<cstddef>
+	"type_vec2.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_vec2.inl
+	"./compute_vector_relational.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_bool2_precision.hpp
+	"../detail/type_vec2.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_float2.hpp
+	"../detail/type_vec2.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_float2_precision.hpp
+	"../detail/type_vec2.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_double2.hpp
+	"../detail/type_vec2.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_double2_precision.hpp
+	"../detail/type_vec2.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_int2.hpp
+	"../detail/type_vec2.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_int2_precision.hpp
+	"../detail/type_vec2.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_uint2.hpp
+	"../detail/type_vec2.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_uint2_precision.hpp
+	"../detail/type_vec2.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\vec3.hpp
+	"./ext/vector_bool3.hpp"
+	"./ext/vector_bool3_precision.hpp"
+	"./ext/vector_float3.hpp"
+	"./ext/vector_float3_precision.hpp"
+	"./ext/vector_double3.hpp"
+	"./ext/vector_double3_precision.hpp"
+	"./ext/vector_int3.hpp"
+	"./ext/vector_int3_precision.hpp"
+	"./ext/vector_uint3.hpp"
+	"./ext/vector_uint3_precision.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_bool3.hpp
+	"../detail/type_vec3.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_vec3.hpp
+	"qualifier.hpp"
+	"_swizzle.hpp"
+	"_swizzle_func.hpp"
+	<cstddef>
+	"type_vec3.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_vec3.inl
+	"compute_vector_relational.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_bool3_precision.hpp
+	"../detail/type_vec3.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_float3.hpp
+	"../detail/type_vec3.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_float3_precision.hpp
+	"../detail/type_vec3.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_double3.hpp
+	"../detail/type_vec3.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_double3_precision.hpp
+	"../detail/type_vec3.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_int3.hpp
+	"../detail/type_vec3.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_int3_precision.hpp
+	"../detail/type_vec3.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_uint3.hpp
+	"../detail/type_vec3.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_uint3_precision.hpp
+	"../detail/type_vec3.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\vec4.hpp
+	"./ext/vector_bool4.hpp"
+	"./ext/vector_bool4_precision.hpp"
+	"./ext/vector_float4.hpp"
+	"./ext/vector_float4_precision.hpp"
+	"./ext/vector_double4.hpp"
+	"./ext/vector_double4_precision.hpp"
+	"./ext/vector_int4.hpp"
+	"./ext/vector_int4_precision.hpp"
+	"./ext/vector_uint4.hpp"
+	"./ext/vector_uint4_precision.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_bool4.hpp
+	"../detail/type_vec4.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_bool4_precision.hpp
+	"../detail/type_vec4.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_float4.hpp
+	"../detail/type_vec4.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_float4_precision.hpp
+	"../detail/type_vec4.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_double4.hpp
+	"../detail/type_vec4.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_double4_precision.hpp
+	"../detail/setup.hpp"
+	"../detail/type_vec4.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_int4.hpp
+	"../detail/type_vec4.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_int4_precision.hpp
+	"../detail/type_vec4.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_uint4.hpp
+	"../detail/type_vec4.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_uint4_precision.hpp
+	"../detail/type_vec4.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\mat2x2.hpp
+	"./ext/matrix_double2x2.hpp"
+	"./ext/matrix_double2x2_precision.hpp"
+	"./ext/matrix_float2x2.hpp"
+	"./ext/matrix_float2x2_precision.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_double2x2.hpp
+	"../detail/type_mat2x2.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_mat2x2.hpp
+	"type_vec2.hpp"
+	<limits>
+	<cstddef>
+	"type_mat2x2.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_mat2x2.inl
+	"../matrix.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_double2x2_precision.hpp
+	"../detail/type_mat2x2.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_float2x2.hpp
+	"../detail/type_mat2x2.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_float2x2_precision.hpp
+	"../detail/type_mat2x2.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\mat2x3.hpp
+	"./ext/matrix_double2x3.hpp"
+	"./ext/matrix_double2x3_precision.hpp"
+	"./ext/matrix_float2x3.hpp"
+	"./ext/matrix_float2x3_precision.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_double2x3.hpp
+	"../detail/type_mat2x3.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_mat2x3.hpp
+	"type_vec2.hpp"
+	"type_vec3.hpp"
+	<limits>
+	<cstddef>
+	"type_mat2x3.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_mat2x3.inl
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_double2x3_precision.hpp
+	"../detail/type_mat2x3.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_float2x3.hpp
+	"../detail/type_mat2x3.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_float2x3_precision.hpp
+	"../detail/type_mat2x3.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\mat2x4.hpp
+	"./ext/matrix_double2x4.hpp"
+	"./ext/matrix_double2x4_precision.hpp"
+	"./ext/matrix_float2x4.hpp"
+	"./ext/matrix_float2x4_precision.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_double2x4.hpp
+	"../detail/type_mat2x4.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_mat2x4.hpp
+	"type_vec2.hpp"
+	"type_vec4.hpp"
+	<limits>
+	<cstddef>
+	"type_mat2x4.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_mat2x4.inl
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_double2x4_precision.hpp
+	"../detail/type_mat2x4.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_float2x4.hpp
+	"../detail/type_mat2x4.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_float2x4_precision.hpp
+	"../detail/type_mat2x4.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\mat3x2.hpp
+	"./ext/matrix_double3x2.hpp"
+	"./ext/matrix_double3x2_precision.hpp"
+	"./ext/matrix_float3x2.hpp"
+	"./ext/matrix_float3x2_precision.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_double3x2.hpp
+	"../detail/type_mat3x2.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_mat3x2.hpp
+	"type_vec2.hpp"
+	"type_vec3.hpp"
+	<limits>
+	<cstddef>
+	"type_mat3x2.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_mat3x2.inl
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_double3x2_precision.hpp
+	"../detail/type_mat3x2.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_float3x2.hpp
+	"../detail/type_mat3x2.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_float3x2_precision.hpp
+	"../detail/type_mat3x2.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\mat3x3.hpp
+	"./ext/matrix_double3x3.hpp"
+	"./ext/matrix_double3x3_precision.hpp"
+	"./ext/matrix_float3x3.hpp"
+	"./ext/matrix_float3x3_precision.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_double3x3.hpp
+	"../detail/type_mat3x3.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_mat3x3.hpp
+	"type_vec3.hpp"
+	<limits>
+	<cstddef>
+	"type_mat3x3.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_mat3x3.inl
+	"../matrix.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_double3x3_precision.hpp
+	"../detail/type_mat3x3.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_float3x3.hpp
+	"../detail/type_mat3x3.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_float3x3_precision.hpp
+	"../detail/type_mat3x3.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\mat3x4.hpp
+	"./ext/matrix_double3x4.hpp"
+	"./ext/matrix_double3x4_precision.hpp"
+	"./ext/matrix_float3x4.hpp"
+	"./ext/matrix_float3x4_precision.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_double3x4.hpp
+	"../detail/type_mat3x4.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_mat3x4.hpp
+	"type_vec3.hpp"
+	"type_vec4.hpp"
+	<limits>
+	<cstddef>
+	"type_mat3x4.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_mat3x4.inl
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_double3x4_precision.hpp
+	"../detail/type_mat3x4.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_float3x4.hpp
+	"../detail/type_mat3x4.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_float3x4_precision.hpp
+	"../detail/type_mat3x4.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\mat4x2.hpp
+	"./ext/matrix_double4x2.hpp"
+	"./ext/matrix_double4x2_precision.hpp"
+	"./ext/matrix_float4x2.hpp"
+	"./ext/matrix_float4x2_precision.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_double4x2.hpp
+	"../detail/type_mat4x2.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_mat4x2.hpp
+	"type_vec2.hpp"
+	"type_vec4.hpp"
+	<limits>
+	<cstddef>
+	"type_mat4x2.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_mat4x2.inl
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_double4x2_precision.hpp
+	"../detail/type_mat4x2.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_float4x2.hpp
+	"../detail/type_mat4x2.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_float4x2_precision.hpp
+	"../detail/type_mat2x2.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\mat4x3.hpp
+	"./ext/matrix_double4x3.hpp"
+	"./ext/matrix_double4x3_precision.hpp"
+	"./ext/matrix_float4x3.hpp"
+	"./ext/matrix_float4x3_precision.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_double4x3.hpp
+	"../detail/type_mat4x3.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_mat4x3.hpp
+	"type_vec3.hpp"
+	"type_vec4.hpp"
+	<limits>
+	<cstddef>
+	"type_mat4x3.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_mat4x3.inl
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_double4x3_precision.hpp
+	"../detail/type_mat4x3.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_float4x3.hpp
+	"../detail/type_mat4x3.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_float4x3_precision.hpp
+	"../detail/type_mat4x3.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\func_matrix.inl
+	"../geometric.hpp"
+	<limits>
+	"func_matrix_simd.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\geometric.hpp
+	"detail/type_vec3.hpp"
+	"detail/func_geometric.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\func_geometric.inl
+	"../exponential.hpp"
+	"../common.hpp"
+	"func_geometric_simd.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\exponential.hpp
+	"detail/type_vec1.hpp"
+	"detail/type_vec2.hpp"
+	"detail/type_vec3.hpp"
+	"detail/type_vec4.hpp"
+	<cmath>
+	"detail/func_exponential.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_vec1.hpp
+	"qualifier.hpp"
+	"_swizzle.hpp"
+	"_swizzle_func.hpp"
+	<cstddef>
+	"type_vec1.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_vec1.inl
+	"./compute_vector_relational.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\func_exponential.inl
+	"../vector_relational.hpp"
+	"_vectorize.hpp"
+	<limits>
+	<cmath>
+	<cassert>
+	"func_exponential_simd.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\vector_relational.hpp
+	"detail/qualifier.hpp"
+	"detail/setup.hpp"
+	"detail/func_vector_relational.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\func_vector_relational.inl
+	"func_vector_relational_simd.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\func_vector_relational_simd.inl
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\_vectorize.hpp
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\func_exponential_simd.inl
+	"../simd/exponential.h"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\simd\exponential.h
+	"platform.h"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\common.hpp
+	"detail/qualifier.hpp"
+	"detail/_fixes.hpp"
+	"detail/func_common.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\_fixes.hpp
+	<cmath>
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\func_common.inl
+	"../vector_relational.hpp"
+	"compute_common.hpp"
+	"type_vec1.hpp"
+	"type_vec2.hpp"
+	"type_vec3.hpp"
+	"type_vec4.hpp"
+	"_vectorize.hpp"
+	<limits>
+	"func_common_simd.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\compute_common.hpp
+	"setup.hpp"
+	<limits>
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\func_common_simd.inl
+	"../simd/common.h"
+	<immintrin.h>
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\simd\common.h
+	"platform.h"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\func_geometric_simd.inl
+	"../simd/geometric.h"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\simd\geometric.h
+	"common.h"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\func_matrix_simd.inl
+	"type_mat4x4.hpp"
+	"../geometric.hpp"
+	"../simd/matrix.h"
+	<cstring>
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\simd\matrix.h
+	"geometric.h"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_mat4x4_simd.inl
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_double4x4_precision.hpp
+	"../detail/type_mat4x4.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_float4x4.hpp
+	"../detail/type_mat4x4.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_float4x4_precision.hpp
+	"../detail/type_mat4x4.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\gtc\type_ptr.hpp
+	"../gtc/quaternion.hpp"
+	"../gtc/vec1.hpp"
+	"../vec2.hpp"
+	"../vec3.hpp"
+	"../vec4.hpp"
+	"../mat2x2.hpp"
+	"../mat2x3.hpp"
+	"../mat2x4.hpp"
+	"../mat3x2.hpp"
+	"../mat3x3.hpp"
+	"../mat3x4.hpp"
+	"../mat4x2.hpp"
+	"../mat4x3.hpp"
+	"../mat4x4.hpp"
+	<cstring>
+	"type_ptr.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\gtc\quaternion.hpp
+	"../gtc/constants.hpp"
+	"../gtc/matrix_transform.hpp"
+	"../ext/vector_relational.hpp"
+	"../ext/quaternion_common.hpp"
+	"../ext/quaternion_float.hpp"
+	"../ext/quaternion_float_precision.hpp"
+	"../ext/quaternion_double.hpp"
+	"../ext/quaternion_double_precision.hpp"
+	"../ext/quaternion_relational.hpp"
+	"../ext/quaternion_geometric.hpp"
+	"../ext/quaternion_trigonometric.hpp"
+	"../ext/quaternion_transform.hpp"
+	"../detail/type_mat3x3.hpp"
+	"../detail/type_mat4x4.hpp"
+	"../detail/type_vec3.hpp"
+	"../detail/type_vec4.hpp"
+	"quaternion.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\gtc\constants.hpp
+	"../ext/scalar_constants.hpp"
+	"constants.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\scalar_constants.hpp
+	"../detail/setup.hpp"
+	"scalar_constants.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\scalar_constants.inl
+	<limits>
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\gtc\constants.inl
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\gtc\matrix_transform.hpp
+	"../mat4x4.hpp"
+	"../vec2.hpp"
+	"../vec3.hpp"
+	"../vec4.hpp"
+	"../ext/matrix_projection.hpp"
+	"../ext/matrix_clip_space.hpp"
+	"../ext/matrix_transform.hpp"
+	"matrix_transform.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_projection.hpp
+	"../gtc/constants.hpp"
+	"../geometric.hpp"
+	"../trigonometric.hpp"
+	"../matrix.hpp"
+	"matrix_projection.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\trigonometric.hpp
+	"detail/setup.hpp"
+	"detail/qualifier.hpp"
+	"detail/func_trigonometric.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\func_trigonometric.inl
+	"_vectorize.hpp"
+	<cmath>
+	<limits>
+	"func_trigonometric_simd.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\func_trigonometric_simd.inl
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_projection.inl
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_clip_space.hpp
+	"../ext/scalar_constants.hpp"
+	"../geometric.hpp"
+	"../trigonometric.hpp"
+	"matrix_clip_space.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_clip_space.inl
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_transform.hpp
+	"../gtc/constants.hpp"
+	"../geometric.hpp"
+	"../trigonometric.hpp"
+	"../matrix.hpp"
+	"matrix_transform.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\matrix_transform.inl
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\gtc\matrix_transform.inl
+	"../geometric.hpp"
+	"../trigonometric.hpp"
+	"../matrix.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_relational.hpp
+	"../detail/qualifier.hpp"
+	"vector_relational.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_relational.inl
+	"../vector_relational.hpp"
+	"../common.hpp"
+	"../detail/qualifier.hpp"
+	"../detail/type_float.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_float.hpp
+	"setup.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\quaternion_common.hpp
+	"../ext/scalar_constants.hpp"
+	"../ext/quaternion_geometric.hpp"
+	"../common.hpp"
+	"../trigonometric.hpp"
+	"../exponential.hpp"
+	<limits>
+	"quaternion_common.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\quaternion_geometric.hpp
+	"../geometric.hpp"
+	"../exponential.hpp"
+	"../ext/vector_relational.hpp"
+	"quaternion_geometric.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\quaternion_geometric.inl
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\quaternion_common.inl
+	"quaternion_common_simd.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\quaternion_common_simd.inl
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\quaternion_float.hpp
+	"../detail/type_quat.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_quat.hpp
+	"../detail/type_mat3x3.hpp"
+	"../detail/type_mat4x4.hpp"
+	"../detail/type_vec3.hpp"
+	"../detail/type_vec4.hpp"
+	"../ext/vector_relational.hpp"
+	"../ext/quaternion_relational.hpp"
+	"../gtc/constants.hpp"
+	"../gtc/matrix_transform.hpp"
+	"type_quat.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\quaternion_relational.hpp
+	"../vector_relational.hpp"
+	"quaternion_relational.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\quaternion_relational.inl
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_quat.inl
+	"../trigonometric.hpp"
+	"../exponential.hpp"
+	"../ext/quaternion_geometric.hpp"
+	<limits>
+	"type_quat_simd.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\detail\type_quat_simd.inl
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\quaternion_float_precision.hpp
+	"../detail/type_quat.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\quaternion_double.hpp
+	"../detail/type_quat.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\quaternion_double_precision.hpp
+	"../detail/type_quat.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\quaternion_trigonometric.hpp
+	"../trigonometric.hpp"
+	"../exponential.hpp"
+	"scalar_constants.hpp"
+	"vector_relational.hpp"
+	<limits>
+	"quaternion_trigonometric.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\quaternion_trigonometric.inl
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\quaternion_transform.hpp
+	"../common.hpp"
+	"../trigonometric.hpp"
+	"../geometric.hpp"
+	"quaternion_transform.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\quaternion_transform.inl
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\gtc\quaternion.inl
+	"../trigonometric.hpp"
+	"../geometric.hpp"
+	"../exponential.hpp"
+	"epsilon.hpp"
+	<limits>
+	"quaternion_simd.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\gtc\epsilon.hpp
+	"../detail/setup.hpp"
+	"../detail/qualifier.hpp"
+	"epsilon.inl"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\gtc\epsilon.inl
+	"../vector_relational.hpp"
+	"../common.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\gtc\quaternion_simd.inl
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\gtc\vec1.hpp
+	"../ext/vector_bool1.hpp"
+	"../ext/vector_bool1_precision.hpp"
+	"../ext/vector_float1.hpp"
+	"../ext/vector_float1_precision.hpp"
+	"../ext/vector_double1.hpp"
+	"../ext/vector_double1_precision.hpp"
+	"../ext/vector_int1.hpp"
+	"../ext/vector_int1_precision.hpp"
+	"../ext/vector_uint1.hpp"
+	"../ext/vector_uint1_precision.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_bool1.hpp
+	"../detail/type_vec1.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_bool1_precision.hpp
+	"../detail/type_vec1.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_float1.hpp
+	"../detail/type_vec1.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_float1_precision.hpp
+	"../detail/type_vec1.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_double1.hpp
+	"../detail/type_vec1.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_double1_precision.hpp
+	"../detail/type_vec1.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_int1.hpp
+	"../detail/type_vec1.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_int1_precision.hpp
+	"../detail/type_vec1.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_uint1.hpp
+	"../detail/type_vec1.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\ext\vector_uint1_precision.hpp
+	"../detail/type_vec1.hpp"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glm\gtc\type_ptr.inl
+	<cstring>
+
+1679974004 source:e:\fcg\opengl-fps-fcg-main\src\collisions.cpp
+	"collisions.h"
+	<cmath>
+	<cstdio>
+	<cstdlib>
+	<algorithm>
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\collisions.h
+	<glm/mat4x4.hpp>
+	<glm/vec4.hpp>
+	<glm/gtc/type_ptr.hpp>
+
+1679974004 source:e:\fcg\opengl-fps-fcg-main\src\draw.cpp
+	"draw.h"
+	<cmath>
+	<cstdio>
+	<cstdlib>
+	<stack>
+	<string>
+	<vector>
+	<limits>
+	<fstream>
+	<sstream>
+	<stdexcept>
+	<algorithm>
+	<glm/mat4x4.hpp>
+	<glm/vec4.hpp>
+	<glm/gtc/type_ptr.hpp>
+	"matrices.h"
+	"vec_aux.h"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\draw.h
+	<string>
+	<glad/glad.h>
+	<GLFW/glfw3.h>
+	"renderer.h"
+	"collisions.h"
+	"player.h"
+	"obstacle.h"
+	"level.h"
+	"weapon.h"
+	"projectile.h"
+	"enemy.h"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glad\glad.h
+	<windows.h>
+	<stddef.h>
+	<KHR/khrplatform.h>
+	<inttypes.h>
+	<inttypes.h>
+	<inttypes.h>
+	<stdint.h>
+	<stdint.h>
+	<inttypes.h>
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\khr\khrplatform.h
+	<sys/cdefs.h>
+	<stdint.h>
+	<inttypes.h>
+	<stdint.h>
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\glfw\glfw3.h
+	<stddef.h>
+	<stdint.h>
+	<OpenGL/gl3.h>
+	<OpenGL/gl3ext.h>
+	<OpenGL/gl.h>
+	<OpenGL/glu.h>
+	<GL/glcorearb.h>
+	<GLES/gl.h>
+	<GLES/glext.h>
+	<GLES2/gl2.h>
+	<GLES2/gl2ext.h>
+	<GLES3/gl3.h>
+	<GLES2/gl2ext.h>
+	<GLES3/gl31.h>
+	<GLES2/gl2ext.h>
+	<vulkan/vulkan.h>
+	<GL/gl.h>
+	<GL/glext.h>
+	<GL/glu.h>
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\renderer.h
+	<cmath>
+	<cstdio>
+	<cstdlib>
+	<stack>
+	<map>
+	<string>
+	<vector>
+	<limits>
+	<fstream>
+	<sstream>
+	<stdexcept>
+	<algorithm>
+	<glad/glad.h>
+	<GLFW/glfw3.h>
+	<glm/mat4x4.hpp>
+	<glm/vec4.hpp>
+	<glm/gtc/type_ptr.hpp>
+	<tiny_obj_loader.h>
+	<stb_image.h>
+	"matrices.h"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\tiny_obj_loader.h
+	<map>
+	<string>
+	<vector>
+	<cassert>
+	<cctype>
+	<cmath>
+	<cstddef>
+	<cstdlib>
+	<cstring>
+	<utility>
+	<fstream>
+	<sstream>
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\stb_image.h
+	"stb_image.h"
+	<stdio.h>
+	<stdarg.h>
+	<stddef.h>
+	<stdlib.h>
+	<string.h>
+	<limits.h>
+	<math.h>
+	<stdio.h>
+	<assert.h>
+	<stdint.h>
+	<emmintrin.h>
+	<intrin.h>
+	<arm_neon.h>
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\matrices.h
+	<cstdio>
+	<cstdlib>
+	<glm/mat4x4.hpp>
+	<glm/vec4.hpp>
+	<glm/gtc/matrix_transform.hpp>
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\player.h
+	<vector>
+	<glm/mat4x4.hpp>
+	<glm/vec4.hpp>
+	<glm/gtc/type_ptr.hpp>
+	"collisions.h"
+	"weapon.h"
+	"projectile.h"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\weapon.h
+	<glm/mat4x4.hpp>
+	<glm/vec4.hpp>
+	<glm/gtc/type_ptr.hpp>
+	"projectile.h"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\projectile.h
+	<glm/mat4x4.hpp>
+	<glm/vec4.hpp>
+	<glm/gtc/type_ptr.hpp>
+	"collisions.h"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\obstacle.h
+	<glm/mat4x4.hpp>
+	<glm/vec4.hpp>
+	<glm/gtc/type_ptr.hpp>
+	"collisions.h"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\level.h
+	<vector>
+	<glm/mat4x4.hpp>
+	<glm/vec4.hpp>
+	<glm/gtc/type_ptr.hpp>
+	"obstacle.h"
+	"enemy.h"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\enemy.h
+	<glm/mat4x4.hpp>
+	<glm/vec4.hpp>
+	<glm/gtc/type_ptr.hpp>
+	"collisions.h"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\vec_aux.h
+	<glm/mat4x4.hpp>
+	<glm/vec4.hpp>
+	<glm/gtc/type_ptr.hpp>
+
+1680010672 source:e:\fcg\opengl-fps-fcg-main\src\enemy.cpp
+	"enemy.h"
+	"timer_aux.h"
+	"vec_aux.h"
+	"matrices.h"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\timer_aux.h
+
+1680010528 source:e:\fcg\opengl-fps-fcg-main\src\game.cpp
+	"game.h"
+	<cstdio>
+	<cstdlib>
+	"matrices.h"
+	"collisions.h"
+	"input.h"
+	"draw.h"
+	"vec_aux.h"
+	"timer_aux.h"
+	"bezier.h"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\game.h
+	<queue>
+	<vector>
+	<glad/glad.h>
+	<GLFW/glfw3.h>
+	<glm/mat4x4.hpp>
+	<glm/vec4.hpp>
+	<glm/gtc/type_ptr.hpp>
+	"player.h"
+	"level.h"
+	"obstacle.h"
+	"weapon.h"
+	"projectile.h"
+	"enemy.h"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\input.h
+	<cmath>
+	<cstdio>
+	<cstdlib>
+	<string>
+	<vector>
+	<limits>
+	<fstream>
+	<sstream>
+	<stdexcept>
+	<algorithm>
+	<glad/glad.h>
+	<GLFW/glfw3.h>
+	"utils.h"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\utils.h
+	<cstdio>
+
+1679974004 source:e:\fcg\opengl-fps-fcg-main\src\glad.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<glad/glad.h>
+	<windows.h>
+	<dlfcn.h>
+
+1679974004 source:e:\fcg\opengl-fps-fcg-main\src\input.cpp
+	"input.h"
+
+1680010532 source:e:\fcg\opengl-fps-fcg-main\src\level.cpp
+	"level.h"
+	<cmath>
+	<cstdio>
+	<cstdlib>
+	<string>
+	<vector>
+	<limits>
+	<fstream>
+	<sstream>
+	<stdexcept>
+	<algorithm>
+	<glad/glad.h>
+	<GLFW/glfw3.h>
+	<glm/mat4x4.hpp>
+	<glm/vec4.hpp>
+	<glm/gtc/type_ptr.hpp>
+
+1679974004 source:e:\fcg\opengl-fps-fcg-main\src\matrices.cpp
+	"matrices.h"
+
+1679974004 source:e:\fcg\opengl-fps-fcg-main\src\obstacle.cpp
+	"obstacle.h"
+	<cmath>
+	<cstdio>
+	<cstdlib>
+	<string>
+	<vector>
+	<limits>
+	<fstream>
+	<sstream>
+	<stdexcept>
+	<algorithm>
+
+1679974004 source:e:\fcg\opengl-fps-fcg-main\src\player.cpp
+	"player.h"
+	<cstdio>
+	<cstdlib>
+	<algorithm>
+	"input.h"
+	"vec_aux.h"
+	"matrices.h"
+	"timer_aux.h"
+
+1679974004 source:e:\fcg\opengl-fps-fcg-main\src\projectile.cpp
+	"projectile.h"
+	<algorithm>
+	"timer_aux.h"
+
+1679974004 source:e:\fcg\opengl-fps-fcg-main\src\renderer.cpp
+	"renderer.h"
+	"scene.h"
+	"input.h"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\scene.h
+	<cmath>
+	<cstdio>
+	<cstdlib>
+	<map>
+	<string>
+	<glad/glad.h>
+	<GLFW/glfw3.h>
+	<glm/mat4x4.hpp>
+	<glm/vec4.hpp>
+	<glm/gtc/type_ptr.hpp>
+
+1679974004 source:e:\fcg\opengl-fps-fcg-main\src\scene.cpp
+	"scene.h"
+
+1679974004 source:e:\fcg\opengl-fps-fcg-main\src\stb_image.cpp
+	"stb_image.h"
+
+1679974004 source:e:\fcg\opengl-fps-fcg-main\src\textrendering.cpp
+	<string>
+	<glad/glad.h>
+	<GLFW/glfw3.h>
+	<glm/mat4x4.hpp>
+	<glm/vec4.hpp>
+	"utils.h"
+	"dejavufont.h"
+
+1679974004 e:\fcg\opengl-fps-fcg-main\include\dejavufont.h
+	<stddef.h>
+	<stdint.h>
+
+1679974004 source:e:\fcg\opengl-fps-fcg-main\src\timer_aux.cpp
+	"timer_aux.h"
+
+1679974004 source:e:\fcg\opengl-fps-fcg-main\src\tiny_obj_loader.cpp
+	"tiny_obj_loader.h"
+
+1679974004 source:e:\fcg\opengl-fps-fcg-main\src\vec_aux.cpp
+	"vec_aux.h"
+	<math.h>
+	"matrices.h"
+
+1679974004 source:e:\fcg\opengl-fps-fcg-main\src\weapon.cpp
+	"weapon.h"
+	<cmath>
+	<cstdio>
+	<cstdlib>
 

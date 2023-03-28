@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
     // Criamos uma janela do sistema operacional, com 800 colunas e 600 linhas
     // de pixels
     GLFWwindow* window;
-    window = glfwCreateWindow(800, 600, "HALL OF THE MINOTAUR v0.9", NULL, NULL);
+    window = glfwCreateWindow(800, 600, "HALL OF THE MINOTAUR v1.0.1", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -98,7 +98,7 @@ int main(int argc, char* argv[])
     glfwSetScrollCallback(window, ScrollCallback);
 
     // Esconde o mouse
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
     // Indicamos que as chamadas OpenGL deverão renderizar nesta janela
     glfwMakeContextCurrent(window);

@@ -29,7 +29,7 @@ void Enemy::setEnemyData(EnemyType type)
         case ENEMY_MINOTAUR:
             model_size  = glm::vec3(2.5f,5.0f,1.5f);
             hitbox_size = glm::vec3(2.0f,5.0f,2.0f);
-            speed       = 1.25f;
+            speed       = 0.75f;
             health      = 600;
             damage      = 35;
             followRange = 40.0f;
