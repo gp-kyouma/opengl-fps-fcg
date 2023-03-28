@@ -16,13 +16,21 @@ void Enemy::setEnemyData(EnemyType type)
             speed       = 0.5f;
             health      = 50;
             damage      = 5;
-            followRange = 15.0f;
+            followRange = 10.0f;
+            break;
+        case ENEMY_BIG_SKELETON:
+            model_size  = glm::vec3(1.5f,3.0f,1.5f);
+            hitbox_size = glm::vec3(1.5f,3.0f,1.5f);
+            speed       = 0.35f;
+            health      = 250;
+            damage      = 10;
+            followRange = 20.0f;
             break;
         case ENEMY_MINOTAUR:
             model_size  = glm::vec3(2.5f,5.0f,1.5f);
             hitbox_size = glm::vec3(2.0f,5.0f,2.0f);
-            speed       = 1.0f;
-            health      = 500;
+            speed       = 0.8f;
+            health      = 600;
             damage      = 15;
             followRange = 40.0f;
             break;

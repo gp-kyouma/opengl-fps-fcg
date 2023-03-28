@@ -43,10 +43,10 @@ struct Level
 
     // funções que geram cada fase
     void createTestLevel();
-    //void createLevel1();
-    //void createLevel2();
-    //void createLevel3();
-    //void createBossLevel();
+    void createLevel1();
+    void createLevel2();
+    void createLevel3();
+    void createBossLevel();
 };
 
 #endif // FCG_LEVEL

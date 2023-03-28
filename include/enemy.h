@@ -15,8 +15,8 @@ STRUCTS/CLASSES
 enum EnemyType
 {
     ENEMY_SKELETON,
+    ENEMY_BIG_SKELETON,
     ENEMY_MINOTAUR,
-    // maybe more. imagine
 };
 
 struct Enemy

@@ -105,6 +105,21 @@ void drawBar(float value, float maxValue, float aspect, std::string tex1, std::s
     glUniform1i(g_ignore_lighting_uniform, false);
 }
 
+void drawBanner(float aspect, std::string tex) // used for game over, you won, etc...
+{
+    glm::vec2 bannerSize = glm::vec2(0.8f,0.6f); // 3:4
+
+    glm::mat4 model = Matrix_Scale(bannerSize.x / aspect, bannerSize.y, 1.0f);
+
+    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+
+    glUniform1i(g_ignore_lighting_uniform, true);
+    setDiffuseTexture(tex);
+    setSpecularTexture("black");
+    DrawVirtualObject("square");
+    glUniform1i(g_ignore_lighting_uniform, false);
+}
+
 void drawFloor(Level level)
 {
     float halfWidth  = (level.levelWidth /2.0f);
@@ -338,7 +353,7 @@ void drawProjectile(Projectile proj)
     switch (proj.type)
     {
         case PROJ_HITSCAN:
-            setDiffuseTexture("red");
+            setDiffuseTexture("blue");
             setSpecularTexture("white");
             glLineWidth(4.0f);
             DrawVirtualObject("line");
@@ -361,7 +376,9 @@ void drawEnemy(Enemy enemy)
     glm::vec3 og_size;
     switch (enemy.type)
     {
+
         case ENEMY_SKELETON:
+        case ENEMY_BIG_SKELETON:
             og_size = glm::vec3(3.2f,7.2f,3.2f);
             break;
         case ENEMY_MINOTAUR:
@@ -390,6 +407,16 @@ void drawEnemy(Enemy enemy)
                 setSpecularTexture("red");
             else
                 setSpecularTexture("grey");
+
+            DrawVirtualObject("skeleton");
+            break;
+        case ENEMY_BIG_SKELETON:
+            setDiffuseTexture("black");
+
+            if (isInCooldown)
+                setSpecularTexture("red");
+            else
+                setSpecularTexture("white");
 
             DrawVirtualObject("skeleton");
             break;

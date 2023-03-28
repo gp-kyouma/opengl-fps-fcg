@@ -45,19 +45,20 @@ struct Game
     // fila de níveis que o jogo tem
     std::queue<Level> level_queue;
 
-    // se o jogador está morto ou durante a cutscene final, pula o update do jogador, inimigos, etc.
-    //bool noUpdate;
+    // se o jogador está morto, ao fim de fase, ou durante a cutscene final, pula o update do jogador, inimigos, etc.
+    bool noUpdate;
 
     // atributos referentes à cutscene de fim de jogo
-    //bool finalCutscene;
-    //float cutsceneStep; // determina em qual parte da cutscene está; [0.0f, 5.0f](?)
+    bool finalCutscene;
+    float cutsceneStep; // determina em qual parte da cutscene está; [0.0f, 6.0f]
 
     void updateDeltaTime();
     void Init();
     void Update();
     void Draw(GLFWwindow* window);
-    //void initCutscene();
-    //void drawCutscene(GLFWwindow* window);
+    void initCutscene();
+    void drawCutscene(GLFWwindow* window);
+    void checkLevelEnd();
     void loadTopLevel();
 };
 

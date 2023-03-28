@@ -106,6 +106,7 @@
 		<Unit filename="include/GLFW/glfw3.h" />
 		<Unit filename="include/GLFW/glfw3native.h" />
 		<Unit filename="include/KHR/khrplatform.h" />
+		<Unit filename="include/bezier.h" />
 		<Unit filename="include/collisions.h" />
 		<Unit filename="include/dejavufont.h" />
 		<Unit filename="include/draw.h" />
@@ -388,6 +389,7 @@
 		<Unit filename="include/utils.h" />
 		<Unit filename="include/vec_aux.h" />
 		<Unit filename="include/weapon.h" />
+		<Unit filename="src/bezier.cpp" />
 		<Unit filename="src/collisions.cpp" />
 		<Unit filename="src/draw.cpp" />
 		<Unit filename="src/enemy.cpp" />

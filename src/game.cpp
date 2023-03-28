@@ -10,6 +10,7 @@
 #include "draw.h"
 #include "vec_aux.h"
 #include "timer_aux.h"
+#include "bezier.h"
 
 // protótipos de funções auxiliares
 void playerWithinLevel(Player &player, Level level);
@@ -18,13 +19,15 @@ void enemyWithinLevel(Enemy &enemy, Level level);
 void Game::Init()
 {
     // LEVELS
-    Level test_level;   // placeholder for test purposes
+    Level level;
 
-    test_level.createTestLevel();
+    level.createTestLevel();
 
-    level_queue.push(test_level);
+    level_queue.push(level);
 
     loadTopLevel();
+
+    finalCutscene = false;
 
     // PLAYER
 
@@ -88,6 +91,17 @@ void Game::Update()
     // TEMPO
     // calcula próximo delta time
     updateDeltaTime();
+
+    // aborta o resto dos updates se finalCutscene == true
+    if (finalCutscene)
+        return;
+
+    // CHECK LEVEL END
+    checkLevelEnd();
+
+    // aborta o resto dos updates se noUpdate == true
+    if (noUpdate)
+        return;
 
     // PLAYER
     // faz a movimentação do jogador em função dos inputs do teclado
@@ -218,6 +232,9 @@ void Game::Update()
         }
 
         // testa colisão com inimigos
+        float shortest_dist = 100.0f;
+        int closest_enemy   = -1;
+
         for (unsigned int i = 0; i < enemies.size(); i++)
         {
             float min_dist;
@@ -239,10 +256,19 @@ void Game::Update()
                     case RAY:
                         result = Collide(projectiles[i_proj].getHitscan(),enemies[i].getAABB(),projectiles[i_proj].p_size.z,min_dist);
                         if (result && min_dist < projectiles[i_proj].p_size.z)
-                            damageTaken[i] += (projectiles[i_proj].damage);
+                            if (min_dist < shortest_dist)
+                            {
+                                // isso é feito para que cada raio atinja somente o inimigo mais próximo
+                                shortest_dist = min_dist;
+                                closest_enemy = i;
+                                projectiles[i_proj].p_size.z = min_dist;
+                            }
                         break;
                 }
         }
+
+        if (closest_enemy != -1)
+            damageTaken[closest_enemy] += (projectiles[i_proj].damage);
 
         // deleta projéteis "velhos"
         if (projectiles[i_proj].isDead())
@@ -316,11 +342,32 @@ void Game::Update()
         }
     }
 
+    // liga noUpdate se estiver numa condição de fim de fase
+    if (player.isDead() || (enemies.empty()))
+        noUpdate = true;
 
-
-    //todo:
     // CHECK LEVEL END
-    // and idk what else
+    checkLevelEnd();
+}
+
+void Game::checkLevelEnd()
+{
+    if (player.isDead() && g_EnterKeyPressed)
+    {
+        loadTopLevel();
+    }
+    else if (enemies.empty())   // todos os inimigos derrotados, fim de nível
+    {
+        if (level_queue.size() == 1) // se for o último nível
+        {
+            initCutscene();
+        }
+        else if (g_EnterKeyPressed)
+        {
+            level_queue.pop();
+            loadTopLevel();
+        }
+    }
 }
 
 void Game::Draw(GLFWwindow* window)
@@ -346,7 +393,11 @@ void Game::Draw(GLFWwindow* window)
     glUseProgram(g_GpuProgramID);
 
     // Se estiver na cutscene, entra em DrawCutscene e aborta
-    //todo
+    if (finalCutscene)
+    {
+        drawCutscene(window);
+        return;
+    }
 
     // Variáveis da câmera virtual
     glm::vec4 camera_pos  = Ponto(player.pos);  // Ponto "c", centro da câmera
@@ -362,8 +413,8 @@ void Game::Draw(GLFWwindow* window)
     // Agora computamos a matriz de Projeção.
     // Note que, no sistema de coordenadas da câmera, os planos near e far
     // estão no sentido negativo! Veja slides 176-204 do documento Aula_09_Projecoes.pdf.
-    float nearplane = -0.1f;  // Posição do "near plane"
-    float farplane  = -60.0f; // Posição do "far plane"
+    float nearplane = -0.1f;   // Posição do "near plane"
+    float farplane  = -100.0f; // Posição do "far plane"
 
     // Projeção Perspectiva.
     // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
@@ -416,7 +467,8 @@ void Game::Draw(GLFWwindow* window)
     glClear(GL_DEPTH_BUFFER_BIT);
 
     // Desenha arma
-    drawWeapon(player, player.getCurrentWeapon().wpn_type, g_CameraTheta, g_CameraPhi);
+    if (!noUpdate)
+        drawWeapon(player, player.getCurrentWeapon().wpn_type, g_CameraTheta, g_CameraPhi);
 
     // Os objetos a seguir sempre serão desenhados na frente; desativa o z-buffer
     glDisable(GL_DEPTH_TEST);
@@ -429,15 +481,23 @@ void Game::Draw(GLFWwindow* window)
     glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
     glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
 
-    // Desenha mira
-    drawCrosshair(g_ScreenRatio);
+    // Desenha mensagem ao usuário se estiver morto/acabou fase
+    if (player.isDead())
+        drawBanner(g_ScreenRatio, "player_dead");
+    else if (enemies.empty())
+        drawBanner(g_ScreenRatio, "level_clear");
+    else
+    {
+        // Desenha mira
+        drawCrosshair(g_ScreenRatio);
 
-    // Desenha barra de vida
-    drawBar((float)player.health, (float)player.maxHealth, g_ScreenRatio, "green", "yellow", "red", 0);
+        // Desenha barra de vida
+        drawBar((float)player.health, (float)player.maxHealth, g_ScreenRatio, "green", "yellow", "red", 0);
 
-    // Desenha barra de cooldown da arma se estiver em cooldown
-    if (player.wpnCooldown > 0)
-        drawBar(player.wpnCooldown, player.getCurrentWeapon().cooldown, g_ScreenRatio, "white", "white", "white", 1);
+        // Desenha barra de cooldown da arma se estiver em cooldown
+        if (player.wpnCooldown > 0)
+            drawBar(player.wpnCooldown, player.getCurrentWeapon().cooldown, g_ScreenRatio, "white", "white", "white", 1);
+    }
 
     // Reativa o z-buffer
     glEnable(GL_DEPTH_TEST);
@@ -455,6 +515,138 @@ void Game::Draw(GLFWwindow* window)
     // tudo que foi renderizado pelas funções acima.
     // Veja o link: https://en.wikipedia.org/w/index.php?title=Multiple_buffering&oldid=793452829#Double_buffering_in_computer_graphics
     glfwSwapBuffers(window);
+}
+
+// Inicializa variáveis referentes à cutscene
+void Game::initCutscene()
+{
+    finalCutscene = true;
+    cutsceneStep  = 0.0f;
+
+    projectiles.clear();
+    obstacles.clear();
+
+    EnemyData cutscene_minotaur;
+    cutscene_minotaur.pos  = glm::vec3(0.0f, 3.5f, 0.0f);
+    cutscene_minotaur.type = ENEMY_MINOTAUR;
+
+    enemies.push_back(cutscene_minotaur.buildEnemy());
+}
+
+// Desenha elementos da cutscene
+void Game::drawCutscene(GLFWwindow* window)
+{
+    // Pontos de controle da(s) curva(s) bézier que a câmera irá percorrer
+    const glm::vec3 bezier_pts[7] = {glm::vec3( 0.0f, 1.5f, 3.0f),
+                                     glm::vec3( 5.5f, 1.5f, 3.0f),
+                                     glm::vec3( 5.5f, 2.5f,-3.0f),
+                                     glm::vec3( 0.0f, 2.5f,-3.0f),
+                                     glm::vec3(-5.5f, 2.5f,-3.0f),
+                                     glm::vec3(-5.5f, 3.5f, 5.0f),
+                                     glm::vec3( 0.0f, 3.5f, 5.0f)};
+
+    // Guarda o tamanho original do minotauro para futura referência
+    const glm::vec3 minotaur_og_size = glm::vec3(2.5f,5.0f,1.5f);
+
+    // Variáveis da câmera virtual
+    // A posição será obtida por curva de bézier, e o view vector será obtido através de look-at
+    glm::vec4 camera_pos;
+    glm::vec4 view_vector;
+    glm::vec4 up_vector = glm::vec4(0.0f,1.0f,0.0f,0.0f); // Vetor "up" fixado para apontar para o "céu" (eixo Y global)
+
+    // Determina em que fase da cutscene estamos, dependendo do valor de cutsceneStep
+
+    // Determina a posição da câmera
+    if (cutsceneStep <= 2.0f)   // entre segundos 0 e 2, faz a primeira curva de bézier (primeira metade piecewise)
+    {
+        camera_pos = Ponto(CubicBezier(bezier_pts[0], bezier_pts[1], bezier_pts[2], bezier_pts[3], cutsceneStep/2.0f));
+    }
+    else if (cutsceneStep > 2.0f && cutsceneStep <= 4.0f) // entre segundos 2 e 4, faz a segunda curva de bézier (segunda metade piecewise)
+    {
+        camera_pos = Ponto(CubicBezier(bezier_pts[3], bezier_pts[4], bezier_pts[5], bezier_pts[6], cutsceneStep/2.0f - 1.0f));
+    }
+    else    // a partir do segundo 4, deixa a câmera parada no último ponto
+    {
+        camera_pos = Ponto(bezier_pts[6]);
+    }
+
+    // Encolhe o tamanho do minotauro a partir do segundo 5
+    if (cutsceneStep > 5.0f && cutsceneStep <= 6.0f) // entre segundos 5 e 6
+    {
+        enemies[0].dmgCooldown = 1.0f;  // pra ele brilhar vermelho
+        enemies[0].model_size  = minotaur_og_size * (6.0f - cutsceneStep);
+    }
+
+    // Define o view vector
+    // (câmera look-at)
+    view_vector = Ponto(enemies[0].pos) - camera_pos;
+    view_vector = view_vector / norm(view_vector);
+
+    // Computamos a matriz "View" utilizando os parâmetros do jogador para
+    // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
+    glm::mat4 view = Matrix_Camera_View(camera_pos, view_vector, up_vector);
+
+    // Agora computamos a matriz de Projeção.
+    // Note que, no sistema de coordenadas da câmera, os planos near e far
+    // estão no sentido negativo! Veja slides 176-204 do documento Aula_09_Projecoes.pdf.
+    float nearplane = -0.1f;   // Posição do "near plane"
+    float farplane  = -50.0f; // Posição do "far plane"
+
+    // Projeção Perspectiva.
+    // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
+    float field_of_view = 3.141592 / 3.0f;
+    glm::mat4 projection = Matrix_Perspective(field_of_view, g_ScreenRatio, nearplane, farplane);
+
+    // Enviamos as matrizes "view" e "projection" para a placa de vídeo
+    // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
+    // efetivamente aplicadas em todos os pontos.
+    glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
+    glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
+
+    // reseta repetição de texturas
+    resetTextureRepeat();
+
+    // Desenha o chão e as paredes da fase
+    drawFloor(level_queue.front());
+    drawWall(level_queue.front(), NORTH);
+    drawWall(level_queue.front(), SOUTH);
+    drawWall(level_queue.front(), EAST);
+    drawWall(level_queue.front(), WEST);
+
+    // Desenha o minotauro
+    drawEnemy(enemies[0]);
+
+    // Se tiver acabado a cutscene
+    if (cutsceneStep == 6.0f)
+    {
+        // Os objetos a seguir sempre serão desenhados na frente; desativa o z-buffer
+        glDisable(GL_DEPTH_TEST);
+
+        // Últimas coisas são desenhadas diretamente em NDC
+        // Desativa matrizes de view e projeção
+        glm::mat4 view       = Matrix_Identity();
+        glm::mat4 projection = Matrix_Identity();
+
+        glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
+        glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
+
+        // Desenha mensagem de fim de jogo
+        drawBanner(g_ScreenRatio, "game_clear");
+
+        // Reativa o z-buffer
+        glEnable(GL_DEPTH_TEST);
+    }
+
+    // O framebuffer onde OpenGL executa as operações de renderização não
+    // é o mesmo que está sendo mostrado para o usuário, caso contrário
+    // seria possível ver artefatos conhecidos como "screen tearing". A
+    // chamada abaixo faz a troca dos buffers, mostrando para o usuário
+    // tudo que foi renderizado pelas funções acima.
+    // Veja o link: https://en.wikipedia.org/w/index.php?title=Multiple_buffering&oldid=793452829#Double_buffering_in_computer_graphics
+    glfwSwapBuffers(window);
+
+    // Incrementa cutsceneStep
+    incrementTimer(cutsceneStep, deltaTime, 6.0f);
 }
 
 // Checa se o jogador está dentro dos limites da fase e ajusta sua posição se não estiver
@@ -556,6 +748,8 @@ void Game::loadTopLevel()
     // carrega/reseta dados do jogador
     player.pos  = level_queue.front().player_pos;
     player.view = level_queue.front().player_view;
+    g_CameraPhi   = 0.0f;
+    g_CameraTheta = 0.0f;
 
     player.grounded   = false;
     player.y_velocity = 0.0f;
@@ -565,4 +759,6 @@ void Game::loadTopLevel()
     player.wpnAnimation = 0.0f;
 
     player.resetHealth();
+
+    noUpdate = false;
 }

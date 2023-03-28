@@ -19,7 +19,7 @@ glm::vec3 AABB::getCenter()
 // AABB x AABB
 bool Collide(AABB aabb1, AABB aabb2)
 {
-    // FONTE:
+    // adaptado de FONTE:
     // https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_collision_detection
     return
     (aabb1.aabb_min.x <= aabb2.aabb_max.x &&
@@ -73,7 +73,7 @@ bool Collide(AABB aabb1, AABB aabb2, glm::vec3 &desloc)
 // Sphere x AABB
 bool Collide(Sphere sphere, AABB aabb)
 {
-    // FONTE:
+    // adaptado de FONTE:
     // https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_collision_detection
 
     // get box closest point to sphere center by clamping

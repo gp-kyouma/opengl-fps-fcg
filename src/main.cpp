@@ -5,7 +5,11 @@
 //    INF01047 Fundamentos de Computação Gráfica
 //               Prof. Eduardo Gastal
 //
-//                   LABORATÓRIO 5
+//                   TRABALHO FINAL
+//
+//  Gabriel Peres da Silva
+//  Joel Guilherme da Silva Sobral Filho
+//  2022/2
 //
 
 // Arquivos "headers" padrões de C podem ser incluídos em um
@@ -73,9 +77,9 @@ int main(int argc, char* argv[])
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Criamos uma janela do sistema operacional, com 800 colunas e 600 linhas
-    // de pixels, e com título "INF01047 ...".
+    // de pixels
     GLFWwindow* window;
-    window = glfwCreateWindow(800, 600, "test", NULL, NULL);
+    window = glfwCreateWindow(800, 600, "HALL OF THE MINOTAUR v0.9", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -142,8 +146,13 @@ int main(int argc, char* argv[])
     LoadTextureImage("../../data/full_green.jpg",  "green");
     LoadTextureImage("../../data/full_yellow.jpg", "yellow");
     LoadTextureImage("../../data/full_red.jpg",    "red");
+    LoadTextureImage("../../data/full_blue.jpg",   "blue");
 
-    LoadTextureImage("../../data/weapons/bullet_silver.jpg", "silver");
+    LoadTextureImage("../../data/silver_texture.jpg", "silver");
+
+    LoadTextureImage("../../data/you_are_dead.png", "player_dead");
+    LoadTextureImage("../../data/level_clear.png",  "level_clear");
+    LoadTextureImage("../../data/you_won.png",      "game_clear");
 
     LoadTextureImage("../../data/weapons/pistol.png",       "pistol");
     LoadTextureImage("../../data/weapons/sniper.png",       "sniper");
@@ -244,7 +253,4 @@ int main(int argc, char* argv[])
     // Fim do programa
     return 0;
 }
-
-// set makeprg=cd\ ..\ &&\ make\ run\ >/dev/null
-// vim: set spell spelllang=pt_br :
 

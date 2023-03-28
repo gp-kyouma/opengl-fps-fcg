@@ -35,7 +35,7 @@ Enemy EnemyData::buildEnemy()
     enemy.y_velocity  = 0.0f;
 
     enemy.pos         = pos;
-    enemy.view        = glm::vec3(0.0f,0.0f,-1.0f);
+    enemy.view        = glm::vec3(0.0f,0.0f,1.0f);
 
     return enemy;
 }
@@ -98,8 +98,28 @@ void Level::createTestLevel()
 
     EnemyData test_enemy2;
     test_enemy2.pos  = glm::vec3(-6.0f, 6.0f, 6.0f);
-    test_enemy2.type = ENEMY_SKELETON;
+    test_enemy2.type = ENEMY_BIG_SKELETON;
 
     enemies.push_back(test_enemy1);
     enemies.push_back(test_enemy2);
+}
+
+void Level::createLevel1()
+{
+    //IDK
+}
+
+void Level::createLevel2()
+{
+    //IDK
+}
+
+void Level::createLevel3()
+{
+    //IDK
+}
+
+void Level::createBossLevel()
+{
+    //IDK
 }

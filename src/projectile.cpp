@@ -21,12 +21,12 @@ void Projectile::setProjectileData(ProjectileType type)
         case PROJ_BULLET:
             hit_type = SPHERE;
             p_size = glm::vec3(0.1f,0.1f,0.1f);
-            speed = 10;
+            speed = 12;
             lifespan = 4.0f;
             break;
         case PROJ_MELEE_INVISIBLE:
             hit_type = BOX;
-            p_size = glm::vec3(1.0f,1.0f,1.0f);
+            p_size = glm::vec3(1.5f,1.5f,1.5f);
             speed = 0.5f;
             lifespan = 0.15f;
             break;

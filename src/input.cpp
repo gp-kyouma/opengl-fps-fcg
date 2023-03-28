@@ -28,7 +28,7 @@ float g_CameraTheta = 0.0f; // Ângulo no plano ZX em relação ao eixo Z
 float g_CameraPhi = 0.0f;   // Ângulo em relação ao eixo Y
 
 // Variável que controla se a informação extra será mostrada na tela.
-bool g_ShowInfo = true;
+bool g_ShowInfo = false;
 
 // Guarda se o usuário já movimentou o mouse
 bool g_hasMovedMouse = false;
@@ -140,7 +140,7 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 // Função callback chamada sempre que o usuário movimenta a "rodinha" do mouse.
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    /* currently unused
+    /* unused
     // Atualizamos a distância da câmera para a origem utilizando a
     // movimentação da "rodinha", simulando um ZOOM.
     g_CameraDistance -= 0.1f*yoffset;
