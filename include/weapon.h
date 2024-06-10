@@ -26,7 +26,6 @@ enum WeaponEffect
     NO_EFFECT,
     SCATTER_5,
     SLOWDOWN,
-    RANDOM_SPREAD_01,
 };
 
 struct Weapon
@@ -36,6 +35,8 @@ struct Weapon
 
     int damage;
     float cooldown;
+
+    int spread;
     WeaponEffect effect; // efeito extra causado pela arma
 
     Projectile fire(glm::vec3 pos, glm::vec3 dir);

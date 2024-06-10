@@ -62,30 +62,35 @@ void Game::Init()
     sword.proj_type = PROJ_MELEE_INVISIBLE;
     sword.cooldown  = 0.5f;
     sword.damage    = 25;
+    sword.spread    = 0;
     sword.effect    = NO_EFFECT;
 
     pistol.wpn_type  = WPN_PISTOL;
     pistol.proj_type = PROJ_HITSCAN;
     pistol.cooldown  = 0.625f;
     pistol.damage    = 15;
+    pistol.spread    = 5;
     pistol.effect    = NO_EFFECT;
 
     shotgun.wpn_type  = WPN_SHOTGUN;
     shotgun.proj_type = PROJ_HITSCAN;
     shotgun.cooldown  = 0.875f;
     shotgun.damage    = 12;
+    shotgun.spread    = 0; // ehh...
     shotgun.effect    = SCATTER_5;
 
     minigun.wpn_type  = WPN_MINIGUN;
     minigun.proj_type = PROJ_HITSCAN;
     minigun.cooldown  = 0.10f;
     minigun.damage    = 8;
-    minigun.effect    = RANDOM_SPREAD_01;
+    minigun.spread    = 35; // upgraded from 20
+    minigun.effect    = NO_EFFECT;
 
     sniper.wpn_type  = WPN_SNIPER;
     sniper.proj_type = PROJ_BULLET;
     sniper.cooldown  = 1.125f;
     sniper.damage    = 50;
+    sniper.spread    = 0;
     sniper.effect    = SLOWDOWN;
 
     player.weapons.push_back(sword);
@@ -135,8 +140,11 @@ void Game::Update()
     bool shoot = player.fire(new_proj);
     if (shoot)
     {
-        if (player.getCurrentWeapon().effect == SCATTER_5 || player.getCurrentWeapon().effect == RANDOM_SPREAD_01)
+        if (player.getCurrentWeapon().effect == SCATTER_5 || player.getCurrentWeapon().spread > 0)
         {
+            std::vector<Projectile> new_projectiles;
+            new_projectiles.push_back(new_proj);
+
             // cria novos projéteis/faz alterações
             // baseadas no projétil que acabou de ser atirado:
             // obtém o "sistema de coordenadas" do projétil
@@ -160,24 +168,40 @@ void Game::Update()
                 Projectile spread4 = new_proj;
 
                 // rotaciona
+
+                // old (radial spread)
+                /*
                 spread1.dir = toVec3(Matrix_Rotate( pi24*2, v) * Vetor(spread1.dir));
                 spread2.dir = toVec3(Matrix_Rotate( pi24,   v) * Vetor(spread2.dir));
                 spread3.dir = toVec3(Matrix_Rotate(-pi24,   v) * Vetor(spread3.dir));
                 spread4.dir = toVec3(Matrix_Rotate(-pi24*2, v) * Vetor(spread4.dir));
+                */
 
-                projectiles.push_back(spread1);
-                projectiles.push_back(spread2);
-                projectiles.push_back(spread3);
-                projectiles.push_back(spread4);
+                // new (x-spread)
+                spread1.dir = toVec3(Matrix_Rotate( pi24, v) * Matrix_Rotate( pi24/2, u) * Vetor(spread1.dir));
+                spread2.dir = toVec3(Matrix_Rotate( pi24, v) * Matrix_Rotate(-pi24/2, u) * Vetor(spread2.dir));
+                spread3.dir = toVec3(Matrix_Rotate(-pi24, v) * Matrix_Rotate( pi24/2, u) * Vetor(spread3.dir));
+                spread4.dir = toVec3(Matrix_Rotate(-pi24, v) * Matrix_Rotate(-pi24/2, u) * Vetor(spread4.dir));
+
+                new_projectiles.push_back(spread1);
+                new_projectiles.push_back(spread2);
+                new_projectiles.push_back(spread3);
+                new_projectiles.push_back(spread4);
             }
-            else if (player.getCurrentWeapon().effect == RANDOM_SPREAD_01)
+
+            if (player.getCurrentWeapon().spread > 0)
             {
-                float offset_random = ((float)(rand() % 20) - (float)(rand() % 20)) / 100.0f;
-                new_proj.dir = toVec3(Matrix_Rotate(offset_random*pi24, v) * Matrix_Rotate(offset_random*pi24, u) * Vetor(new_proj.dir));
+                for (unsigned int i = 0; i < new_projectiles.size(); i++)
+                    new_projectiles[i].doRandomSpread(player.getCurrentWeapon().spread, u, v);
             }
-        }
 
-        projectiles.push_back(new_proj);
+            if (new_projectiles.size() > 1)
+                projectiles.insert(projectiles.end(), new_projectiles.begin(), new_projectiles.end());
+            else
+                projectiles.push_back(new_projectiles[0]);
+        }
+        else
+            projectiles.push_back(new_proj);
     }
 
     // testa colisão com obstáculos

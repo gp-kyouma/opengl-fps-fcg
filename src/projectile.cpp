@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include "matrices.h"
+#include "vec_aux.h"
 #include "timer_aux.h"
 
 void Projectile::setProjectileData(ProjectileType type)
@@ -31,6 +33,29 @@ void Projectile::setProjectileData(ProjectileType type)
             lifespan = 0.15f;
             break;
     }
+}
+
+void Projectile::doRandomSpread(int maxOffset, glm::vec4 u, glm::vec4 v)
+{
+    if (maxOffset < 1) return;
+
+    int offset = maxOffset;
+    if (offset > 100) offset = 100;
+
+    const float pi24 = 3.141592f / 24.0f;
+
+    // old (should converge to center more
+    //float offset_random_u = ((float)(rand() % (offset+1)) - (float)(rand() % (offset+1))) / 100.0f;
+    //float offset_random_v = ((float)(rand() % (offset+1)) - (float)(rand() % (offset+1))) / 100.0f;
+
+    // new (should be more random)
+    float offset_random_u = (((float)(rand() % (offset+1))) / 100.0f) * (((int)rand() % 2 == 0) ? 1 : -1);
+    float offset_random_v = (((float)(rand() % (offset+1))) / 100.0f) * (((int)rand() % 2 == 0) ? 1 : -1);
+
+    // which one is better?
+    // no idea xd
+
+    dir = toVec3(Matrix_Rotate(offset_random_v*pi24, v) * Matrix_Rotate(offset_random_u*pi24, u) * Vetor(dir));
 }
 
 AABB Projectile::getHitbox()

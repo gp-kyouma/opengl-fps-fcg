@@ -34,6 +34,7 @@ struct Projectile
     int damage;
 
     void setProjectileData(ProjectileType type);
+    void doRandomSpread(int maxOffset, glm::vec4 u, glm::vec4 v);
 
     AABB   getHitbox();
     Sphere getHitsphere();

@@ -113,7 +113,7 @@ void Player::doWeaponSwitch()
     if (g_LastNumberPressed != currentWeapon && g_LastNumberPressed < (int)weapons.size())
     {
         currentWeapon = g_LastNumberPressed;
-        wpnCooldown = 0.0f;
+        wpnCooldown = getCurrentWeapon().cooldown;//0.0f;
     }
 }
 
