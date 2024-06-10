@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
     // Criamos uma janela do sistema operacional, com 800 colunas e 600 linhas
     // de pixels
     GLFWwindow* window;
-    window = glfwCreateWindow(800, 600, "HALL OF THE MINOTAUR v1.1.1", NULL, NULL);
+    window = glfwCreateWindow(800, 600, "HALL OF THE MINOTAUR v1.1.2", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -99,6 +99,14 @@ int main(int argc, char* argv[])
 
     // Esconde o mouse
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    // Seta posição da janela no centro da tela
+    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+    int width, height;
+    glfwGetWindowSize(window, &width, &height);
+
+    glfwSetWindowPos(window, (mode->width/2) - (width/2), (mode->height/2) - (height/2));//30 pixels off
 
     // Indicamos que as chamadas OpenGL deverão renderizar nesta janela
     glfwMakeContextCurrent(window);
