@@ -24,7 +24,7 @@ enum WeaponType
 enum WeaponEffect
 {
     NO_EFFECT,
-    SCATTER_5,
+    SCATTER,
     SLOWDOWN,
 };
 

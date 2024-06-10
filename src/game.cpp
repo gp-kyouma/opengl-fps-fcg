@@ -76,8 +76,8 @@ void Game::Init()
     shotgun.proj_type = PROJ_HITSCAN;
     shotgun.cooldown  = 0.875f;
     shotgun.damage    = 12;
-    shotgun.spread    = 0; // ehh...
-    shotgun.effect    = SCATTER_5;
+    shotgun.spread    = 10;
+    shotgun.effect    = SCATTER;
 
     minigun.wpn_type  = WPN_MINIGUN;
     minigun.proj_type = PROJ_HITSCAN;
@@ -140,7 +140,7 @@ void Game::Update()
     bool shoot = player.fire(new_proj);
     if (shoot)
     {
-        if (player.getCurrentWeapon().effect == SCATTER_5 || player.getCurrentWeapon().spread > 0)
+        if (player.getCurrentWeapon().effect == SCATTER || player.getCurrentWeapon().spread > 0)
         {
             std::vector<Projectile> new_projectiles;
             new_projectiles.push_back(new_proj);
@@ -160,12 +160,15 @@ void Game::Update()
 
             const float pi24 = 3.141592f / 24.0f;
 
-            if (player.getCurrentWeapon().effect == SCATTER_5)
+            if (player.getCurrentWeapon().effect == SCATTER)
             {
                 Projectile spread1 = new_proj;
                 Projectile spread2 = new_proj;
                 Projectile spread3 = new_proj;
                 Projectile spread4 = new_proj;
+
+                Projectile spread5 = new_proj;
+                Projectile spread6 = new_proj;
 
                 // rotaciona
 
@@ -183,10 +186,16 @@ void Game::Update()
                 spread3.dir = toVec3(Matrix_Rotate(-pi24, v) * Matrix_Rotate( pi24/2, u) * Vetor(spread3.dir));
                 spread4.dir = toVec3(Matrix_Rotate(-pi24, v) * Matrix_Rotate(-pi24/2, u) * Vetor(spread4.dir));
 
+                spread5.dir = toVec3(Matrix_Rotate( pi24*2, v) * Vetor(spread5.dir));
+                spread6.dir = toVec3(Matrix_Rotate(-pi24*2, v) * Vetor(spread6.dir));
+
                 new_projectiles.push_back(spread1);
                 new_projectiles.push_back(spread2);
                 new_projectiles.push_back(spread3);
                 new_projectiles.push_back(spread4);
+
+                new_projectiles.push_back(spread5);
+                new_projectiles.push_back(spread6);
             }
 
             if (player.getCurrentWeapon().spread > 0)
