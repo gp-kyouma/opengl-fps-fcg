@@ -50,6 +50,97 @@
 #include "input.h"
 #include "game.h"
 
+void LoadAllTextures()
+{
+    // Carregamos imagem para ser utilizada como textura
+    LoadTextureImage("../../data/obstacles/stone_floor.jpg",         "floor");
+    LoadTextureImage("../../data/obstacles/japanese_stone_wall.jpg", "wall");
+    LoadTextureImage("../../data/obstacles/square_floor.jpg",        "platform");
+    LoadTextureImage("../../data/obstacles/medieval_blocks.jpg",     "wall_obstacle");
+    LoadTextureImage("../../data/obstacles/box.jpg",                 "box");
+
+    LoadTextureImage("../../data/obstacles/japanese_stone_wall_spec_manual.jpg", "wall_spec");
+    LoadTextureImage("../../data/obstacles/square_floor_spec_manual.jpg",        "platform_spec");
+    LoadTextureImage("../../data/obstacles/medieval_blocks_spec.jpg",            "wall_obstacle_spec");
+
+    LoadTextureImage("../../data/full_white.jpg",  "white");
+    LoadTextureImage("../../data/full_grey.jpg",   "grey");
+    LoadTextureImage("../../data/full_black.jpg",  "black");
+    LoadTextureImage("../../data/full_green.jpg",  "green");
+    LoadTextureImage("../../data/full_yellow.jpg", "yellow");
+    LoadTextureImage("../../data/full_red.jpg",    "red");
+    LoadTextureImage("../../data/full_blue.jpg",   "blue");
+
+    LoadTextureImage("../../data/silver_texture.jpg", "silver");
+
+    LoadTextureImage("../../data/you_are_dead.png", "player_dead");
+    LoadTextureImage("../../data/level_clear.png",  "level_clear");
+    LoadTextureImage("../../data/you_won.png",      "game_clear");
+
+    LoadTextureImage("../../data/weapons/pistol.png",       "pistol");
+    LoadTextureImage("../../data/weapons/sniper.png",       "sniper");
+    LoadTextureImage("../../data/weapons/sniper_spec.png",  "sniper_spec");
+    LoadTextureImage("../../data/weapons/minigun.png",      "minigun");
+    LoadTextureImage("../../data/weapons/minigun_spec.png", "minigun_spec");
+    LoadTextureImage("../../data/weapons/sword.png",        "sword");
+    LoadTextureImage("../../data/weapons/sword_spec.png",   "sword_spec");
+    LoadTextureImage("../../data/weapons/shotgun.png",      "shotgun");
+
+    LoadTextureImage("../../data/enemies/Minotaur_diffuse.jpg", "minotaur");
+    LoadTextureImage("../../data/enemies/Pants_diffuse.jpg", "pants");
+    LoadTextureImage("../../data/enemies/Minotaur_specular.png", "minotaur_spec");
+    LoadTextureImage("../../data/enemies/Pants_specular.png", "pants_spec");
+}
+
+void LoadAllModels()
+{
+    ObjModel planemodel("../../data/obstacles/plane.obj");
+    ComputeNormals(&planemodel);
+    BuildTrianglesAndAddToVirtualScene(&planemodel);
+
+    ObjModel cubemodel("../../data/obstacles/cube.obj");
+    ComputeNormals(&cubemodel);
+    BuildTrianglesAndAddToVirtualScene(&cubemodel);
+
+    ObjModel pistol("../../data/weapons/pistol.obj");
+    ComputeNormals(&pistol);
+    BuildTrianglesAndAddToVirtualScene(&pistol);
+
+    ObjModel sniper("../../data/weapons/sniper.obj");
+    ComputeNormals(&sniper);
+    BuildTrianglesAndAddToVirtualScene(&sniper);
+
+    ObjModel minigun("../../data/weapons/minigun.obj");
+    ComputeNormals(&minigun);
+    BuildTrianglesAndAddToVirtualScene(&minigun);
+
+    ObjModel sword("../../data/weapons/sword.obj");
+    ComputeNormals(&sword);
+    BuildTrianglesAndAddToVirtualScene(&sword);
+
+    ObjModel shotgun("../../data/weapons/shotgun.obj");
+    ComputeNormals(&shotgun);
+    BuildTrianglesAndAddToVirtualScene(&shotgun);
+
+    ObjModel sphere("../../data/weapons/sphere.obj");
+    ComputeNormals(&sphere);
+    BuildTrianglesAndAddToVirtualScene(&sphere);
+
+    ObjModel mino("../../data/enemies/Minotaur.obj");
+    ComputeNormals(&mino);
+    BuildTrianglesAndAddToVirtualScene(&mino);
+
+    ObjModel skeleton("../../data/enemies/skeleton.obj");
+    ComputeNormals(&skeleton);
+    BuildTrianglesAndAddToVirtualScene(&skeleton);
+
+    //hardcoded
+    BuildCubeEdgesAndAddToVirtualScene();
+    BuildCrosshairAndAddToVirtualScene();
+    BuildLineAndAddToVirtualScene();
+    BuildSquareAndAddToVirtualScene();
+}
+
 int main(int argc, char* argv[])
 {
     // Inicializamos a biblioteca GLFW, utilizada para criar uma janela do
@@ -137,89 +228,8 @@ int main(int argc, char* argv[])
     carregamento de todos os assets
     */
 
-    // Carregamos imagem para ser utilizada como textura
-    LoadTextureImage("../../data/obstacles/stone_floor.jpg",         "floor");
-    LoadTextureImage("../../data/obstacles/japanese_stone_wall.jpg", "wall");
-    LoadTextureImage("../../data/obstacles/square_floor.jpg",        "platform");
-    LoadTextureImage("../../data/obstacles/medieval_blocks.jpg",     "wall_obstacle");
-    LoadTextureImage("../../data/obstacles/box.jpg",                 "box");
-
-    LoadTextureImage("../../data/obstacles/japanese_stone_wall_spec_manual.jpg", "wall_spec");
-    LoadTextureImage("../../data/obstacles/square_floor_spec_manual.jpg",        "platform_spec");
-    LoadTextureImage("../../data/obstacles/medieval_blocks_spec.jpg",            "wall_obstacle_spec");
-
-    LoadTextureImage("../../data/full_white.jpg",  "white");
-    LoadTextureImage("../../data/full_grey.jpg",   "grey");
-    LoadTextureImage("../../data/full_black.jpg",  "black");
-    LoadTextureImage("../../data/full_green.jpg",  "green");
-    LoadTextureImage("../../data/full_yellow.jpg", "yellow");
-    LoadTextureImage("../../data/full_red.jpg",    "red");
-    LoadTextureImage("../../data/full_blue.jpg",   "blue");
-
-    LoadTextureImage("../../data/silver_texture.jpg", "silver");
-
-    LoadTextureImage("../../data/you_are_dead.png", "player_dead");
-    LoadTextureImage("../../data/level_clear.png",  "level_clear");
-    LoadTextureImage("../../data/you_won.png",      "game_clear");
-
-    LoadTextureImage("../../data/weapons/pistol.png",       "pistol");
-    LoadTextureImage("../../data/weapons/sniper.png",       "sniper");
-    LoadTextureImage("../../data/weapons/sniper_spec.png",  "sniper_spec");
-    LoadTextureImage("../../data/weapons/minigun.png",      "minigun");
-    LoadTextureImage("../../data/weapons/minigun_spec.png", "minigun_spec");
-    LoadTextureImage("../../data/weapons/sword.png",        "sword");
-    LoadTextureImage("../../data/weapons/sword_spec.png",   "sword_spec");
-    LoadTextureImage("../../data/weapons/shotgun.png",      "shotgun");
-
-    LoadTextureImage("../../data/enemies/Minotaur_diffuse.jpg", "minotaur");
-    LoadTextureImage("../../data/enemies/Pants_diffuse.jpg", "pants");
-    LoadTextureImage("../../data/enemies/Minotaur_specular.png", "minotaur_spec");
-    LoadTextureImage("../../data/enemies/Pants_specular.png", "pants_spec");
-
-    ObjModel planemodel("../../data/obstacles/plane.obj");
-    ComputeNormals(&planemodel);
-    BuildTrianglesAndAddToVirtualScene(&planemodel);
-
-    ObjModel cubemodel("../../data/obstacles/cube.obj");
-    ComputeNormals(&cubemodel);
-    BuildTrianglesAndAddToVirtualScene(&cubemodel);
-
-    ObjModel pistol("../../data/weapons/pistol.obj");
-    ComputeNormals(&pistol);
-    BuildTrianglesAndAddToVirtualScene(&pistol);
-
-    ObjModel sniper("../../data/weapons/sniper.obj");
-    ComputeNormals(&sniper);
-    BuildTrianglesAndAddToVirtualScene(&sniper);
-
-    ObjModel minigun("../../data/weapons/minigun.obj");
-    ComputeNormals(&minigun);
-    BuildTrianglesAndAddToVirtualScene(&minigun);
-
-    ObjModel sword("../../data/weapons/sword.obj");
-    ComputeNormals(&sword);
-    BuildTrianglesAndAddToVirtualScene(&sword);
-
-    ObjModel shotgun("../../data/weapons/shotgun.obj");
-    ComputeNormals(&shotgun);
-    BuildTrianglesAndAddToVirtualScene(&shotgun);
-
-    ObjModel sphere("../../data/weapons/sphere.obj");
-    ComputeNormals(&sphere);
-    BuildTrianglesAndAddToVirtualScene(&sphere);
-
-    ObjModel mino("../../data/enemies/Minotaur.obj");
-    ComputeNormals(&mino);
-    BuildTrianglesAndAddToVirtualScene(&mino);
-
-    ObjModel skeleton("../../data/enemies/skeleton.obj");
-    ComputeNormals(&skeleton);
-    BuildTrianglesAndAddToVirtualScene(&skeleton);
-
-    BuildCubeEdgesAndAddToVirtualScene();
-    BuildCrosshairAndAddToVirtualScene();
-    BuildLineAndAddToVirtualScene();
-    BuildSquareAndAddToVirtualScene();
+    LoadAllTextures();
+    LoadAllModels();
 
     // Inicializamos o código para renderização de texto.
     TextRendering_Init();

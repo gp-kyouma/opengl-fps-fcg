@@ -273,31 +273,38 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
     }
 
     glm::vec4 vertical_displace   = -v*displace.y;
-    glm::vec4 horizontal_displace =  u*displace.x * (1.0f - player.wpnAnimation);
+    glm::vec4 horizontal_displace =  u*displace.x;
     glm::vec4 forward_displace    = -w*displace.z;
-
-    glm::vec4 weapon_pos = Ponto(player.pos)+vertical_displace+horizontal_displace+forward_displace;
-    weapon_pos.y += player.neck;
 
     glm::mat4 model;
 
     // arma melee tem uma animação extra
-    // (v2: now with actual swings!)
+    // (v3: now with ACTUAL swings!)
 
     if (type == WPN_SWORD)
     {
         float melee_rotate; // 1 is pointed forward, 0 is pointed up
         float cooldown_percent = player.wpnCooldown / player.getCurrentWeapon().cooldown;
 
+        //NONE OF THIS WILL MAKE SENSE IF I REPURPOSE WPNANIMATION FOR AIM
+        //SO WATCH OUT FOR THAT
         if (player.wpnAnimation < 1.0f)
             melee_rotate = player.wpnAnimation;
         else
             melee_rotate = fabs((cooldown_percent * 2.0f) - 1.0f);
 
+        horizontal_displace *= (1.0f - melee_rotate);
+
         model = Matrix_Rotate_Z(-pi2 + melee_rotate * pi2);
     }
     else
+    {
         model = Matrix_Identity();
+        horizontal_displace *= (1.0f - player.wpnAnimation);
+    }
+
+    glm::vec4 weapon_pos = Ponto(player.pos)+vertical_displace+horizontal_displace+forward_displace;
+    weapon_pos.y += player.neck;
 
     model = Matrix_Translate(weapon_pos.x,weapon_pos.y,weapon_pos.z) *
             Matrix_Rotate_Y(theta)  *
@@ -418,12 +425,12 @@ void drawEnemy(Enemy enemy)
     switch (enemy.type)
     {
         case ENEMY_SKELETON:
-            setDiffuseTexture("white");
+            setDiffuseTexture("grey");
 
             if (isInCooldown)
                 setSpecularTexture("red");
             else
-                setSpecularTexture("grey");
+                setSpecularTexture("white");
 
             DrawVirtualObject("skeleton");
             break;
@@ -433,7 +440,7 @@ void drawEnemy(Enemy enemy)
             if (isInCooldown)
                 setSpecularTexture("red");
             else
-                setSpecularTexture("white");
+                setSpecularTexture("grey");
 
             DrawVirtualObject("skeleton");
             break;
