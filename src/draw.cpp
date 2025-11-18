@@ -64,6 +64,8 @@ void drawCrosshair(float aspect)
 // position começa de 0, cada incremento aumenta a posição vertical da barra
 void drawBar(float value, float maxValue, float aspect, std::string tex1, std::string tex2, std::string tex3, int position)
 {
+    // REMINDER THAT "SQUARE" IS SIZE 2 [-1,1], NOT SIZE 1 [-0.5,0.5]
+    // SO SCALING BY 0.5 IS ACTUALLY SETTING SIZE TO 1
     glm::vec2 bgSize = glm::vec2(0.25f,0.05f);
     float barEdge    = 0.015f;
 
@@ -280,8 +282,20 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
     glm::mat4 model;
 
     // arma melee tem uma animação extra
+    // (v2: now with actual swings!)
+
     if (type == WPN_SWORD)
-        model = Matrix_Rotate_Z(-pi2 + player.wpnAnimation * pi2);
+    {
+        float melee_rotate; // 1 is pointed forward, 0 is pointed up
+        float cooldown_percent = player.wpnCooldown / player.getCurrentWeapon().cooldown;
+
+        if (player.wpnAnimation < 1.0f)
+            melee_rotate = player.wpnAnimation;
+        else
+            melee_rotate = fabs((cooldown_percent * 2.0f) - 1.0f);
+
+        model = Matrix_Rotate_Z(-pi2 + melee_rotate * pi2);
+    }
     else
         model = Matrix_Identity();
 
