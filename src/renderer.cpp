@@ -1024,15 +1024,19 @@ void TextRendering_ShowFramesPerSecond(GLFWwindow* window)
     if ( ellapsed_seconds > 1.0f )
     {
         numchars = snprintf(buffer, 20, "%.2f fps", ellapsed_frames / ellapsed_seconds);
-
+        numchars = numchars;//warning fix lole
         old_seconds = seconds;
         ellapsed_frames = 0;
     }
 
-    float lineheight = TextRendering_LineHeight(window);
-    float charwidth = TextRendering_CharWidth(window);
+    // absolute
+    DrawString(window, buffer, -1.0f, 1.0f, TEXTPOS_TOP, TEXTPOS_LEFT, 1.5f);
 
-    TextRendering_PrintString(window, buffer, 1.0f-(numchars + 1)*charwidth, 1.0f-lineheight, 1.0f);
+    // relative (tests)
+    //DrawString(window, "red",   1.0f, 1.0f, TEXTPOS_TOP,    TEXTPOS_RIGHT,  0.05f, true, glm::vec3(1.0f,0.0f,0.0f));
+    //DrawString(window, "green",-1.0f,-1.0f, TEXTPOS_BOTTOM, TEXTPOS_LEFT,   0.05f, true, glm::vec3(0.0f,1.0f,0.0f));
+    //DrawString(window, "blue",  1.0f,-1.0f, TEXTPOS_BOTTOM, TEXTPOS_RIGHT,  0.05f, true, glm::vec3(0.0f,0.0f,1.0f));
+    //DrawString(window, buffer,  0.0f, 0.0f, TEXTPOS_CENTER, TEXTPOS_CENTER, 0.05f, true, glm::vec3(1.0f,1.0f,1.0f));
 }
 
 // Função para debugging: imprime no terminal todas informações de um modelo

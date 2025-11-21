@@ -141,7 +141,12 @@ void main()
         vec3 I = vec3(1.0,1.0,1.0); // PREENCHA AQUI o espectro da fonte de luz
 
         // Espectro da luz ambiente
-        vec3 Ia = vec3(0.08,0.08,0.08); // PREENCHA AQUI o espectro da luz ambiente
+        // testing different values
+        // this should probably be an attribute
+        //vec3 Ia = vec3(0.8,0.8,0.8); // BIG ambient
+        vec3 Ia = vec3(0.08,0.08,0.08); // SMALL ambient
+        //vec3 Ia = vec3(0.0,0.0,0.0); // NO ambient
+        //vec3 Ia = vec3(0.0,0.8,0.0); // GREEN ambient
 
         // Termo difuso utilizando a lei dos cossenos de Lambert
         lambert_diffuse_term = Kd*I*max(0,dot(n,l));

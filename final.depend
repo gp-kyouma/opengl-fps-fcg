@@ -2879,7 +2879,7 @@
 1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\gtc\type_ptr.inl
 	<cstring>
 
-1680034120 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\draw.cpp
+1763502321 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\draw.cpp
 	"draw.h"
 	<cmath>
 	<cstdio>
@@ -2949,7 +2949,7 @@
 	<GL/glext.h>
 	<GL/glu.h>
 
-1680035287 c:\users\caosd\documents\github\opengl-fps-fcg\include\renderer.h
+1763692030 c:\users\caosd\documents\github\opengl-fps-fcg\include\renderer.h
 	<cmath>
 	<cstdio>
 	<cstdlib>
@@ -3083,7 +3083,7 @@
 	<windows.h>
 	<dlfcn.h>
 
-1718043792 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\input.cpp
+1718046483 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\input.cpp
 	"input.h"
 
 1680010532 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\level.cpp
@@ -3104,7 +3104,7 @@
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
 
-1718044115 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\main.cpp
+1763690828 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\main.cpp
 	<cmath>
 	<cstdio>
 	<cstdlib>
@@ -3143,7 +3143,7 @@
 1679259174 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\matrices.cpp
 	"matrices.h"
 
-1717788967 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\player.cpp
+1763691119 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\player.cpp
 	"player.h"
 	<cstdio>
 	<cstdlib>
@@ -3153,7 +3153,7 @@
 	"matrices.h"
 	"timer_aux.h"
 
-1680034981 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\renderer.cpp
+1763692662 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\renderer.cpp
 	"renderer.h"
 	"scene.h"
 	"input.h"
@@ -3164,7 +3164,7 @@
 1674246957 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\stb_image.cpp
 	"stb_image.h"
 
-1674246957 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\textrendering.cpp
+1763692939 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\textrendering.cpp
 	<string>
 	<glad/glad.h>
 	<GLFW/glfw3.h>
@@ -6801,4 +6801,11 @@
 	<cmath>
 	<cstdio>
 	<cstdlib>
+
+1593720803 c:\users\caosd\documents\github\opengl-fps-fcg\include\gltext-master\gltext.h
+	<stdlib.h>
+	<string.h>
+	<stdint.h>
+	<assert.h>
+	<stdio.h>
 

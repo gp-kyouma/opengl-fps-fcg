@@ -49,6 +49,15 @@ struct ObjModel
     ObjModel(const char* filename, const char* basepath = NULL, bool triangulate = true);
 };
 
+enum TextPos
+{
+    TEXTPOS_TOP,
+    TEXTPOS_LEFT,
+    TEXTPOS_CENTER,
+    TEXTPOS_RIGHT,
+    TEXTPOS_BOTTOM,
+};
+
 /*
 DECLARAÇÃO DE FUNÇÕES
 */
@@ -84,10 +93,18 @@ void BuildSquareAndAddToVirtualScene();
 
 // Declaração de funções auxiliares para renderizar texto dentro da janela
 // OpenGL. Estas funções estão definidas no arquivo "textrendering.cpp".
+void TextRendering_SetColor(glm::vec3 color);
 void TextRendering_Init();
-float TextRendering_LineHeight(GLFWwindow* window);
-float TextRendering_CharWidth(GLFWwindow* window);
-void TextRendering_PrintString(GLFWwindow* window, const std::string &str, float x, float y, float scale = 1.0f);
+float TextRendering_LineHeight(GLFWwindow* window, bool relative = false);
+float TextRendering_CharWidth(GLFWwindow* window,  bool relative = false);
+void TextRendering_PrintString(GLFWwindow* window, const std::string &str, float x, float y, float scale = 1.0f, bool relative = false, glm::vec3 color = glm::vec3(0.0f,0.0f,0.0f));
+// wrapper for ^
+void DrawString(GLFWwindow* window, const std::string &str,
+                float x, float y,
+                TextPos vertical = TEXTPOS_TOP,
+                TextPos horizontal = TEXTPOS_RIGHT,
+                float scale = 1.0f, bool relative = false,
+                glm::vec3 color = glm::vec3(0.0f,0.0f,0.0f));
 
 // Funções abaixo renderizam como texto na janela OpenGL algumas
 // informações do programa.

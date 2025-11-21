@@ -145,8 +145,7 @@ int main(int argc, char* argv[])
 {
     // Inicializamos a biblioteca GLFW, utilizada para criar uma janela do
     // sistema operacional, onde poderemos renderizar com OpenGL.
-    int success = glfwInit();
-    if (!success)
+    if (!glfwInit())
     {
         fprintf(stderr, "ERROR: glfwInit() failed.\n");
         std::exit(EXIT_FAILURE);

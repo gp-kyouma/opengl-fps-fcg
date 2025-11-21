@@ -11,6 +11,15 @@
 #include "utils.h"
 #include "dejavufont.h"
 
+enum TextPos
+{
+    TEXTPOS_TOP,
+    TEXTPOS_LEFT,
+    TEXTPOS_CENTER,
+    TEXTPOS_RIGHT,
+    TEXTPOS_BOTTOM,
+};
+
 GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id); // Função definida em main.cpp
 
 const GLchar* const textvertexshader_source = ""
@@ -27,11 +36,12 @@ const GLchar* const textvertexshader_source = ""
 const GLchar* const textfragmentshader_source = ""
 "#version 330\n"
 "uniform sampler2D tex;\n"
+"uniform vec3 textColor;\n"
 "in vec2 texCoords;\n"
 "out vec4 fragColor;\n"
 "void main()\n"
 "{\n"
-    "fragColor = vec4(0, 0, 0, texture(tex, texCoords).r);\n"
+    "fragColor = vec4(textColor.rgb, texture(tex, texCoords).r);\n"
 "}\n"
 "\0";
 
@@ -87,6 +97,15 @@ GLuint textVBO;
 GLuint textprogram_id;
 GLuint texttexture_id;
 
+GLuint textcolor_uniform;
+
+void TextRendering_SetColor(glm::vec3 color)
+{
+    glUseProgram(textprogram_id);
+    glUniform3f(textcolor_uniform, color.r, color.g, color.b);
+    glUseProgram(0);
+}
+
 void TextRendering_Init()
 {
     GLuint sampler;
@@ -117,6 +136,9 @@ void TextRendering_Init()
     texttex_uniform = glGetUniformLocation(textprogram_id, "tex");
     glCheckError();
 
+    textcolor_uniform = glGetUniformLocation(textprogram_id, "textColor");
+    glCheckError();
+
     GLuint textureunit = 31;
     glActiveTexture(GL_TEXTURE0 + textureunit);
     glBindTexture(GL_TEXTURE_2D, texttexture_id);
@@ -137,20 +159,36 @@ void TextRendering_Init()
     glUseProgram(0);
     glCheckError();
 
+    TextRendering_SetColor(glm::vec3(0.0f,0.0f,0.0f));
+    glCheckError();
+
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     glCheckError();
 }
 
-float textscale = 1.5f;
+float the_value = dejavufont.height; //aka 20.950001f; //original 600.0f;
 
-void TextRendering_PrintString(GLFWwindow* window, const std::string &str, float x, float y, float scale = 1.0f)
+void TextRendering_PrintString(GLFWwindow* window, const std::string &str, float x, float y, float scale = 1.0f, bool relative = false, glm::vec3 color = glm::vec3(0.0f,0.0f,0.0f))
 {
-    scale *= textscale;
     int width, height;
     glfwGetWindowSize(window, &width, &height);
-    float sx = scale / width;
-    float sy = scale / height;
+
+    float sx, sy;
+
+    if (relative)
+    {
+        float window_ratio = (float)width / height;
+        sx = scale / the_value / window_ratio;
+        sy = scale / the_value;
+    }
+    else
+    {
+        sx = scale / width;
+        sy = scale / height;
+    }
+
+    TextRendering_SetColor(color);
 
     for (size_t i = 0; i < str.size(); i++)
     {
@@ -211,18 +249,58 @@ void TextRendering_PrintString(GLFWwindow* window, const std::string &str, float
     }
 }
 
-float TextRendering_LineHeight(GLFWwindow* window)
+float TextRendering_LineHeight(GLFWwindow* window, bool relative = false)
 {
     int width, height;
     glfwGetWindowSize(window, &width, &height);
-    return dejavufont.height / height * textscale;
+
+    if (relative) return dejavufont.height / the_value;
+
+    return dejavufont.height / height;
 }
 
-float TextRendering_CharWidth(GLFWwindow* window)
+float TextRendering_CharWidth(GLFWwindow* window, bool relative = false)
 {
     int width, height;
     glfwGetWindowSize(window, &width, &height);
-    return dejavufont.glyphs[32].advance_x / width * textscale;
+    float window_ratio = (float)width / height;
+
+    if (relative) return dejavufont.glyphs[32].advance_x / the_value / window_ratio;
+
+    return dejavufont.glyphs[32].advance_x / width;
+}
+
+// Wrapper function for printing strings
+// (x,y) = NDC coordinates of the [vertical] [horizontal] corner of the space where text should be drawn
+// ...roughly. it's slightly offset, for whatever reason...
+// (theoretically fixable buuuuut... not nearly a priority at the moment)
+// scale when relative = true  -> *roughly* corresponding to NDC
+// scale when relative = false -> ...very much not so
+void DrawString(GLFWwindow* window, const std::string &str,
+                float x, float y,
+                TextPos vertical = TEXTPOS_TOP,
+                TextPos horizontal = TEXTPOS_RIGHT,
+                float scale = 1.0f, bool relative = false,
+                glm::vec3 color = glm::vec3(0.0f,0.0f,0.0f))
+{
+    float lineheight = TextRendering_LineHeight(window, relative);
+    float charwidth = TextRendering_CharWidth(window, relative);
+    int numchars = str.length();
+
+    float truex = x-(numchars + 1)*(charwidth*scale);
+    float truey = y-(lineheight*scale);
+
+    if (vertical == TEXTPOS_BOTTOM)
+        truey = y;
+    else if (vertical == TEXTPOS_CENTER)
+        truey = (truey + y)/2.0f;
+
+    if (horizontal == TEXTPOS_LEFT)
+        truex = x;
+    else if (horizontal == TEXTPOS_CENTER)
+        truex = (truex + x)/2.0f;
+
+    TextRendering_PrintString(window, str, truex, truey, scale, relative, color);
 }
 
 void TextRendering_PrintMatrix(GLFWwindow* window, glm::mat4 M, float x, float y, float scale = 1.0f)
