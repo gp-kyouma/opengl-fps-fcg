@@ -33,6 +33,12 @@ uniform sampler2D TextureImageSpecular;
 
 uniform vec2 repeat;
 
+// transparência
+uniform float alpha_value;
+
+uniform vec3 alpha_mask;
+uniform bool use_alpha_mask;
+
 // se true, ignora cálculos de iluminação e usa textura diretamente
 uniform bool ignoreLighting;
 
@@ -42,6 +48,12 @@ uniform bool useGouraud;
 
 // Usa projeção esférica de texturas se true
 uniform bool useSphericalUV;
+
+// usar cores diretamente (sem tex)
+uniform bool useColorDiffuse;
+uniform bool useColorSpecular;
+uniform vec3 ColorDiffuse;
+uniform vec3 ColorSpecular;
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec4 color;
@@ -91,6 +103,16 @@ void main()
     // Obtemos a refletância especular a partir da leitura da imagem TextureImageSpecular
     vec3 Ks = texture(TextureImageSpecular, vec2(U,V)).rgb;
 
+    //flat colors
+    if (useColorDiffuse)
+        Kd = ColorDiffuse;
+
+    if (useColorSpecular)
+        Ks = ColorSpecular;
+
+    if (use_alpha_mask && (Kd == alpha_mask))
+        discard;
+
     // Obtemos a posição da câmera utilizando a inversa da matriz que define o
     // sistema de coordenadas da câmera.
     vec4 origin = vec4(0.0, 0.0, 0.0, 1.0);
@@ -102,6 +124,9 @@ void main()
     // através da interpolação, feita pelo rasterizador, da posição de cada
     // vértice.
     vec4 p = position_world;
+
+    // Posição da fonte de luz
+    vec4 light_source = camera_position;// + vec4(0.0,1.0,0.0,0.0);
 
     // distância da câmera ao ponto
     float camera_dist = length(camera_position - p);
@@ -122,7 +147,7 @@ void main()
 
         // Vetor que define o sentido da fonte de luz em relação ao ponto atual.
         vec4 l = //normalize(vec4(0.0,1.0,0.0,0.0));
-                 normalize(camera_position - p);
+                 normalize(light_source - p);
 
         // Vetor que define o sentido da câmera em relação ao ponto atual.
         vec4 v = normalize(camera_position - p);
@@ -175,7 +200,7 @@ void main()
     //    suas distâncias para a câmera (desenhando primeiro objetos
     //    transparentes que estão mais longe da câmera).
     // Alpha default = 1 = 100% opaco = 0% transparente
-    color.a = 1;
+    color.a = alpha_value;
 
     // Cor final com correção gamma, considerando monitor sRGB.
     // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas

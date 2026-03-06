@@ -243,7 +243,7 @@ void TextRendering_PrintString(GLFWwindow* window, const std::string &str, float
         glUseProgram(0);
         glDepthFunc(GL_LESS);
 
-        glDisable(GL_BLEND);
+        //glDisable(GL_BLEND);
 
         x += (glyph->advance_x * sx);
     }

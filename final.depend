@@ -2879,7 +2879,7 @@
 1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\gtc\type_ptr.inl
 	<cstring>
 
-1763502321 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\draw.cpp
+1771618359 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\draw.cpp
 	"draw.h"
 	<cmath>
 	<cstdio>
@@ -2898,7 +2898,7 @@
 	"matrices.h"
 	"vec_aux.h"
 
-1679956813 c:\users\caosd\documents\github\opengl-fps-fcg\include\draw.h
+1772758197 c:\users\caosd\documents\github\opengl-fps-fcg\include\draw.h
 	<string>
 	<glad/glad.h>
 	<GLFW/glfw3.h>
@@ -2949,7 +2949,7 @@
 	<GL/glext.h>
 	<GL/glu.h>
 
-1763692030 c:\users\caosd\documents\github\opengl-fps-fcg\include\renderer.h
+1771210267 c:\users\caosd\documents\github\opengl-fps-fcg\include\renderer.h
 	<cmath>
 	<cstdio>
 	<cstdlib>
@@ -3025,7 +3025,7 @@
 	"obstacle.h"
 	"enemy.h"
 
-1717983005 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\game.cpp
+1772716560 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\game.cpp
 	"game.h"
 	<cstdio>
 	<cstdlib>
@@ -3104,7 +3104,7 @@
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
 
-1763690828 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\main.cpp
+1771278204 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\main.cpp
 	<cmath>
 	<cstdio>
 	<cstdlib>
@@ -3153,7 +3153,7 @@
 	"matrices.h"
 	"timer_aux.h"
 
-1763692662 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\renderer.cpp
+1771210267 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\renderer.cpp
 	"renderer.h"
 	"scene.h"
 	"input.h"
@@ -3164,7 +3164,7 @@
 1674246957 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\stb_image.cpp
 	"stb_image.h"
 
-1763692939 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\textrendering.cpp
+1771203523 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\textrendering.cpp
 	<string>
 	<glad/glad.h>
 	<GLFW/glfw3.h>

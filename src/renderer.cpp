@@ -14,11 +14,18 @@ GLint g_object_id_uniform;
 GLint g_bbox_min_uniform;
 GLint g_bbox_max_uniform;
 GLint g_repeat_uniform;
+GLint g_alpha_uniform;
+GLint g_alpha_mask_uniform;
+GLint g_use_alpha_mask_uniform;
 GLint g_ignore_lighting_uniform;
 GLint g_use_gouraud_uniform;
 GLint g_use_spherical_uv_uniform;
 GLuint g_diffuse_texture_image_uniform;
 GLuint g_specular_texture_image_uniform;
+GLint g_use_diffuse_color_uniform;
+GLint g_use_specular_color_uniform;
+GLint g_diffuse_color_uniform;
+GLint g_specular_color_uniform;
 
 // Número de texturas carregadas pela função LoadTextureImage()
 GLuint g_NumLoadedTextures = 0;
@@ -201,10 +208,18 @@ void LoadShadersFromFiles()
     g_bbox_max_uniform   = glGetUniformLocation(g_GpuProgramID, "bbox_max");
 
     g_repeat_uniform = glGetUniformLocation(g_GpuProgramID, "repeat");
+    g_alpha_uniform = glGetUniformLocation(g_GpuProgramID, "alpha_value");
+    g_alpha_mask_uniform = glGetUniformLocation(g_GpuProgramID, "alpha_mask");
+    g_use_alpha_mask_uniform = glGetUniformLocation(g_GpuProgramID, "use_alpha_mask");
 
     // Variáveis em "shader_fragment.glsl" para acesso das imagens de textura
     g_diffuse_texture_image_uniform  = glGetUniformLocation(g_GpuProgramID, "TextureImageDiffuse");
     g_specular_texture_image_uniform = glGetUniformLocation(g_GpuProgramID, "TextureImageSpecular");
+
+    g_use_diffuse_color_uniform     = glGetUniformLocation(g_GpuProgramID, "useColorDiffuse");
+    g_use_specular_color_uniform    = glGetUniformLocation(g_GpuProgramID, "useColorSpecular");
+    g_diffuse_color_uniform         = glGetUniformLocation(g_GpuProgramID, "ColorDiffuse");
+    g_specular_color_uniform        = glGetUniformLocation(g_GpuProgramID, "ColorSpecular");
 
     g_ignore_lighting_uniform  = glGetUniformLocation(g_GpuProgramID, "ignoreLighting");
     g_use_gouraud_uniform      = glGetUniformLocation(g_GpuProgramID, "useGouraud");
@@ -215,12 +230,26 @@ void LoadShadersFromFiles()
 void setDiffuseTexture(std::string name)
 {
     glUniform1i(g_diffuse_texture_image_uniform, g_TextureMap[name]);
+    glUniform1i(g_use_diffuse_color_uniform, false);
 }
 
 // 'Liga' a textura com nome correspondente no dicionário (specular)
 void setSpecularTexture(std::string name)
 {
     glUniform1i(g_specular_texture_image_uniform, g_TextureMap[name]);
+    glUniform1i(g_use_specular_color_uniform, false);
+}
+
+void setDiffuseColor(glm::vec3 color)
+{
+    glUniform3f(g_diffuse_color_uniform, color.r, color.g, color.b);
+    glUniform1i(g_use_diffuse_color_uniform, true);
+}
+
+void setSpecularColor(glm::vec3 color)
+{
+    glUniform3f(g_specular_color_uniform, color.r, color.g, color.b);
+    glUniform1i(g_use_specular_color_uniform, true);
 }
 
 void setTextureRepeat(float u, float v)
@@ -231,6 +260,28 @@ void setTextureRepeat(float u, float v)
 void resetTextureRepeat()
 {
     glUniform2f(g_repeat_uniform, 1.0f, 1.0f);
+}
+
+void setAlphaValue(float a)
+{
+    glUniform1f(g_alpha_uniform, a);
+}
+
+void resetAlphaValue()
+{
+    glUniform1f(g_alpha_uniform, 1.0f);
+}
+
+void setAlphaMask(glm::vec3 color)
+{
+    glUniform3f(g_alpha_mask_uniform, color.r, color.g, color.b);
+    glUniform1i(g_use_alpha_mask_uniform, true);
+}
+
+void resetAlphaMask()
+{
+    glUniform3f(g_alpha_mask_uniform, -1.0f, -1.0f, -1.0f);
+    glUniform1i(g_use_alpha_mask_uniform, false);
 }
 
 // Função que computa as normais de um ObjModel, caso elas não tenham sido
@@ -1003,9 +1054,6 @@ GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id)
 // second).
 void TextRendering_ShowFramesPerSecond(GLFWwindow* window)
 {
-    if ( !g_ShowInfo )
-        return;
-
     // Variáveis estáticas (static) mantém seus valores entre chamadas
     // subsequentes da função!
     static float old_seconds = (float)glfwGetTime();
@@ -1028,6 +1076,9 @@ void TextRendering_ShowFramesPerSecond(GLFWwindow* window)
         old_seconds = seconds;
         ellapsed_frames = 0;
     }
+
+    if ( !g_ShowInfo )
+        return;
 
     // absolute
     DrawString(window, buffer, -1.0f, 1.0f, TEXTPOS_TOP, TEXTPOS_LEFT, 1.5f);

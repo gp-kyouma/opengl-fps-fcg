@@ -19,13 +19,30 @@
 #include "enemy.h"
 
 /*
+CONSTANTES GLOBAIS
+*/
+extern glm::vec3 COLOR_WHITE;
+extern glm::vec3 COLOR_GREY;
+extern glm::vec3 COLOR_BLACK;
+
+extern glm::vec3 COLOR_RED;
+extern glm::vec3 COLOR_GREEN;
+extern glm::vec3 COLOR_BLUE;
+
+extern glm::vec3 COLOR_CYAN;
+extern glm::vec3 COLOR_MAGENTA;
+extern glm::vec3 COLOR_YELLOW;
+
+/*
 DECLARAÇÃO DE FUNÇÕES
 */
 
 void drawAABB(AABB aabb); // para razões de debug
+void drawColorCompare(float aspect);//debug
 
 void drawCrosshair(float aspect);
-void drawBar(float value, float maxValue, float aspect, std::string tex1, std::string tex2, std::string tex3, int position);
+void drawBar(float value, float maxValue, float aspect, std::vector<glm::vec3> colors, int position); //n colors
+void drawBar(float value, float maxValue, float aspect, glm::vec3 color, int position); //1 color
 void drawBanner(float aspect, std::string tex); // used for game over, you won, etc...
 
 void drawFloor(Level level);

@@ -463,8 +463,8 @@ void Game::Draw(GLFWwindow* window)
 
     // Projeção Perspectiva.
     // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
-    float field_of_view = 3.141592 / 3.0f;
-    glm::mat4 projection = Matrix_Perspective(field_of_view, g_ScreenRatio, nearplane, farplane);
+    float camera_fov = 3.141592 / 2.0f; //90graus
+    glm::mat4 projection = Matrix_Perspective(camera_fov, g_ScreenRatio, nearplane, farplane);
 
     // Enviamos as matrizes "view" e "projection" para a placa de vídeo
     // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
@@ -473,7 +473,17 @@ void Game::Draw(GLFWwindow* window)
     glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
 
     // reseta repetição de texturas
-    resetTextureRepeat();
+    resetTextureRepeat(); // this FAILS the first frame it runs. god only knows why
+
+    // reseta alpha stuff
+    // these FAIL the first frame they run. god only knows why
+    resetAlphaMask();
+    resetAlphaValue();
+
+    //reset misc flags
+    glUniform1i(g_ignore_lighting_uniform, false);
+    glUniform1i(g_use_gouraud_uniform, false);
+    glUniform1i(g_use_spherical_uv_uniform, false);
 
     // (/INICIALIZAÇÃO)
 
@@ -513,7 +523,14 @@ void Game::Draw(GLFWwindow* window)
 
     // Desenha arma
     if (!noUpdate)
+    {
+        // draw weapon with separate fov
+        float weapon_fov = 3.141592 / 3.0f; //60graus
+        projection = Matrix_Perspective(weapon_fov, g_ScreenRatio, nearplane, farplane);
+        glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
+
         drawWeapon(player, player.getCurrentWeapon().wpn_type, g_CameraTheta, g_CameraPhi);
+    }
 
     // Os objetos a seguir sempre serão desenhados na frente; desativa o z-buffer
     glDisable(GL_DEPTH_TEST);
@@ -537,12 +554,20 @@ void Game::Draw(GLFWwindow* window)
         drawCrosshair(g_ScreenRatio);
 
         // Desenha barra de vida
-        drawBar((float)player.health, (float)player.maxHealth, g_ScreenRatio, "green", "yellow", "red", 0);
+        std::vector<glm::vec3> healthColors = {COLOR_GREEN, COLOR_GREEN, COLOR_YELLOW, COLOR_RED};
+        drawBar((float)player.health, (float)player.maxHealth, g_ScreenRatio, healthColors, 0);
 
         // Desenha barra de cooldown da arma se estiver em cooldown
         if (player.wpnCooldown > 0)
-            drawBar(player.wpnCooldown, player.getCurrentWeapon().cooldown, g_ScreenRatio, "white", "white", "white", 1);
+            drawBar(player.wpnCooldown, player.getCurrentWeapon().cooldown, g_ScreenRatio, COLOR_WHITE, 1);
     }
+
+    /*
+    if (g_ShowInfo)
+    {
+        drawColorCompare(g_ScreenRatio);
+    }
+    */
 
     // Reativa o z-buffer
     glEnable(GL_DEPTH_TEST);
@@ -639,7 +664,7 @@ void Game::drawCutscene(GLFWwindow* window)
 
     // Projeção Perspectiva.
     // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
-    float field_of_view = 3.141592 / 3.0f;
+    float field_of_view = 3.141592 / 3.0f; //60graus
     glm::mat4 projection = Matrix_Perspective(field_of_view, g_ScreenRatio, nearplane, farplane);
 
     // Enviamos as matrizes "view" e "projection" para a placa de vídeo
@@ -649,7 +674,17 @@ void Game::drawCutscene(GLFWwindow* window)
     glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
 
     // reseta repetição de texturas
-    resetTextureRepeat();
+    resetTextureRepeat(); // this FAILS the first time it runs. god only knows why
+
+    // reseta alpha stuff
+    // these FAIL the first time they run. god only knows why
+    resetAlphaMask();
+    resetAlphaValue();
+
+    //reset misc flags
+    glUniform1i(g_ignore_lighting_uniform, false);
+    glUniform1i(g_use_gouraud_uniform, false);
+    glUniform1i(g_use_spherical_uv_uniform, false);
 
     // Desenha o chão e as paredes da fase
     drawFloor(level_queue.front());

@@ -97,7 +97,7 @@ void Player::doPlayerMovement(float deltaTime)
 
 void Player::doWeaponAnimation(float deltaTime)
 {
-    if (g_LeftMouseButtonPressed)
+    if (g_LeftMouseButtonPressed || g_RightMouseButtonPressed)
         incrementTimer(wpnAnimation, deltaTime*6, 1.0f);
     else
         decrementTimer(wpnAnimation, deltaTime*6, 0.0f);

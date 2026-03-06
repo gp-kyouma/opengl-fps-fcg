@@ -114,9 +114,19 @@ void TextRendering_ShowFramesPerSecond(GLFWwindow* window);
 void setDiffuseTexture(std::string name);
 void setSpecularTexture(std::string name);
 
+//usar flat color
+void setDiffuseColor(glm::vec3 color);
+void setSpecularColor(glm::vec3 color);
+
 // determina repetição de textura
 void setTextureRepeat(float u, float v);
 void resetTextureRepeat();
+
+//determina alpha
+void setAlphaValue(float a);
+void resetAlphaValue();
+void setAlphaMask(glm::vec3 color);
+void resetAlphaMask();
 
 /*
 DECLARAÇÃO DE VARIÁVEIS GLOBAIS
@@ -134,11 +144,18 @@ extern GLint g_object_id_uniform;
 extern GLint g_bbox_min_uniform;
 extern GLint g_bbox_max_uniform;
 extern GLint g_repeat_uniform;
+extern GLint g_alpha_uniform;
+extern GLint g_alpha_mask_uniform;
+extern GLint g_use_alpha_mask_uniform;
 extern GLint g_ignore_lighting_uniform;
 extern GLint g_use_gouraud_uniform;
 extern GLint g_use_spherical_uv_uniform;
 extern GLuint g_diffuse_texture_image_uniform;
 extern GLuint g_specular_texture_image_uniform;
+extern GLint g_use_diffuse_color_uniform;
+extern GLint g_use_specular_color_uniform;
+extern GLint g_diffuse_color_uniform;
+extern GLint g_specular_color_uniform;
 
 // Número de texturas carregadas pela função LoadTextureImage()
 extern GLuint g_NumLoadedTextures;

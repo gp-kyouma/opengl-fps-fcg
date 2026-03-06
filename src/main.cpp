@@ -63,6 +63,7 @@ void LoadAllTextures()
     LoadTextureImage("../../data/obstacles/square_floor_spec_manual.jpg",        "platform_spec");
     LoadTextureImage("../../data/obstacles/medieval_blocks_spec.jpg",            "wall_obstacle_spec");
 
+    /*
     LoadTextureImage("../../data/full_white.jpg",  "white");
     LoadTextureImage("../../data/full_grey.jpg",   "grey");
     LoadTextureImage("../../data/full_black.jpg",  "black");
@@ -70,6 +71,7 @@ void LoadAllTextures()
     LoadTextureImage("../../data/full_yellow.jpg", "yellow");
     LoadTextureImage("../../data/full_red.jpg",    "red");
     LoadTextureImage("../../data/full_blue.jpg",   "blue");
+    */
 
     LoadTextureImage("../../data/silver_texture.jpg", "silver");
 
@@ -241,9 +243,9 @@ int main(int argc, char* argv[])
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
 
-    glUniform1i(g_ignore_lighting_uniform, false);
-    glUniform1i(g_use_gouraud_uniform, false);
-    glUniform1i(g_use_spherical_uv_uniform, false);
+    //enable blending
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     srand(time(0));
 

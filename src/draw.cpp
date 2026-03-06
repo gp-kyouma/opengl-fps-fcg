@@ -22,6 +22,19 @@
 #include "matrices.h"
 #include "vec_aux.h"
 
+// some color constants
+glm::vec3 COLOR_WHITE   = glm::vec3(1.0f,   1.0f,   1.0f);
+glm::vec3 COLOR_GREY    = glm::vec3(0.05f,  0.05f,  0.05f);//does not map to [0,255] as i expected it to...?
+glm::vec3 COLOR_BLACK   = glm::vec3(0.0f,   0.0f,   0.0f);
+
+glm::vec3 COLOR_RED     = glm::vec3(1.0f,   0.0f,   0.0f);
+glm::vec3 COLOR_GREEN   = glm::vec3(0.0f,   1.0f,   0.0f);
+glm::vec3 COLOR_BLUE    = glm::vec3(0.0f,   0.0f,   1.0f);
+
+glm::vec3 COLOR_CYAN    = glm::vec3(0.0f,   1.0f,   1.0f);
+glm::vec3 COLOR_MAGENTA = glm::vec3(1.0f,   0.0f,   1.0f);
+glm::vec3 COLOR_YELLOW  = glm::vec3(1.0f,   1.0f,   0.0f);
+
 void drawAABB(AABB aabb) // para razões de debug
 {
     glm::vec3 aabb_center = aabb.getCenter();
@@ -33,8 +46,8 @@ void drawAABB(AABB aabb) // para razões de debug
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
 
     glUniform1i(g_ignore_lighting_uniform, true);
-    setDiffuseTexture("white");
-    setSpecularTexture("black");
+    setDiffuseColor(COLOR_WHITE);
+    setSpecularColor(COLOR_BLACK);
     glLineWidth(4.0f);
     DrawVirtualObject("cube_edges");
     glUniform1i(g_ignore_lighting_uniform, false);
@@ -49,8 +62,8 @@ void drawCrosshair(float aspect)
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
 
     glUniform1i(g_ignore_lighting_uniform, true);
-    setDiffuseTexture("white");
-    setSpecularTexture("black");
+    setDiffuseColor(COLOR_WHITE);
+    setSpecularColor(COLOR_BLACK);
     glLineWidth(2.0f);
     DrawVirtualObject("crosshair");
     glUniform1i(g_ignore_lighting_uniform, false);
@@ -58,11 +71,9 @@ void drawCrosshair(float aspect)
 
 // Desenha uma progress bar
 // (usado para barra de HP e barra de cooldown)
-// tex1 é usada quando       value/maxvalue > 2/3
-// tex2 é usada quando 2/3 > value/maxvalue > 1/3
-// tex3 é usada quando 1/3 > value/maxvalue
-// position começa de 0, cada incremento aumenta a posição vertical da barra
-void drawBar(float value, float maxValue, float aspect, std::string tex1, std::string tex2, std::string tex3, int position)
+// Cor (do vetor de cores) depende da % da barra
+// position começa de 0, cada incremento aumenta a posição vertical da barra (this is jank)
+void drawBar(float value, float maxValue, float aspect, std::vector<glm::vec3> colors, int position)
 {
     // REMINDER THAT "SQUARE" IS SIZE 2 [-1,1], NOT SIZE 1 [-0.5,0.5]
     // SO SCALING BY 0.5 IS ACTUALLY SETTING SIZE TO 1
@@ -80,8 +91,8 @@ void drawBar(float value, float maxValue, float aspect, std::string tex1, std::s
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
 
     glUniform1i(g_ignore_lighting_uniform, true);
-    setDiffuseTexture("grey");
-    setSpecularTexture("black");
+    setDiffuseColor(COLOR_GREY);
+    setSpecularColor(COLOR_BLACK);
     DrawVirtualObject("square");
 
     // depois desenha a barra
@@ -95,16 +106,32 @@ void drawBar(float value, float maxValue, float aspect, std::string tex1, std::s
 
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
 
-    if (barRatio >= 0.66f)
-        setDiffuseTexture(tex1);
-    else if (barRatio < 0.66f && barRatio > 0.33f)
-        setDiffuseTexture(tex2);
+    //set appropriate color
+    int numColors = colors.size();
+    if (numColors == 1 || barRatio >= 1.0f)
+        setDiffuseColor(colors[0]);
+    else if (barRatio <= 0.0f)
+        setDiffuseColor(colors[numColors-1]);
     else
-        setDiffuseTexture(tex3);
+    {
+        int index = numColors - (std::ceil(barRatio * numColors));
 
-    setSpecularTexture("black");
+        if (index >= numColors)
+            index = numColors-1;
+
+        setDiffuseColor(colors[index]);
+    }
+
+    setSpecularColor(COLOR_BLACK);
     DrawVirtualObject("square");
     glUniform1i(g_ignore_lighting_uniform, false);
+}
+
+//Overload de drawBar para barras de 1 cor
+void drawBar(float value, float maxValue, float aspect, glm::vec3 color, int position)
+{
+    std::vector<glm::vec3> oneColor = {color};
+    drawBar(value, maxValue, aspect, oneColor, position);
 }
 
 void drawBanner(float aspect, std::string tex) // used for game over, you won, etc...
@@ -117,8 +144,37 @@ void drawBanner(float aspect, std::string tex) // used for game over, you won, e
 
     glUniform1i(g_ignore_lighting_uniform, true);
     setDiffuseTexture(tex);
-    setSpecularTexture("black");
+    setSpecularColor(COLOR_BLACK);
     DrawVirtualObject("square");
+    glUniform1i(g_ignore_lighting_uniform, false);
+}
+
+void drawColorCompare(float aspect)//debug
+{
+    glm::vec2 bannerSize = glm::vec2(0.1f,0.2f);
+    glm::vec2 translate = glm::vec2(-0.4f,0.0f);
+
+    std::vector<glm::vec3> colors = {COLOR_WHITE, COLOR_GREY, COLOR_BLACK, COLOR_RED, COLOR_GREEN, COLOR_BLUE, COLOR_CYAN, COLOR_MAGENTA, COLOR_YELLOW};
+
+    glm::mat4 modelscale = Matrix_Scale(bannerSize.x / aspect, bannerSize.y, 1.0f);
+    glm::mat4 model;
+
+    setSpecularColor(COLOR_BLACK);
+
+    glUniform1i(g_ignore_lighting_uniform, true);
+
+    for (int i = 0; i < 9; i++)
+    {
+        model = Matrix_Translate(translate.x, translate.y, 0.0f) * modelscale;
+
+        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+
+        setDiffuseColor(colors[i]);
+        DrawVirtualObject("square");
+
+        translate.x += 0.1;
+    }
+
     glUniform1i(g_ignore_lighting_uniform, false);
 }
 
@@ -134,7 +190,7 @@ void drawFloor(Level level)
 
     setTextureRepeat(halfWidth,halfLength);
     setDiffuseTexture("floor");
-    setSpecularTexture("grey");
+    setSpecularColor(COLOR_GREY);
     DrawVirtualObject("the_plane");
     resetTextureRepeat();
 }
@@ -219,9 +275,8 @@ void drawObstacle(Obstacle obstacle)
             setSpecularTexture("wall_obstacle_spec");
             break;
         case OBSTACLE_BOX:
-            resetTextureRepeat();
             setDiffuseTexture("box");
-            setSpecularTexture("black");
+            setSpecularColor(COLOR_BLACK);
             break;
         default: break;
     }
@@ -288,10 +343,17 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
 
         //NONE OF THIS WILL MAKE SENSE IF I REPURPOSE WPNANIMATION FOR AIM
         //SO WATCH OUT FOR THAT
+        /*
         if (player.wpnAnimation < 1.0f)
             melee_rotate = player.wpnAnimation;
         else
-            melee_rotate = fabs((cooldown_percent * 2.0f) - 1.0f);
+            melee_rotate = fabs((cooldown_percent * 2.0f) - 1.0f); //1-0-1
+        */
+
+        //proper swing (might be too slow)
+        //sword needs noAim
+        melee_rotate = fabs((cooldown_percent * 2.0f) - 1.0f); //1-0-1
+        melee_rotate = -melee_rotate + 1.0f; //0-1-0
 
         horizontal_displace *= (1.0f - melee_rotate);
 
@@ -315,8 +377,6 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
 
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
 
-    resetTextureRepeat();
-
     switch (type)
     {
         case WPN_SWORD:
@@ -326,12 +386,12 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
             break;
         case WPN_PISTOL:
             setDiffuseTexture("pistol");
-            setSpecularTexture("black");
+            setSpecularColor(COLOR_BLACK);
             DrawVirtualObject("pistol");
             break;
         case WPN_SHOTGUN:
             setDiffuseTexture("shotgun");
-            setSpecularTexture("black");
+            setSpecularColor(COLOR_BLACK);
             DrawVirtualObject("shotgun");
             break;
         case WPN_MINIGUN:
@@ -377,8 +437,10 @@ void drawProjectile(Projectile proj)
     switch (proj.type)
     {
         case PROJ_HITSCAN:
-            setDiffuseTexture("blue");
-            setSpecularTexture("white");
+            //setDiffuseColor(COLOR_BLUE);
+            //setSpecularColor(COLOR_WHITE);
+            setDiffuseColor(COLOR_YELLOW);
+            setSpecularColor(COLOR_RED);
             glLineWidth(4.0f);
             DrawVirtualObject("line");
             break;
@@ -425,22 +487,22 @@ void drawEnemy(Enemy enemy)
     switch (enemy.type)
     {
         case ENEMY_SKELETON:
-            setDiffuseTexture("grey");
+            setDiffuseColor(COLOR_GREY);
 
             if (isInCooldown)
-                setSpecularTexture("red");
+                setSpecularColor(COLOR_RED);
             else
-                setSpecularTexture("white");
+                setSpecularColor(COLOR_WHITE);
 
             DrawVirtualObject("skeleton");
             break;
         case ENEMY_BIG_SKELETON:
-            setDiffuseTexture("black");
+            setDiffuseColor(COLOR_BLACK);
 
             if (isInCooldown)
-                setSpecularTexture("red");
+                setSpecularColor(COLOR_RED);
             else
-                setSpecularTexture("grey");
+                setSpecularColor(COLOR_GREY);
 
             DrawVirtualObject("skeleton");
             break;
@@ -448,7 +510,7 @@ void drawEnemy(Enemy enemy)
             setDiffuseTexture("minotaur");
 
             if (isInCooldown)
-                setSpecularTexture("red");
+                setSpecularColor(COLOR_RED);
             else
                 setSpecularTexture("minotaur_spec");
 
