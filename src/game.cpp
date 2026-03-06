@@ -101,6 +101,7 @@ void Game::Init()
 
     // TEMPO
     prevTime = (float)glfwGetTime();
+    totalTime = 0.0f;
 }
 
 void Game::Update()
@@ -387,6 +388,10 @@ void Game::Update()
         }
     }
 
+    // update level timer
+    // should this be here or at the start? hmm...
+    levelTime += deltaTime;
+
     // liga noUpdate se estiver numa condição de fim de fase
     if (player.isDead() || (enemies.empty()))
         noUpdate = true;
@@ -405,11 +410,13 @@ void Game::checkLevelEnd()
     {
         if (level_queue.size() == 1) // se for o último nível
         {
+            totalTime += levelTime;
             initCutscene();
         }
         else if (g_EnterKeyPressed)
         {
             level_queue.pop();
+            totalTime += levelTime;
             loadTopLevel();
         }
     }
@@ -574,6 +581,12 @@ void Game::Draw(GLFWwindow* window)
 
     // (/DESENHA OBJETOS)
 
+    // NOTE:
+    // Text has to be the last thing that gets drawn in a frame otherwise it glitches out
+
+    // print level timer on top right
+    drawTimer(window, levelTime, true);
+
     // Imprimimos na tela informação sobre o número de quadros renderizados
     // por segundo (frames per second).
     TextRendering_ShowFramesPerSecond(window);
@@ -696,16 +709,16 @@ void Game::drawCutscene(GLFWwindow* window)
     // Desenha o minotauro
     drawEnemy(enemies[0]);
 
+    // Os objetos a seguir sempre serão desenhados na frente; desativa o z-buffer
+    glDisable(GL_DEPTH_TEST);
+
     // Se tiver acabado a cutscene
     if (cutsceneStep == 6.0f)
     {
-        // Os objetos a seguir sempre serão desenhados na frente; desativa o z-buffer
-        glDisable(GL_DEPTH_TEST);
-
         // Últimas coisas são desenhadas diretamente em NDC
         // Desativa matrizes de view e projeção
-        glm::mat4 view       = Matrix_Identity();
-        glm::mat4 projection = Matrix_Identity();
+        view       = Matrix_Identity();
+        projection = Matrix_Identity();
 
         glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
         glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
@@ -713,9 +726,19 @@ void Game::drawCutscene(GLFWwindow* window)
         // Desenha mensagem de fim de jogo
         drawBanner(g_ScreenRatio, "game_clear");
 
-        // Reativa o z-buffer
-        glEnable(GL_DEPTH_TEST);
+        // Desenha tempo final de jogo
+        DrawString(window, "FINAL TIME:", 0.0f, -0.625f, TEXTPOS_CENTER, TEXTPOS_CENTER, 4.0f, false, COLOR_WHITE);
+        drawTimer(window, totalTime, false);
     }
+
+    // Desenha tempo da fase final
+    drawTimer(window, levelTime, true);
+
+    // NOTE:
+    // Text has to be the last thing that gets drawn in a frame otherwise it glitches out
+
+    // Reativa o z-buffer
+    glEnable(GL_DEPTH_TEST);
 
     // O framebuffer onde OpenGL executa as operações de renderização não
     // é o mesmo que está sendo mostrado para o usuário, caso contrário
@@ -839,6 +862,8 @@ void Game::loadTopLevel()
     player.wpnAnimation = 0.0f;
 
     player.resetHealth();
+
+    levelTime = 0.0f;
 
     noUpdate = false;
 }

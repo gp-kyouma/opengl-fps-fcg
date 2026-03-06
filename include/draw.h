@@ -52,4 +52,6 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi);
 void drawProjectile(Projectile proj);
 void drawEnemy(Enemy enemy);
 
+void drawTimer(GLFWwindow* window, float timer, bool hud);
+
 #endif // FCG_DRAW

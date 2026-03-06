@@ -30,6 +30,8 @@ struct Game
     // informações de tempo
     float prevTime;
     float deltaTime;
+    float levelTime;
+    float totalTime;
 
     Player player;
 

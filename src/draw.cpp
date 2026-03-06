@@ -341,6 +341,8 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
         float melee_rotate; // 1 is pointed forward, 0 is pointed up
         float cooldown_percent = player.wpnCooldown / player.getCurrentWeapon().cooldown;
 
+        float wide_rotate = player.wpnAnimation;//aim...
+
         //NONE OF THIS WILL MAKE SENSE IF I REPURPOSE WPNANIMATION FOR AIM
         //SO WATCH OUT FOR THAT
         /*
@@ -351,13 +353,17 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
         */
 
         //proper swing (might be too slow)
-        //sword needs noAim
+        //sword needs noAim(?)
         melee_rotate = fabs((cooldown_percent * 2.0f) - 1.0f); //1-0-1
         melee_rotate = -melee_rotate + 1.0f; //0-1-0
 
-        horizontal_displace *= (1.0f - melee_rotate);
+        // mr 0, wr 0 = left
+        // mr 0, wr 1 = middle
+        // mr 1, wr 0 = middle
+        // mr 1, wr 1 = right
+        horizontal_displace *= (1.0f - melee_rotate - (wide_rotate*1.375));
 
-        model = Matrix_Rotate_Z(-pi2 + melee_rotate * pi2);
+        model = Matrix_Rotate_X(wide_rotate * -pi2 * 0.875f) * Matrix_Rotate_Z(-pi2 + melee_rotate * pi2);
     }
     else
     {
@@ -527,4 +533,32 @@ void drawEnemy(Enemy enemy)
     }
 
     glUniform1i(g_use_gouraud_uniform, false);
+}
+
+// Escrevemos na tela um tempo (em segundos).
+// hud == true: desenha no canto superior direito
+// hud == false: desenha perto do meio
+void drawTimer(GLFWwindow* window, float timer, bool hud)
+{
+    char buffer[20] = "??:??:???";
+
+    int seconds = std::floor(timer);
+    int minutes = (seconds/60);
+    int hours   = (minutes/60);
+    int m_seconds = (timer - seconds) * 1000;
+
+    seconds = seconds % 60;
+    minutes = minutes % 60;
+
+    if (hours == 0)
+        snprintf(buffer, 20, "%02d:%02d:%03d", minutes, seconds, m_seconds);
+    else if (hours < 99)
+        snprintf(buffer, 20, "%02d:%02d:%02d:%03d", hours, minutes, seconds, m_seconds);
+    else
+        snprintf(buffer, 20, "Bro are you ok?");
+
+    if (hud)
+        DrawString(window, buffer, 1.0f, 1.0f, TEXTPOS_TOP, TEXTPOS_RIGHT, 3.0f, false, COLOR_WHITE);
+    else
+        DrawString(window, buffer, 0.0f, -0.75f, TEXTPOS_CENTER, TEXTPOS_CENTER, 4.5f, false, COLOR_WHITE);
 }
