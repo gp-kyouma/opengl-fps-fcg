@@ -48,18 +48,29 @@ AABB Enemy::getAABB()
     return result;
 }
 
-void Enemy::doEnemyMovement(float deltaTime)
+void Enemy::update(float deltaTime)
 {
-    pos += view * speed * deltaTime;
-}
+    //doEnemyMovement
+    if (seesPlayer)
+    {
+        glm::vec3 move_vec = view;
+        move_vec.y = 0;
+        float move_norm = norm(Vetor(move_vec));
+        if (move_norm != 0)
+            move_vec /= move_norm;
 
-void Enemy::doEnemyGravity(float deltaTime)
-{
+        pos += move_vec * speed * deltaTime;
+    }
+
+    //doEnemyGravity
     const float gravity = 5.0f;
     if (!grounded)
         y_velocity -= (gravity * deltaTime);
 
     pos.y += (y_velocity * deltaTime);
+
+    //doDamageCooldown
+    decrementTimer(dmgCooldown, deltaTime, 0.0f);
 }
 
 void Enemy::updateView(glm::vec3 player_pos)
@@ -72,11 +83,6 @@ void Enemy::updateView(glm::vec3 player_pos)
 bool Enemy::isWithinRange(glm::vec3 player_pos)
 {
     return (distance(pos, player_pos) <= followRange);
-}
-
-void Enemy::doDamageCooldown(float deltaTime)
-{
-    decrementTimer(dmgCooldown, deltaTime, 0.0f);
 }
 
 void Enemy::takeDamage(int dmg)

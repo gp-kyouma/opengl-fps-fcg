@@ -27,8 +27,14 @@ enum HitboxType
     RAY
 };
 
+// Estrutura base para elementos de colisão
+struct Collider
+{
+    HitboxType type;
+};
+
 // Estrutura que descreve uma AABB (axis-aligned bounding box) de um objeto
-struct AABB
+struct AABB : Collider
 {
     glm::vec3 aabb_min;
     glm::vec3 aabb_max;
@@ -36,20 +42,26 @@ struct AABB
     // funções auxiliares
     glm::vec3 getSize();
     glm::vec3 getCenter();
+
+    AABB();
 };
 
 // Estrutura que descreve uma esfera que envolve um objeto
-struct Sphere
+struct Sphere : Collider
 {
     glm::vec3 center;
     float radius;
+
+    Sphere();
 };
 
 // Estrutura que descreve um raio partindo de um ponto
-struct Ray
+struct Ray : Collider
 {
     glm::vec3 origin;
     glm::vec3 direction;
+
+    Ray();
 };
 
 /*

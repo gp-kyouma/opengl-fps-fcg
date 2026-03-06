@@ -59,6 +59,9 @@ void LoadAllTextures()
     LoadTextureImage("../../data/obstacles/medieval_blocks.jpg",     "wall_obstacle");
     LoadTextureImage("../../data/obstacles/box.jpg",                 "box");
 
+    LoadTextureImage("../../data/obstacles/dice.png", "dice");
+    LoadTextureImage("../../data/obstacles/cubetex_template.png", "cubetex_template");
+
     LoadTextureImage("../../data/obstacles/japanese_stone_wall_spec_manual.jpg", "wall_spec");
     LoadTextureImage("../../data/obstacles/square_floor_spec_manual.jpg",        "platform_spec");
     LoadTextureImage("../../data/obstacles/medieval_blocks_spec.jpg",            "wall_obstacle_spec");
@@ -103,6 +106,10 @@ void LoadAllModels()
     ObjModel cubemodel("../../data/obstacles/cube.obj");
     ComputeNormals(&cubemodel);
     BuildTrianglesAndAddToVirtualScene(&cubemodel);
+
+    ObjModel cubetexmodel("../../data/obstacles/cube-tex.obj");
+    ComputeNormals(&cubetexmodel);
+    BuildTrianglesAndAddToVirtualScene(&cubetexmodel);
 
     ObjModel pistol("../../data/weapons/pistol.obj");
     ComputeNormals(&pistol);

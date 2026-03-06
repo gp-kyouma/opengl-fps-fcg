@@ -34,6 +34,8 @@ Enemy EnemyData::buildEnemy()
     enemy.grounded    = false;
     enemy.y_velocity  = 0.0f;
 
+    enemy.seesPlayer  = false;
+
     enemy.pos         = pos;
     enemy.view        = glm::vec3(0.0f,0.0f,1.0f);
 
@@ -136,6 +138,14 @@ void Level::createLevel1()
     obstacles.push_back(ob2);
     obstacles.push_back(ob3);
     obstacles.push_back(ob4);
+
+    Obstacle obDice;
+
+    obDice.o_size = glm::vec3(1.0f,1.0f,1.0f);
+    obDice.pos    = glm::vec3(2.0f,1.5f,-12.0f);
+    obDice.type   = OBSTACLE_DICE;
+
+    obstacles.push_back(obDice);
 
     EnemyData enemy1, enemy2, enemy3, enemy4, enemy5, enemy6;
     enemy1.pos  = glm::vec3(1.0f, 2.0f, -8.0f);

@@ -18,11 +18,6 @@ void Player::setView(float theta, float phi)
     view.z = cos(phi)*cos(theta);
 }
 
-void Player::movePos(glm::vec3 offset)
-{
-    pos += offset;
-}
-
 AABB Player::getAABB()
 {
     AABB result;
@@ -92,7 +87,7 @@ void Player::doPlayerMovement(float deltaTime)
     offset   *= (trueSpeed  * deltaTime);
     offset.y += (y_velocity * deltaTime);
 
-    movePos(toVec3(offset));
+    pos += toVec3(offset);
 }
 
 void Player::doWeaponAnimation(float deltaTime)

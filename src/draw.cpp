@@ -256,6 +256,7 @@ void drawObstacle(Obstacle obstacle)
 
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
 
+    bool useSixSideTexture = false;
     switch (obstacle.type)
     {
         case OBSTACLE_PLATFORM:
@@ -278,10 +279,19 @@ void drawObstacle(Obstacle obstacle)
             setDiffuseTexture("box");
             setSpecularColor(COLOR_BLACK);
             break;
+        case OBSTACLE_DICE:
+            useSixSideTexture = true;
+            setDiffuseTexture("dice");
+            setSpecularColor(COLOR_BLACK);
+            break;
         default: break;
     }
 
-    DrawVirtualObject("cube");
+    if (useSixSideTexture)
+        DrawVirtualObject("cube_tex");
+    else
+        DrawVirtualObject("cube");
+
     resetTextureRepeat();
 }
 

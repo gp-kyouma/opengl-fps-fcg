@@ -273,7 +273,7 @@ float TextRendering_CharWidth(GLFWwindow* window, bool relative = false)
 // Wrapper function for printing strings
 // (x,y) = NDC coordinates of the [vertical] [horizontal] corner of the space where text should be drawn
 // ...roughly. it's slightly offset, for whatever reason...
-// (theoretically fixable buuuuut... not nearly a priority at the moment)
+// (fixable buuuuut... not nearly a priority at the moment)
 // scale when relative = true  -> *roughly* corresponding to NDC
 // scale when relative = false -> ...very much not so
 void DrawString(GLFWwindow* window, const std::string &str,

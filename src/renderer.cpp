@@ -1059,7 +1059,6 @@ void TextRendering_ShowFramesPerSecond(GLFWwindow* window)
     static float old_seconds = (float)glfwGetTime();
     static int   ellapsed_frames = 0;
     static char  buffer[20] = "?? fps";
-    static int   numchars = 7;
 
     ellapsed_frames += 1;
 
@@ -1071,8 +1070,7 @@ void TextRendering_ShowFramesPerSecond(GLFWwindow* window)
 
     if ( ellapsed_seconds > 1.0f )
     {
-        numchars = snprintf(buffer, 20, "%.2f fps", ellapsed_frames / ellapsed_seconds);
-        numchars = numchars;//warning fix lole
+        snprintf(buffer, 20, "%.2f fps", ellapsed_frames / ellapsed_seconds);
         old_seconds = seconds;
         ellapsed_frames = 0;
     }

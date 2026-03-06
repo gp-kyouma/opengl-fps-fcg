@@ -40,7 +40,6 @@ struct Player
     std::vector<Weapon> weapons;    // armas disponíveis ao jogador
 
     void setView(float theta, float phi);
-    void movePos(glm::vec3 offset);
 
     AABB getAABB();
 

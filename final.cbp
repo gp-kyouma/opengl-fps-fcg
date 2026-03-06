@@ -111,6 +111,7 @@
 		<Unit filename="include/dejavufont.h" />
 		<Unit filename="include/draw.h" />
 		<Unit filename="include/enemy.h" />
+		<Unit filename="include/entity.h" />
 		<Unit filename="include/game.h" />
 		<Unit filename="include/glad/glad.h" />
 		<Unit filename="include/glm/CMakeLists.txt" />

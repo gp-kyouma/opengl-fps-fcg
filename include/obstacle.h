@@ -17,6 +17,7 @@ enum ObstacleType
     OBSTACLE_PLATFORM,
     OBSTACLE_BOX,
     OBSTACLE_WALL,
+    OBSTACLE_DICE,
 };
 
 struct Obstacle

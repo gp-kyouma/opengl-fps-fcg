@@ -37,18 +37,16 @@ struct Enemy
     bool grounded;
     float y_velocity;
 
+    bool seesPlayer;
     float followRange;
 
     void setEnemyData(EnemyType type);
 
     AABB getAABB();
 
-    void doEnemyMovement(float deltaTime);
-    void doEnemyGravity(float deltaTime);
+    void update(float deltaTime);
     void updateView(glm::vec3 player_pos);
     bool isWithinRange(glm::vec3 player_pos);
-
-    void doDamageCooldown(float deltaTime);
 
     void takeDamage(int dmg);
     bool isDead();

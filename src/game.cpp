@@ -225,7 +225,7 @@ void Game::Update()
         col_result = Collide(player.getAABB(),obstacles[i].getAABB(),resolve);
         if (col_result)
         {
-            player.movePos(resolve);
+            player.pos += resolve;
             if (resolve.y != 0) // colisão vertical
             {
                 if (resolve.y > 0) // colisão em cima
@@ -342,18 +342,16 @@ void Game::Update()
 
     for (unsigned int i = 0; i < enemies.size(); i++)
     {
-        // faz a movimentação do inimigo se o jogador estiver perto
-        if (enemies[i].isWithinRange(player.pos))
-        {
+        // checa se inimigo vê jogador
+        enemies[i].seesPlayer = enemies[i].isWithinRange(player.pos);
+
+        if (enemies[i].seesPlayer)
             enemies[i].updateView(player.pos);
-            enemies[i].doEnemyMovement(deltaTime);
-        }
 
-        // inimgo é afetado por gravidade independente do jogador estar perto
-        enemies[i].doEnemyGravity(deltaTime);
-
+        // faz a movimentação do inimigo se o jogador estiver perto
+        // inimigo é afetado por gravidade independente do jogador estar perto
         // atualiza cooldown de dano do inimigo
-        enemies[i].doDamageCooldown(deltaTime);
+        enemies[i].update(deltaTime);
 
         // testa colisão com obstáculos
         enemies[i].grounded = false;
@@ -375,17 +373,24 @@ void Game::Update()
             }
         }
 
-        // testa colisão com a fase
-        enemyWithinLevel(enemies[i], level_queue.front());
-
         // testa colisão com o jogador (dá dano)
         col_result = Collide(enemies[i].getAABB(),player.getAABB(),resolve);
         if (col_result)
         {
-            enemies[i].pos += resolve/2.0f;
-            player.movePos(-resolve/2.0f);
+            enemies[i].pos +=  resolve/2.0f;
+            player.pos     += -resolve/2.0f;
             player.takeDamage(enemies[i].damage);
+            // checa se player está colidindo verticalmente com inimigo
+            if (resolve.y < 0) // colisão em cima
+            {
+                player.grounded = true;
+                if (player.y_velocity < 0)
+                    player.y_velocity = 0.0f;
+            }
         }
+
+        // testa colisão com a fase
+        enemyWithinLevel(enemies[i], level_queue.front());
     }
 
     // update level timer
