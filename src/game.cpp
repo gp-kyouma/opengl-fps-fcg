@@ -508,13 +508,13 @@ void Game::Draw(GLFWwindow* window)
     drawWall(level_queue.front(), WEST);
 
     for (unsigned int i = 0; i < obstacles.size(); i++)
-        drawObstacle(obstacles[i]);
+        obstacles[i].draw();
 
     for (unsigned int i = 0; i < projectiles.size(); i++)
-        drawProjectile(projectiles[i]);
+        projectiles[i].draw();
 
     for (unsigned int i = 0; i < enemies.size(); i++)
-        drawEnemy(enemies[i]);
+        enemies[i].draw();
 
     // se g_ShowInfo = true, mostra as AABBs na tela
     if (g_ShowInfo)
@@ -592,6 +592,9 @@ void Game::Draw(GLFWwindow* window)
     // print level timer on top right
     drawTimer(window, levelTime, true);
 
+    // print current player hp
+    drawHealth(window, player);
+
     // Imprimimos na tela informação sobre o número de quadros renderizados
     // por segundo (frames per second).
     TextRendering_ShowFramesPerSecond(window);
@@ -633,8 +636,8 @@ void Game::drawCutscene(GLFWwindow* window)
                                      glm::vec3(-5.5f, 3.5f, 5.0f),
                                      glm::vec3( 0.0f, 3.5f, 5.0f)};
 
-    // Guarda o tamanho original do minotauro para futura referência
-    const glm::vec3 minotaur_og_size = glm::vec3(2.5f,5.0f,1.5f);
+    // Fade out no minotauro ao invés de shrink
+    float minotaur_alpha = 1.0f;
 
     // Variáveis da câmera virtual
     // A posição será obtida por curva de bézier, e o view vector será obtido através de look-at
@@ -662,7 +665,7 @@ void Game::drawCutscene(GLFWwindow* window)
     if (cutsceneStep > 5.0f && cutsceneStep <= 6.0f) // entre segundos 5 e 6
     {
         enemies[0].dmgCooldown = 1.0f;  // pra ele brilhar vermelho
-        enemies[0].model_size  = minotaur_og_size * (6.0f - cutsceneStep);
+        minotaur_alpha = 6.0f - cutsceneStep;
     }
 
     // Define o view vector
@@ -712,7 +715,9 @@ void Game::drawCutscene(GLFWwindow* window)
     drawWall(level_queue.front(), WEST);
 
     // Desenha o minotauro
+    setAlphaValue(minotaur_alpha);
     drawEnemy(enemies[0]);
+    resetAlphaValue();
 
     // Os objetos a seguir sempre serão desenhados na frente; desativa o z-buffer
     glDisable(GL_DEPTH_TEST);

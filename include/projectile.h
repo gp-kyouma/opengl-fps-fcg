@@ -40,6 +40,8 @@ struct Projectile : Entity
 
     void update(float deltaTime);
     bool isDead();
+
+    void draw(); //Defined in draw.cpp
 };
 
 #endif // FCG_PROJECTILE

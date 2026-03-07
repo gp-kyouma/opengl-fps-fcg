@@ -476,22 +476,27 @@ void drawEnemy(Enemy enemy)
     const float pi2 = 1.57079632679;
 
     glm::vec3 og_size;
+    glm::vec3 model_size;
     switch (enemy.type)
     {
-
         case ENEMY_SKELETON:
+            og_size = glm::vec3(3.2f,7.2f,3.2f);
+            model_size = glm::vec3(1.0f,2.0f,1.0f);
+            break;
         case ENEMY_BIG_SKELETON:
             og_size = glm::vec3(3.2f,7.2f,3.2f);
+            model_size = glm::vec3(1.5f,3.0f,1.5f);
             break;
         case ENEMY_MINOTAUR:
             og_size = glm::vec3(1.0f,1.9f,0.6f);
+            model_size = glm::vec3(2.5f,5.0f,1.5f);
             break;
         default: break;
     }
 
     glm::mat4 model = Matrix_Translate(enemy.pos.x, enemy.pos.y, enemy.pos.z) *
                       Matrix_Rotate_Y(getTheta(enemy.view) + pi2)             *
-                      Matrix_Resize(og_size, enemy.model_size);
+                      Matrix_Resize(og_size, model_size);
 
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
 
@@ -572,3 +577,30 @@ void drawTimer(GLFWwindow* window, float timer, bool hud)
     else
         DrawString(window, buffer, 0.0f, -0.75f, TEXTPOS_CENTER, TEXTPOS_CENTER, 4.5f, false, COLOR_WHITE);
 }
+
+// Escrevemos na tela a vida atual de um ator.
+void drawHealth(GLFWwindow* window, Actor& actor)
+{
+    char buffer[10] = "9999/9999";
+
+    snprintf(buffer, 10, "%d/%d", actor.health, actor.maxHealth);
+
+    DrawString(window, buffer, 0.995f, -0.97f, TEXTPOS_BOTTOM, TEXTPOS_RIGHT, 3.0f, false, COLOR_BLACK);
+}
+
+void Enemy::draw()
+{
+    drawEnemy(*this);
+}
+
+void Obstacle::draw()
+{
+    drawObstacle(*this);
+}
+
+void Projectile::draw()
+{
+    drawProjectile(*this);
+}
+
+void Player::draw(){}//unimplemented

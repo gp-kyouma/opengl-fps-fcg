@@ -28,8 +28,6 @@ struct Enemy : Actor
 
     glm::vec3 move_dir; // direction of movement, converges to view
 
-    glm::vec3 model_size; // this will probably be removed when drawdata exists, right?
-
     int damage;
 
     bool seesPlayer;
@@ -46,6 +44,8 @@ struct Enemy : Actor
     void resetHealth();//unimplemented
     void takeDamage(int dmg);
     bool isDead();
+
+    void draw(); //Defined in draw.cpp
 };
 
 #endif // FCG_ENEMY

@@ -11,30 +11,28 @@ void Enemy::setEnemyData(EnemyType type)
     switch (type)
     {
         case ENEMY_SKELETON:
-            model_size  = glm::vec3(1.0f,2.0f,1.0f);
-            e_size = glm::vec3(1.0f,2.0f,1.0f);
+            e_size      = glm::vec3(1.0f,2.0f,1.0f);
             speed       = 1.5f;
-            health      = 50;
+            maxHealth   = 50;
             damage      = 10;
             followRange = 20.0f;
             break;
         case ENEMY_BIG_SKELETON:
-            model_size  = glm::vec3(1.5f,3.0f,1.5f);
-            e_size = glm::vec3(1.5f,3.0f,1.5f);
+            e_size      = glm::vec3(1.5f,3.0f,1.5f);
             speed       = 1.0f;
-            health      = 250;
+            maxHealth   = 250;
             damage      = 20;
             followRange = 30.0f;
             break;
         case ENEMY_MINOTAUR:
-            model_size  = glm::vec3(2.5f,5.0f,1.5f);
-            e_size = glm::vec3(2.0f,5.0f,2.0f);
+            e_size      = glm::vec3(2.0f,5.0f,2.0f);
             speed       = 0.75f;
-            health      = 600;
+            maxHealth   = 600;
             damage      = 35;
             followRange = 40.0f;
             break;
     }
+    health = maxHealth;
 }
 
 AABB Enemy::getHitbox()

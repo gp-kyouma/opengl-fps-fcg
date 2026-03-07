@@ -24,7 +24,7 @@ struct Entity // All game objects with position and collision, may or may not mo
     virtual void update(float deltaTime) = 0;
     virtual AABB getHitbox() = 0;
 
-    //virtual void draw() = 0;//Hmm.
+    virtual void draw() = 0;
 };
 
 struct Actor : Entity // All entities with a health pool

@@ -45,6 +45,8 @@ struct Player : Actor
     void takeDamage(int dmg);
     bool isDead();
 
+    void draw(); //unimplemented
+
 private: // individual parts of update(deltaTime) because i don't want to merge all these things into 1 function, that's cringe
     void doPlayerMovement(float deltaTime);
     void doDamageCooldown(float deltaTime);

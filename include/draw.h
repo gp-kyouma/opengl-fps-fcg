@@ -53,5 +53,6 @@ void drawProjectile(Projectile proj);
 void drawEnemy(Enemy enemy);
 
 void drawTimer(GLFWwindow* window, float timer, bool hud);
+void drawHealth(GLFWwindow* window, Actor& actor);
 
 #endif // FCG_DRAW
