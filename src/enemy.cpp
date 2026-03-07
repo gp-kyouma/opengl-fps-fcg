@@ -53,13 +53,13 @@ void Enemy::update(float deltaTime)
     //doEnemyMovement
     if (seesPlayer)
     {
-        glm::vec3 move_vec = view;
-        move_vec.y = 0;
-        float move_norm = norm(Vetor(move_vec));
+        move_dir += view; // movement does not *SNAP* to view, it *converges* to it instead: this could definitely be improved upon
+        move_dir.y = 0;
+        float move_norm = norm(Vetor(move_dir));
         if (move_norm != 0)
-            move_vec /= move_norm;
+            move_dir /= move_norm;
 
-        pos += move_vec * speed * deltaTime;
+        pos += move_dir * speed * deltaTime;
     }
 
     //doEnemyGravity
@@ -77,22 +77,6 @@ void Enemy::updateView(glm::vec3 player_pos)
 {
     glm::vec3 view_vec = (player_pos - pos);
     view_vec = view_vec / norm(Vetor(view_vec));
-
-    // to prevent 180s
-    float new_theta = getTheta(view_vec);
-    float old_theta = getTheta(view);
-    float pi = 3.141592f;
-    float tolerance = 0.1f;
-
-    //detect 180 (literal chatgpt code, my honor is soiled forever)
-    float diff = fmod(new_theta - old_theta + pi, 2 * pi);
-    if (diff < 0) diff += 2 * pi;
-    diff = std::fabs(diff - pi);
-    if (std::fabs(diff - pi) < tolerance)
-    {
-        //Fuuuck what now lmao
-    }
-
     view = view_vec;
 }
 

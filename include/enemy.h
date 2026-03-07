@@ -26,6 +26,8 @@ struct Enemy : Actor
 
     EnemyType type;
 
+    glm::vec3 move_dir; // direction of movement, converges to view
+
     glm::vec3 model_size; // this will probably be removed when drawdata exists, right?
 
     int damage;

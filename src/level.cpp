@@ -38,6 +38,7 @@ Enemy EnemyData::buildEnemy()
 
     enemy.pos         = pos;
     enemy.view        = glm::vec3(0.0f,0.0f,1.0f);
+    enemy.move_dir    = enemy.view;
 
     return enemy;
 }
