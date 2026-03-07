@@ -14,13 +14,15 @@
 #include <stdexcept>
 #include <algorithm>
 
-AABB Obstacle::getAABB()
+AABB Obstacle::getHitbox()
 {
     AABB result;
-    glm::vec3 half = o_size / 2.0f;
+    glm::vec3 half = e_size / 2.0f;
 
     result.aabb_max = pos + half;
     result.aabb_min = pos - half;
 
     return result;
 }
+
+void Obstacle::update(float deltaTime){}//unimplemented... for now.

@@ -43,9 +43,11 @@ void Game::Init()
 
     // PLAYER
 
-    player.p_size = glm::vec3(1.0f,2.0f,1.0f);
+    player.e_size = glm::vec3(1.0f,2.0f,1.0f);
     player.neck   = 0.5f;
     player.speed  = 3.0f;
+    player.maxHealth = 100;
+    player.health = player.maxHealth;
 
     player.currentWeapon  =  0; // melee
 
@@ -122,19 +124,17 @@ void Game::Update()
         return;
 
     // PLAYER
-    // faz a movimentação do jogador em função dos inputs do teclado
+
+    // faz o movimento da câmera pelo mouse
     player.setView(g_CameraTheta, g_CameraPhi);
-    player.doPlayerMovement(deltaTime);
 
+    // faz a movimentação do jogador em função dos inputs do teclado
     // atualiza animação da arma
-    player.doWeaponAnimation(deltaTime);
-
-    // atualiza arma e cooldown da arma
-    player.doWeaponCooldown(deltaTime);
-    player.doWeaponSwitch();
-
+    // atualiza cooldown da arma
     // atualiza cooldown de dano
-    player.doDamageCooldown(deltaTime);
+    player.update(deltaTime);
+    // atualiza arma
+    player.doWeaponSwitch();
 
     // testa se deve atirar
     Projectile new_proj;
@@ -182,13 +182,13 @@ void Game::Update()
                 */
 
                 // new (x-spread)
-                spread1.dir = toVec3(Matrix_Rotate( pi24, v) * Matrix_Rotate( pi24/2, u) * Vetor(spread1.dir));
-                spread2.dir = toVec3(Matrix_Rotate( pi24, v) * Matrix_Rotate(-pi24/2, u) * Vetor(spread2.dir));
-                spread3.dir = toVec3(Matrix_Rotate(-pi24, v) * Matrix_Rotate( pi24/2, u) * Vetor(spread3.dir));
-                spread4.dir = toVec3(Matrix_Rotate(-pi24, v) * Matrix_Rotate(-pi24/2, u) * Vetor(spread4.dir));
+                spread1.view = toVec3(Matrix_Rotate( pi24, v) * Matrix_Rotate( pi24/2, u) * Vetor(spread1.view));
+                spread2.view = toVec3(Matrix_Rotate( pi24, v) * Matrix_Rotate(-pi24/2, u) * Vetor(spread2.view));
+                spread3.view = toVec3(Matrix_Rotate(-pi24, v) * Matrix_Rotate( pi24/2, u) * Vetor(spread3.view));
+                spread4.view = toVec3(Matrix_Rotate(-pi24, v) * Matrix_Rotate(-pi24/2, u) * Vetor(spread4.view));
 
-                spread5.dir = toVec3(Matrix_Rotate( pi24*2, v) * Vetor(spread5.dir));
-                spread6.dir = toVec3(Matrix_Rotate(-pi24*2, v) * Vetor(spread6.dir));
+                spread5.view = toVec3(Matrix_Rotate( pi24*2, v) * Vetor(spread5.view));
+                spread6.view = toVec3(Matrix_Rotate(-pi24*2, v) * Vetor(spread6.view));
 
                 new_projectiles.push_back(spread1);
                 new_projectiles.push_back(spread2);
@@ -222,7 +222,7 @@ void Game::Update()
         bool col_result;
         glm::vec3 resolve;
 
-        col_result = Collide(player.getAABB(),obstacles[i].getAABB(),resolve);
+        col_result = Collide(player.getHitbox(),obstacles[i].getHitbox(),resolve);
         if (col_result)
         {
             player.pos += resolve;
@@ -265,14 +265,14 @@ void Game::Update()
                     case BOX:   // o único projétil que usa box é o melee então ignora
                         break;
                     case SPHERE:
-                        result = Collide(projectiles[i_proj].getHitsphere(),obstacles[i].getAABB());
+                        result = Collide(projectiles[i_proj].getHitsphere(),obstacles[i].getHitbox());
                         if (result)
                             projectiles[i_proj].lifespan = 0.0f;
                         break;
                     case RAY:
-                        result = Collide(projectiles[i_proj].getHitscan(),obstacles[i].getAABB(),projectiles[i_proj].p_size.z,min_dist);
-                        if (result && min_dist < projectiles[i_proj].p_size.z)
-                            projectiles[i_proj].p_size.z = min_dist;
+                        result = Collide(projectiles[i_proj].getHitscan(),obstacles[i].getHitbox(),projectiles[i_proj].e_size.z,min_dist);
+                        if (result && min_dist < projectiles[i_proj].e_size.z)
+                            projectiles[i_proj].e_size.z = min_dist;
                         break;
                 }
         }
@@ -290,24 +290,24 @@ void Game::Update()
                 switch (projectiles[i_proj].hit_type)
                 {
                     case BOX:
-                        result = Collide(projectiles[i_proj].getHitbox(),enemies[i].getAABB());
+                        result = Collide(projectiles[i_proj].getHitbox(),enemies[i].getHitbox());
                         if (result)
                             damageTaken[i] += (projectiles[i_proj].damage);
                         break;
                     case SPHERE:
-                        result = Collide(projectiles[i_proj].getHitsphere(),enemies[i].getAABB());
+                        result = Collide(projectiles[i_proj].getHitsphere(),enemies[i].getHitbox());
                         if (result)
                             damageTaken[i] += (projectiles[i_proj].damage);
                         break;
                     case RAY:
-                        result = Collide(projectiles[i_proj].getHitscan(),enemies[i].getAABB(),projectiles[i_proj].p_size.z,min_dist);
-                        if (result && min_dist < projectiles[i_proj].p_size.z)
+                        result = Collide(projectiles[i_proj].getHitscan(),enemies[i].getHitbox(),projectiles[i_proj].e_size.z,min_dist);
+                        if (result && min_dist < projectiles[i_proj].e_size.z)
                             if (min_dist < shortest_dist)
                             {
                                 // isso é feito para que cada raio atinja somente o inimigo mais próximo
                                 shortest_dist = min_dist;
                                 closest_enemy = i;
-                                projectiles[i_proj].p_size.z = min_dist;
+                                projectiles[i_proj].e_size.z = min_dist;
                             }
                         break;
                 }
@@ -361,7 +361,7 @@ void Game::Update()
 
         for (unsigned int j = 0; j < obstacles.size(); j++)
         {
-            col_result = Collide(enemies[i].getAABB(),obstacles[j].getAABB(),resolve);
+            col_result = Collide(enemies[i].getHitbox(),obstacles[j].getHitbox(),resolve);
             if (col_result)
             {
                 enemies[i].pos += resolve;
@@ -374,7 +374,7 @@ void Game::Update()
         }
 
         // testa colisão com o jogador (dá dano)
-        col_result = Collide(enemies[i].getAABB(),player.getAABB(),resolve);
+        col_result = Collide(enemies[i].getHitbox(),player.getHitbox(),resolve);
         if (col_result)
         {
             enemies[i].pos +=  resolve/2.0f;
@@ -519,14 +519,14 @@ void Game::Draw(GLFWwindow* window)
     // se g_ShowInfo = true, mostra as AABBs na tela
     if (g_ShowInfo)
     {
-        drawAABB(player.getAABB());
+        drawAABB(player.getHitbox());
 
         for (unsigned int i = 0; i < projectiles.size(); i++)
             if (projectiles[i].hit_type == BOX)
                 drawAABB(projectiles[i].getHitbox());
 
         for (unsigned int i = 0; i < enemies.size(); i++)
-            drawAABB(enemies[i].getAABB());
+            drawAABB(enemies[i].getHitbox());
     }
 
     // Resetamos todos os pixels do Z-buffer (depth buffer)
@@ -761,12 +761,12 @@ void Game::drawCutscene(GLFWwindow* window)
 // Como não é uma função entre dois corpos (AABB x AABB, etc) fica fora de collisions.cpp
 void playerWithinLevel(Player &player, Level level)
 {
-    AABB hitbox = player.getAABB();
+    AABB hitbox = player.getHitbox();
 
     float halfWidth  = (level.levelWidth /2.0f);
     float halfLength = (level.levelLength/2.0f);
 
-    glm::vec3 halfSize = (player.p_size / 2.0f);
+    glm::vec3 halfSize = (player.e_size / 2.0f);
 
     if (hitbox.aabb_min.x < -halfWidth)
     {
@@ -798,12 +798,12 @@ void playerWithinLevel(Player &player, Level level)
 // Como não é uma função entre dois corpos (AABB x AABB, etc) fica fora de collisions.cpp
 void enemyWithinLevel(Enemy &enemy, Level level)
 {
-    AABB hitbox = enemy.getAABB();
+    AABB hitbox = enemy.getHitbox();
 
     float halfWidth  = (level.levelWidth /2.0f);
     float halfLength = (level.levelLength/2.0f);
 
-    glm::vec3 halfSize = (enemy.hitbox_size / 2.0f);
+    glm::vec3 halfSize = (enemy.e_size / 2.0f);
 
     if (hitbox.aabb_min.x < -halfWidth)
     {

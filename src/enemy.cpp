@@ -12,7 +12,7 @@ void Enemy::setEnemyData(EnemyType type)
     {
         case ENEMY_SKELETON:
             model_size  = glm::vec3(1.0f,2.0f,1.0f);
-            hitbox_size = glm::vec3(1.0f,2.0f,1.0f);
+            e_size = glm::vec3(1.0f,2.0f,1.0f);
             speed       = 1.5f;
             health      = 50;
             damage      = 10;
@@ -20,7 +20,7 @@ void Enemy::setEnemyData(EnemyType type)
             break;
         case ENEMY_BIG_SKELETON:
             model_size  = glm::vec3(1.5f,3.0f,1.5f);
-            hitbox_size = glm::vec3(1.5f,3.0f,1.5f);
+            e_size = glm::vec3(1.5f,3.0f,1.5f);
             speed       = 1.0f;
             health      = 250;
             damage      = 20;
@@ -28,7 +28,7 @@ void Enemy::setEnemyData(EnemyType type)
             break;
         case ENEMY_MINOTAUR:
             model_size  = glm::vec3(2.5f,5.0f,1.5f);
-            hitbox_size = glm::vec3(2.0f,5.0f,2.0f);
+            e_size = glm::vec3(2.0f,5.0f,2.0f);
             speed       = 0.75f;
             health      = 600;
             damage      = 35;
@@ -37,10 +37,10 @@ void Enemy::setEnemyData(EnemyType type)
     }
 }
 
-AABB Enemy::getAABB()
+AABB Enemy::getHitbox()
 {
     AABB result;
-    glm::vec3 half = hitbox_size / 2.0f;
+    glm::vec3 half = e_size / 2.0f;
 
     result.aabb_max = pos + half;
     result.aabb_min = pos - half;
@@ -77,6 +77,22 @@ void Enemy::updateView(glm::vec3 player_pos)
 {
     glm::vec3 view_vec = (player_pos - pos);
     view_vec = view_vec / norm(Vetor(view_vec));
+
+    // to prevent 180s
+    float new_theta = getTheta(view_vec);
+    float old_theta = getTheta(view);
+    float pi = 3.141592f;
+    float tolerance = 0.1f;
+
+    //detect 180 (literal chatgpt code, my honor is soiled forever)
+    float diff = fmod(new_theta - old_theta + pi, 2 * pi);
+    if (diff < 0) diff += 2 * pi;
+    diff = std::fabs(diff - pi);
+    if (std::fabs(diff - pi) < tolerance)
+    {
+        //Fuuuck what now lmao
+    }
+
     view = view_vec;
 }
 
@@ -84,6 +100,8 @@ bool Enemy::isWithinRange(glm::vec3 player_pos)
 {
     return (distance(pos, player_pos) <= followRange);
 }
+
+void Enemy::resetHealth(){}//unimplemented
 
 void Enemy::takeDamage(int dmg)
 {

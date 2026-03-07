@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "collisions.h"
+#include "entity.h"
 
 /*
 STRUCTS/CLASSES
@@ -19,16 +20,13 @@ enum ProjectileType
     PROJ_MELEE_INVISIBLE,
 };
 
-struct Projectile
+struct Projectile : Entity
 {
+    //Entity attributes omitted
+
     ProjectileType type;
     HitboxType hit_type;
 
-    glm::vec3 pos;
-    glm::vec3 dir;
-    glm::vec3 p_size;
-
-    float speed;
     float lifespan;
 
     int damage;

@@ -11,7 +11,7 @@ Projectile Weapon::fire(glm::vec3 pos, glm::vec3 dir)
     result.setProjectileData(proj_type);
 
     result.pos = pos + dir;
-    result.dir = dir;
+    result.view = dir;
     result.damage = damage;
 
     return result;

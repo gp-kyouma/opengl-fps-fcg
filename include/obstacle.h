@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "collisions.h"
+#include "entity.h"
 
 /*
 STRUCTS/CLASSES
@@ -20,13 +21,14 @@ enum ObstacleType
     OBSTACLE_DICE,
 };
 
-struct Obstacle
+struct Obstacle : Entity
 {
-    ObstacleType type;// tipo do obstáculo
-    glm::vec3 pos;    // posição do obstáculo no mundo
-    glm::vec3 o_size; // tamanho da hitbox do obstáculo
+    //Entity attributes omitted
 
-    AABB getAABB();
+    ObstacleType type;// tipo do obstáculo
+
+    AABB getHitbox();
+    void update(float deltaTime);//unimplemented... for now.
 };
 
 #endif // FCG_OBSTACLE

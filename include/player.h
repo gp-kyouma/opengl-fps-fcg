@@ -11,27 +11,18 @@
 #include "collisions.h"
 #include "weapon.h"
 #include "projectile.h"
+#include "entity.h"
 
 /*
 STRUCTS/CLASSES
 */
 
 // Estrutura que descreve o jogador
-struct Player
+struct Player : Actor
 {
-    glm::vec3 pos;    // posição do jogador no mundo
-    glm::vec3 p_size; // tamanho da hitbox do jogador
-    glm::vec3 view;   // onde o jogador está olhando
+    //Entity + Actor attributes omitted
+
     float neck;       // offset no eixo y em relação a pos que define onde a câmera vai ser posicionada
-
-    bool grounded;    // indica se o jogador está tocando o chão
-    float y_velocity; // velocidade do jogador no eixo y
-
-    float speed;      // velocidade em que o jogador se move
-
-    const int maxHealth = 100;  // o valor máximo de vida que o jogador pode ter; reseta a cada fase
-    int health;         // vida atual do jogador
-    float dmgCooldown;  // tempo em segundos até que o jogador possa receber dano de novo
 
     int currentWeapon;  // índice no vetor de armas que determina a arma equipada
     float wpnCooldown;  // tempo em segundos até que o jogador possa atirar de novo
@@ -41,12 +32,9 @@ struct Player
 
     void setView(float theta, float phi);
 
-    AABB getAABB();
+    AABB getHitbox();
 
-    void doPlayerMovement(float deltaTime);
-    void doDamageCooldown(float deltaTime);
-    void doWeaponAnimation(float deltaTime);
-    void doWeaponCooldown(float deltaTime);
+    void update(float deltaTime);
     void doWeaponSwitch();
 
     Weapon getCurrentWeapon();
@@ -56,6 +44,12 @@ struct Player
     void resetHealth();
     void takeDamage(int dmg);
     bool isDead();
+
+private: // individual parts of update(deltaTime) because i don't want to merge all these things into 1 function, that's cringe
+    void doPlayerMovement(float deltaTime);
+    void doDamageCooldown(float deltaTime);
+    void doWeaponAnimation(float deltaTime);
+    void doWeaponCooldown(float deltaTime);
 };
 
 #endif // FCG_PLAYER

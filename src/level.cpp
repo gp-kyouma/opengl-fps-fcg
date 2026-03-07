@@ -66,27 +66,27 @@ void Level::createTestLevel()
 
     Obstacle ob1, ob2, ob3, ob4, ob5, ob6;
 
-    ob1.o_size = glm::vec3(1.0f,1.0f,1.0f);
+    ob1.e_size = glm::vec3(1.0f,1.0f,1.0f);
     ob1.pos    = glm::vec3(3.0f,1.5f,4.0f);
     ob1.type   = OBSTACLE_BOX;
 
-    ob2.o_size = glm::vec3(3.0f,0.5f,3.0f);
+    ob2.e_size = glm::vec3(3.0f,0.5f,3.0f);
     ob2.pos    = glm::vec3(1.0f,3.5f,0.0f);
     ob2.type   = OBSTACLE_PLATFORM;
 
-    ob3.o_size = glm::vec3(1.5f,0.5f,1.5f);
+    ob3.e_size = glm::vec3(1.5f,0.5f,1.5f);
     ob3.pos    = glm::vec3(-0.5f,5.5f,-3.5f);
     ob3.type   = OBSTACLE_PLATFORM;
 
-    ob4.o_size = glm::vec3(1.5f,0.5f,1.5f);
+    ob4.e_size = glm::vec3(1.5f,0.5f,1.5f);
     ob4.pos    = glm::vec3(-1.5f,7.5f,-5.5f);
     ob4.type   = OBSTACLE_PLATFORM;
 
-    ob5.o_size = glm::vec3(1.0f,8.0f,4.0f);
+    ob5.e_size = glm::vec3(1.0f,8.0f,4.0f);
     ob5.pos    = glm::vec3(-2.0f,5.0f,-2.0f);
     ob5.type   = OBSTACLE_WALL;
 
-    ob6.o_size = glm::vec3(1.0f,10.0f,4.0f);
+    ob6.e_size = glm::vec3(1.0f,10.0f,4.0f);
     ob6.pos    = glm::vec3(-5.0f,6.0f,-2.0f);
     ob6.type   = OBSTACLE_WALL;
 
@@ -121,16 +121,16 @@ void Level::createLevel1()
 
     Obstacle ob1, ob2, ob3, ob4;
 
-    ob1.o_size = glm::vec3(5.0f,4.0f,1.0f);
+    ob1.e_size = glm::vec3(5.0f,4.0f,1.0f);
     ob1.pos    = glm::vec3(1.0f,1.5f,-10.0f);
     ob1.type   = OBSTACLE_WALL;
-    ob2.o_size = glm::vec3(1.0f,1.0f,1.0f);
+    ob2.e_size = glm::vec3(1.0f,1.0f,1.0f);
     ob2.pos    = glm::vec3(-3.0f,1.5f,6.0f);
     ob2.type   = OBSTACLE_BOX;
-    ob3.o_size = glm::vec3(1.0f,1.0f,1.0f);
+    ob3.e_size = glm::vec3(1.0f,1.0f,1.0f);
     ob3.pos    = glm::vec3(3.0f,1.5f,6.0f);
     ob3.type   = OBSTACLE_BOX;
-    ob4.o_size = glm::vec3(9.0f,0.5f,5.0f);
+    ob4.e_size = glm::vec3(9.0f,0.5f,5.0f);
     ob4.pos    = glm::vec3(0.0f,4.5f,15.0f);
     ob4.type   = OBSTACLE_PLATFORM;
 
@@ -141,7 +141,7 @@ void Level::createLevel1()
 
     Obstacle obDice;
 
-    obDice.o_size = glm::vec3(1.0f,1.0f,1.0f);
+    obDice.e_size = glm::vec3(1.0f,1.0f,1.0f);
     obDice.pos    = glm::vec3(2.0f,1.5f,-12.0f);
     obDice.type   = OBSTACLE_DICE;
 
@@ -181,22 +181,22 @@ void Level::createLevel2()
 
     Obstacle ob1, ob2, ob3, ob4, ob5, ob6;
 
-    ob1.o_size = glm::vec3(1.0f,1.0f,2.0f);
+    ob1.e_size = glm::vec3(1.0f,1.0f,2.0f);
     ob1.pos    = glm::vec3(-12.0f,1.5f,6.0f);
     ob1.type   = OBSTACLE_BOX;
-    ob2.o_size = glm::vec3(1.0f,1.0f,2.0f);
+    ob2.e_size = glm::vec3(1.0f,1.0f,2.0f);
     ob2.pos    = glm::vec3(3.0f,1.5f,6.0f);
     ob2.type   = OBSTACLE_BOX;
-    ob3.o_size = glm::vec3(1.0f,6.0f,2.0f);
+    ob3.e_size = glm::vec3(1.0f,6.0f,2.0f);
     ob3.pos    = glm::vec3(4.0f,1.5f,10.0f);
     ob3.type   = OBSTACLE_WALL;
-    ob4.o_size = glm::vec3(1.0f,6.0f,2.0f);
+    ob4.e_size = glm::vec3(1.0f,6.0f,2.0f);
     ob4.pos    = glm::vec3(-4.0f,1.5f,10.0f);
     ob4.type   = OBSTACLE_WALL;
-    ob5.o_size = glm::vec3(20.0f,8.0f,2.0f);
+    ob5.e_size = glm::vec3(20.0f,8.0f,2.0f);
     ob5.pos    = glm::vec3(6.0f,1.5f,-6.0f);
     ob5.type   = OBSTACLE_WALL;
-    ob6.o_size = glm::vec3(2.0f,8.0f,20.0f);
+    ob6.e_size = glm::vec3(2.0f,8.0f,20.0f);
     ob6.pos    = glm::vec3(-6.0f,1.5f,6.0f);
     ob6.type   = OBSTACLE_WALL;
 
@@ -249,10 +249,10 @@ void Level::createLevel3()
     player_view = glm::vec3(0.0f,0.0f,1.0f);
 
     Obstacle ob1, ob2;
-    ob1.o_size = glm::vec3(6.0f,0.5f,6.0f);
+    ob1.e_size = glm::vec3(6.0f,0.5f,6.0f);
     ob1.pos    = glm::vec3(0.0f,7.0f,-16.0f);
     ob1.type   = OBSTACLE_PLATFORM;
-    ob2.o_size = glm::vec3(6.0f,3.0f,3.0f);
+    ob2.e_size = glm::vec3(6.0f,3.0f,3.0f);
     ob2.pos    = glm::vec3(0.0f,8.0f,-10.0f);
     ob2.type   = OBSTACLE_WALL;
 
@@ -302,30 +302,30 @@ void Level::createBossLevel()
     Obstacle ob1, ob2, ob3, ob4, ob5, ob6, ob7, ob8;
 
     // platforms
-    ob1.o_size = glm::vec3(26.0f,0.5f,3.0f);
+    ob1.e_size = glm::vec3(26.0f,0.5f,3.0f);
     ob1.pos    = glm::vec3(0.0f,5.75f,-11.5f);
     ob1.type   = OBSTACLE_PLATFORM;
-    ob2.o_size = glm::vec3(26.0f,0.5f,3.0f);
+    ob2.e_size = glm::vec3(26.0f,0.5f,3.0f);
     ob2.pos    = glm::vec3(0.0f,5.75f,11.5f);
     ob2.type   = OBSTACLE_PLATFORM;
-    ob3.o_size = glm::vec3(3.0f,0.5f,20.0f);
+    ob3.e_size = glm::vec3(3.0f,0.5f,20.0f);
     ob3.pos    = glm::vec3(-11.5f,5.75f,0.0f);
     ob3.type   = OBSTACLE_PLATFORM;
-    ob4.o_size = glm::vec3(3.0f,0.5f,20.0f);
+    ob4.e_size = glm::vec3(3.0f,0.5f,20.0f);
     ob4.pos    = glm::vec3(11.5f,5.75f,0.0f);
     ob4.type   = OBSTACLE_PLATFORM;
 
     // "pillars"
-    ob5.o_size = glm::vec3(1.0f,10.0f,1.0f);
+    ob5.e_size = glm::vec3(1.0f,10.0f,1.0f);
     ob5.pos    = glm::vec3(7.0f,6.0f,7.0f);
     ob5.type   = OBSTACLE_WALL;
-    ob6.o_size = glm::vec3(1.0f,10.0f,1.0f);
+    ob6.e_size = glm::vec3(1.0f,10.0f,1.0f);
     ob6.pos    = glm::vec3(7.0f,6.0f,-7.0f);
     ob6.type   = OBSTACLE_WALL;
-    ob7.o_size = glm::vec3(1.0f,10.0f,1.0f);
+    ob7.e_size = glm::vec3(1.0f,10.0f,1.0f);
     ob7.pos    = glm::vec3(-7.0f,6.0f,7.0f);
     ob7.type   = OBSTACLE_WALL;
-    ob8.o_size = glm::vec3(1.0f,10.0f,1.0f);
+    ob8.e_size = glm::vec3(1.0f,10.0f,1.0f);
     ob8.pos    = glm::vec3(-7.0f,6.0f,-7.0f);
     ob8.type   = OBSTACLE_WALL;
 

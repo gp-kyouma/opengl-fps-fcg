@@ -246,9 +246,9 @@ void drawWall(Level level, CardinalDirection direction)
 
 void drawObstacle(Obstacle obstacle)
 {
-    float width  = (obstacle.o_size.x);
-    float length = (obstacle.o_size.z);
-    float height = (obstacle.o_size.y);
+    float width  = (obstacle.e_size.x);
+    float length = (obstacle.e_size.z);
+    float height = (obstacle.e_size.y);
 
     glm::mat4 model;
     model = Matrix_Translate(obstacle.pos.x, obstacle.pos.y, obstacle.pos.z) *
@@ -431,9 +431,9 @@ void drawProjectile(Projectile proj)
 
     const float pi = 3.141592f;
 
-    float width  = (proj.p_size.x);
-    float length = (proj.p_size.z);
-    float height = (proj.p_size.y);
+    float width  = (proj.e_size.x);
+    float length = (proj.e_size.z);
+    float height = (proj.e_size.y);
 
     glm::mat4 model;
 
@@ -443,8 +443,8 @@ void drawProjectile(Projectile proj)
         model = Matrix_Identity();
 
     model = Matrix_Translate(proj.pos.x, proj.pos.y, proj.pos.z) *
-            Matrix_Rotate_Y(getTheta(proj.dir))  *
-            Matrix_Rotate_X(-getPhi(proj.dir))   *
+            Matrix_Rotate_Y(getTheta(proj.view))  *
+            Matrix_Rotate_X(-getPhi(proj.view))   *
             model                                *
             Matrix_Scale(width, height, length);
 

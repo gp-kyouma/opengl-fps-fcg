@@ -18,10 +18,10 @@ void Player::setView(float theta, float phi)
     view.z = cos(phi)*cos(theta);
 }
 
-AABB Player::getAABB()
+AABB Player::getHitbox()
 {
     AABB result;
-    glm::vec3 half = p_size / 2.0f;
+    glm::vec3 half = e_size / 2.0f;
 
     result.aabb_max = pos + half;
     result.aabb_min = pos - half;
@@ -115,6 +115,14 @@ void Player::doWeaponSwitch()
 void Player::doWeaponCooldown(float deltaTime)
 {
     decrementTimer(wpnCooldown, deltaTime, 0.0f);
+}
+
+void Player::update(float deltaTime)
+{
+    doPlayerMovement(deltaTime);
+    doWeaponAnimation(deltaTime);
+    doWeaponCooldown(deltaTime);
+    doDamageCooldown(deltaTime);
 }
 
 Weapon Player::getCurrentWeapon()
