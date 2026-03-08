@@ -88,6 +88,38 @@ Ray Projectile::getHitscan()
     return result;
 }
 
+bool Projectile::collideAgainstEntity(Entity& entity, float& min_dist)
+{
+    AABB hitbox = entity.getHitbox();// currently assumes that Entity always uses AABB
+
+    return collideAgainstAABB(hitbox,min_dist);
+}
+
+bool Projectile::collideAgainstAABB(AABB aabb, float& min_dist)
+{
+    bool result = false;
+
+    if (lifespan > 0.0f)
+        switch (hit_type)
+        {
+            case BOX:
+                result = Collide(getHitbox(),aabb);
+                break;
+            case SPHERE:
+                result = Collide(getHitsphere(),aabb);
+                break;
+            case RAY:
+                result = Collide(getHitscan(),aabb,e_size.z,min_dist);
+                break;
+            case POINT_3D:
+                result = Collide(pos,aabb);
+                break;
+            default:
+                break;
+        }
+    return result;
+}
+
 void Projectile::update(float deltaTime)
 {
     pos += view * speed * deltaTime;

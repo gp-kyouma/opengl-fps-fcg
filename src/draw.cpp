@@ -136,7 +136,7 @@ void drawBar(float value, float maxValue, float aspect, glm::vec3 color, int pos
 
 void drawBanner(float aspect, std::string tex) // used for game over, you won, etc...
 {
-    glm::vec2 bannerSize = glm::vec2(0.8f,0.6f); // 3:4
+    glm::vec2 bannerSize = glm::vec2(0.8f,0.6f); // 4:3
 
     glm::mat4 model = Matrix_Scale(bannerSize.x / aspect, bannerSize.y, 1.0f);
 
@@ -146,6 +146,36 @@ void drawBanner(float aspect, std::string tex) // used for game over, you won, e
     setDiffuseTexture(tex);
     setSpecularColor(COLOR_BLACK);
     DrawVirtualObject("square");
+    glUniform1i(g_ignore_lighting_uniform, false);
+}
+
+void drawColorFade(glm::vec3 color, float alpha)
+{
+    glm::mat4 model = Matrix_Identity();
+
+    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+
+    glUniform1i(g_ignore_lighting_uniform, true);
+    setAlphaValue(alpha);
+    setDiffuseColor(color);
+    setSpecularColor(COLOR_BLACK);
+    DrawVirtualObject("square");
+    resetAlphaValue();
+    glUniform1i(g_ignore_lighting_uniform, false);
+}
+
+void drawTextureFade(std::string tex, float alpha)
+{
+    glm::mat4 model = Matrix_Identity();
+
+    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+
+    glUniform1i(g_ignore_lighting_uniform, true);
+    setAlphaValue(alpha);
+    setDiffuseTexture(tex);
+    setSpecularColor(COLOR_BLACK);
+    DrawVirtualObject("square");
+    resetAlphaValue();
     glUniform1i(g_ignore_lighting_uniform, false);
 }
 
@@ -284,6 +314,8 @@ void drawObstacle(Obstacle obstacle)
             setDiffuseTexture("dice");
             setSpecularColor(COLOR_BLACK);
             break;
+        case OBSTACLE_INVISIBLE_WALL:
+            return;//PLACEHOLDER
         default: break;
     }
 
@@ -299,15 +331,8 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
 {
     const float pi2 = 1.57079632679;
 
-    glm::vec4 v_up = glm::vec4(0.0f,1.0f,0.0f,0.0f);  // Vetor "up" fixado para apontar para o "céu" (eixo Y global)
-
-    glm::vec4 w = Vetor(-player.view);
-    glm::vec4 u = crossproduct(v_up,w);
-
-    w = w / norm(w);
-    u = u / norm(u);
-
-    glm::vec4 v = crossproduct(w,u);
+    glm::vec4 u,v,w;
+    calculate_uvw(player.view,u,v,w);
 
     glm::vec3 displace = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 scale    = glm::vec3(0.0f, 0.0f, 0.0f);

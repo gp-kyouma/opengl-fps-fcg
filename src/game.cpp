@@ -149,15 +149,8 @@ void Game::Update()
             // cria novos projéteis/faz alterações
             // baseadas no projétil que acabou de ser atirado:
             // obtém o "sistema de coordenadas" do projétil
-            glm::vec4 v_up = glm::vec4(0.0f,1.0f,0.0f,0.0f);  // Vetor "up" fixado para apontar para o "céu" (eixo Y global)
-
-            glm::vec4 w = Vetor(-player.view);
-            glm::vec4 u = crossproduct(v_up,w);
-
-            w = w / norm(w);
-            u = u / norm(u);
-
-            glm::vec4 v = crossproduct(w,u);
+            glm::vec4 u,v,w;
+            calculate_uvw(player.view,u,v,w);
 
             const float pi24 = 3.141592f / 24.0f;
 
@@ -258,21 +251,26 @@ void Game::Update()
         for (unsigned int i = 0; i < obstacles.size(); i++)
         {
             float min_dist;
-            bool result;
-            if (projectiles[i_proj].lifespan > 0.0f)
+            bool result = projectiles[i_proj].collideAgainstEntity(obstacles[i],min_dist);
+
+            // Pierce Projectile logic goes here
+            if (result)
                 switch (projectiles[i_proj].hit_type)
                 {
-                    case BOX:   // o único projétil que usa box é o melee então ignora
+                    case BOX:   // o único projétil que usa box é o melee então ignora (THIS IS UNSUSTAINABLE, TO FIX)
                         break;
                     case SPHERE:
-                        result = Collide(projectiles[i_proj].getHitsphere(),obstacles[i].getHitbox());
-                        if (result)
-                            projectiles[i_proj].lifespan = 0.0f;
+                        projectiles[i_proj].lifespan = 0.0f;
+                        //printf("SPHERE HIT OBSTACLE %d\n", i);
                         break;
                     case RAY:
-                        result = Collide(projectiles[i_proj].getHitscan(),obstacles[i].getHitbox(),projectiles[i_proj].e_size.z,min_dist);
-                        if (result && min_dist < projectiles[i_proj].e_size.z)
+                        if (min_dist < projectiles[i_proj].e_size.z)
+                        {
                             projectiles[i_proj].e_size.z = min_dist;
+                            //printf("RAY HIT OBSTACLE %d\n", i);
+                        }
+                        break;
+                    default:
                         break;
                 }
         }
@@ -284,37 +282,76 @@ void Game::Update()
         for (unsigned int i = 0; i < enemies.size(); i++)
         {
             float min_dist;
-            bool result;
+            bool result = projectiles[i_proj].collideAgainstEntity(enemies[i],min_dist);
 
-            if (projectiles[i_proj].lifespan > 0.0f)
+            // Pierce Enemy logic goes here
+            if (result)
+            {
+                if (projectiles[i_proj].hit_type == RAY)
+                {
+                    if ((min_dist < projectiles[i_proj].e_size.z) && (min_dist < shortest_dist))
+                    {
+                        // isso é feito para que cada raio atinja somente o inimigo mais próximo
+                        shortest_dist = min_dist;
+                        closest_enemy = i;
+                        projectiles[i_proj].e_size.z = min_dist;
+                    }
+                }
+                else
+                {
+                    damageTaken[i] += (projectiles[i_proj].damage);
+                    //printf("PROJECTILE HIT ENEMY %d FOR %d DAMAGE\n", i, (projectiles[i_proj].damage));
+                }
+            }
+        }
+
+        if (closest_enemy != -1)
+        {
+            damageTaken[closest_enemy] += (projectiles[i_proj].damage);
+            //printf("PROJECTILE HIT ENEMY %d FOR %d DAMAGE\n", closest_enemy, (projectiles[i_proj].damage));
+        }
+
+        // testa colisão com fase
+        // 1: projéteis atingem as paredes e chão/teto
+        AABB* level_walls = level_queue.front().levelWalls;
+        for (int i = 0; i < 6; i++)
+        {
+            float min_dist;
+            bool result = projectiles[i_proj].collideAgainstAABB(level_walls[i],min_dist);
+            if (result)
                 switch (projectiles[i_proj].hit_type)
                 {
-                    case BOX:
-                        result = Collide(projectiles[i_proj].getHitbox(),enemies[i].getHitbox());
-                        if (result)
-                            damageTaken[i] += (projectiles[i_proj].damage);
+                    case BOX:   // o único projétil que usa box é o melee então ignora (THIS IS UNSUSTAINABLE, TO FIX)
                         break;
                     case SPHERE:
-                        result = Collide(projectiles[i_proj].getHitsphere(),enemies[i].getHitbox());
-                        if (result)
-                            damageTaken[i] += (projectiles[i_proj].damage);
+                        projectiles[i_proj].lifespan = 0.0f;
+                        //printf("SPHERE HIT LEVEL WALL %d\n", i);
                         break;
                     case RAY:
-                        result = Collide(projectiles[i_proj].getHitscan(),enemies[i].getHitbox(),projectiles[i_proj].e_size.z,min_dist);
-                        if (result && min_dist < projectiles[i_proj].e_size.z)
-                            if (min_dist < shortest_dist)
-                            {
-                                // isso é feito para que cada raio atinja somente o inimigo mais próximo
-                                shortest_dist = min_dist;
-                                closest_enemy = i;
-                                projectiles[i_proj].e_size.z = min_dist;
-                            }
+                        if (min_dist < projectiles[i_proj].e_size.z)
+                        {
+                            projectiles[i_proj].e_size.z = min_dist;
+                            //printf("RAY HIT LEVEL WALL %d\n", i);
+                        }
+                        break;
+                    default:
                         break;
                 }
         }
 
-        if (closest_enemy != -1)
-            damageTaken[closest_enemy] += (projectiles[i_proj].damage);
+        // 2: projéteis não contidos na fase são deletados
+        // mais um failsafe do que qualquer outra coisa, o teste de verdade é o 1
+        // (this is a little jank)
+        AABB level_boundary = level_queue.front().getAABB();
+        glm::vec3 tolerance = glm::vec3(1.0f,1.0f,1.0f);
+        level_boundary.aabb_max += tolerance;
+        level_boundary.aabb_min -= tolerance;
+
+        if (!Collide(projectiles[i_proj].pos,level_boundary))//maybe use the generic check here??
+        {
+            projectiles[i_proj].lifespan = 0.0f;
+            //printf("PROJECTILE %d OUT OF LEVEL\n", i_proj);
+        }
 
         // deleta projéteis "velhos"
         if (projectiles[i_proj].isDead())
@@ -555,6 +592,10 @@ void Game::Draw(GLFWwindow* window)
     glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
     glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
 
+    // Dá um flash vermelho na tela se tiver tomado dano
+    if (player.dmgCooldown > 0)
+        drawColorFade(COLOR_RED, player.dmgCooldown);
+
     // Desenha mensagem ao usuário se estiver morto/acabou fase
     if (player.isDead())
         drawBanner(g_ScreenRatio, "player_dead");
@@ -593,7 +634,8 @@ void Game::Draw(GLFWwindow* window)
     drawTimer(window, levelTime, true);
 
     // print current player hp
-    drawHealth(window, player);
+    if (!noUpdate)
+        drawHealth(window, player);
 
     // Imprimimos na tela informação sobre o número de quadros renderizados
     // por segundo (frames per second).

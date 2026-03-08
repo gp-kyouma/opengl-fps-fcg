@@ -38,6 +38,9 @@ struct Projectile : Entity
     Sphere getHitsphere();
     Ray    getHitscan();
 
+    bool collideAgainstAABB(AABB aabb, float& min_dist);
+    bool collideAgainstEntity(Entity& entity, float& min_dist);
+
     void update(float deltaTime);
     bool isDead();
 

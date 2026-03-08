@@ -19,6 +19,7 @@ enum ObstacleType
     OBSTACLE_BOX,
     OBSTACLE_WALL,
     OBSTACLE_DICE,
+    OBSTACLE_INVISIBLE_WALL
 };
 
 struct Obstacle : Entity
@@ -32,5 +33,7 @@ struct Obstacle : Entity
 
     void draw(); //Defined in draw.cpp
 };
+
+Obstacle AABBtoObstacle(AABB aabb, ObstacleType type);
 
 #endif // FCG_OBSTACLE

@@ -24,7 +24,8 @@ enum HitboxType
 {
     BOX,
     SPHERE,
-    RAY
+    RAY,
+    POINT_3D // no i'm not making a struct that's just one vec3
 };
 
 // Estrutura base para elementos de colisão
@@ -81,5 +82,8 @@ bool Collide(Sphere sphere, AABB aabb);
 // Ray x AABB
 // Retorna distância mínima como parâmetro extra
 bool Collide(Ray ray, AABB aabb, float max_range, float &min_dist);
+
+// Point x AABB
+bool Collide(glm::vec3 point, AABB aabb);
 
 #endif // FCG_COLLISIONS

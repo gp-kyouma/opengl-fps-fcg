@@ -55,6 +55,41 @@ AABB Level::getAABB()
     return result;
 }
 
+void Level::setLevelWalls()
+{
+    AABB floor, ceiling, positiveX, negativeX, positiveZ, negativeZ;
+
+    float epsilon    = 0.125f;
+    float thickness  = 0.5f + epsilon;
+    float halfWidth  = (levelWidth /2.0f) + epsilon;
+    float halfLength = (levelLength/2.0f) + epsilon;
+
+    floor.aabb_max = glm::vec3(halfWidth,  levelFloor-epsilon, halfLength);
+    floor.aabb_min = glm::vec3(-halfWidth, levelFloor-thickness,  -halfLength);
+
+    ceiling.aabb_max = glm::vec3(halfWidth,  levelCeiling+thickness, halfLength);
+    ceiling.aabb_min = glm::vec3(-halfWidth, levelCeiling+epsilon,  -halfLength);
+
+    positiveX.aabb_max = glm::vec3(halfWidth+thickness,  levelCeiling, halfLength);
+    positiveX.aabb_min = glm::vec3(halfWidth, levelFloor,  -halfLength);
+
+    negativeX.aabb_max = glm::vec3(-halfWidth,  levelCeiling, halfLength);
+    negativeX.aabb_min = glm::vec3(-halfWidth-thickness, levelFloor,  -halfLength);
+
+    positiveZ.aabb_max = glm::vec3(halfWidth,  levelCeiling, halfLength+thickness);
+    positiveZ.aabb_min = glm::vec3(-halfWidth, levelFloor,   halfLength);
+
+    negativeZ.aabb_max = glm::vec3(halfWidth,  levelCeiling, -halfLength);
+    negativeZ.aabb_min = glm::vec3(-halfWidth, levelFloor,   -halfLength-thickness);
+
+    levelWalls[0] = floor;
+    levelWalls[1] = ceiling;
+    levelWalls[2] = positiveX;
+    levelWalls[3] = negativeX;
+    levelWalls[4] = positiveZ;
+    levelWalls[5] = negativeZ;
+}
+
 void Level::createTestLevel()
 {
     obstacles.clear();
@@ -108,6 +143,8 @@ void Level::createTestLevel()
 
     enemies.push_back(test_enemy1);
     enemies.push_back(test_enemy2);
+
+    setLevelWalls();
 }
 
 void Level::createLevel1()
@@ -148,6 +185,12 @@ void Level::createLevel1()
 
     obstacles.push_back(obDice);
 
+    AABB boxbox;
+    boxbox.aabb_min = glm::vec3(-3.5f,1.0f,-12.5f);
+    boxbox.aabb_max = glm::vec3(-3.0f,3.0f,-11.0f);
+
+    obstacles.push_back(AABBtoObstacle(boxbox, OBSTACLE_WALL));
+
     EnemyData enemy1, enemy2, enemy3, enemy4, enemy5, enemy6;
     enemy1.pos  = glm::vec3(1.0f, 2.0f, -8.0f);
     enemy1.type = ENEMY_SKELETON;
@@ -168,6 +211,8 @@ void Level::createLevel1()
     enemies.push_back(enemy4);
     enemies.push_back(enemy5);
     enemies.push_back(enemy6);
+
+    setLevelWalls();
 }
 
 void Level::createLevel2()
@@ -237,6 +282,8 @@ void Level::createLevel2()
     enemies.push_back(enemy7);
     enemies.push_back(enemy8);
     enemies.push_back(enemy9);
+
+    setLevelWalls();
 }
 
 void Level::createLevel3()
@@ -288,6 +335,7 @@ void Level::createLevel3()
     enemies.push_back(enemy7);
     enemies.push_back(enemy8);
 
+    setLevelWalls();
 }
 
 void Level::createBossLevel()
@@ -350,4 +398,6 @@ void Level::createBossLevel()
     enemies.push_back(enemy1);
     enemies.push_back(enemy2);
     enemies.push_back(enemy3);
+
+    setLevelWalls();
 }

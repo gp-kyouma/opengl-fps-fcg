@@ -45,6 +45,9 @@ void drawBar(float value, float maxValue, float aspect, std::vector<glm::vec3> c
 void drawBar(float value, float maxValue, float aspect, glm::vec3 color, int position); //1 color
 void drawBanner(float aspect, std::string tex); // used for game over, you won, etc...
 
+void drawColorFade(glm::vec3 color, float alpha);
+void drawTextureFade(std::string tex, float alpha);
+
 void drawFloor(Level level);
 void drawWall(Level level, CardinalDirection direction);
 void drawObstacle(Obstacle obstacle);

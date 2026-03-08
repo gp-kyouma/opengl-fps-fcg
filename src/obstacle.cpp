@@ -26,3 +26,12 @@ AABB Obstacle::getHitbox()
 }
 
 void Obstacle::update(float deltaTime){}//unimplemented... for now.
+
+Obstacle AABBtoObstacle(AABB aabb, ObstacleType type)
+{
+    Obstacle result;
+    result.pos = aabb.getCenter();
+    result.e_size = aabb.getSize();
+    result.type = type;
+    return result;
+}

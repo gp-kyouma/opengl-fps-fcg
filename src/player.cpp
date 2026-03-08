@@ -32,17 +32,8 @@ AABB Player::getHitbox()
 void Player::doPlayerMovement(float deltaTime)
 {
     // jogador anda na direção onde está olhando
-    glm::vec4 v_up = glm::vec4(0.0f,1.0f,0.0f,0.0f);  // Vetor "up" fixado para apontar para o "céu" (eixo Y global)
-
-    glm::vec4 w = Vetor(-view);
-    glm::vec4 u = crossproduct(v_up,w);
-
-    // faz com que o jogador não possa andar pra cima
-    w.y = 0.0f;
-    u.y = 0.0f;
-
-    w = w / norm(w);
-    u = u / norm(u);
+    glm::vec4 u,v,w;
+    calculate_uvw(view,u,v,w,true);
 
     glm::vec4 offset = glm::vec4(0.0f,0.0f,0.0f,0.0f);
 
@@ -63,8 +54,7 @@ void Player::doPlayerMovement(float deltaTime)
         offset += u;
     }
 
-    if (norm(offset) != 0) // evita divisão por 0
-        offset = offset / norm(offset);
+    normalize_vec4(offset);
 
     // jump mechanic
     const float gravity = 5.0f;
