@@ -41,8 +41,10 @@ void drawAABB(AABB aabb); // para razões de debug
 void drawColorCompare(float aspect);//debug
 
 void drawCrosshair(float aspect);
-void drawBar(float value, float maxValue, float aspect, std::vector<glm::vec3> colors, int position); //n colors
-void drawBar(float value, float maxValue, float aspect, glm::vec3 color, int position); //1 color
+void drawBarNDC(float value, float maxValue, float aspect, std::vector<glm::vec3> colors, int position); //n colors
+void drawBarNDC(float value, float maxValue, float aspect, glm::vec3 color, int position); //1 color
+void drawBarBillboard(glm::mat4 view, glm::vec3 pos, float value, float maxValue, std::vector<glm::vec3> colors); //n colors
+void drawBarBillboard(glm::mat4 view, glm::vec3 pos, float value, float maxValue, glm::vec3 color); //1 color
 void drawBanner(float aspect, std::string tex); // used for game over, you won, etc...
 
 void drawColorFade(glm::vec3 color, float alpha);

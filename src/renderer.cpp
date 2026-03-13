@@ -135,6 +135,8 @@ void LoadTextureImage(const char* filename, std::string name)
 // dos objetos na função BuildTrianglesAndAddToVirtualScene().
 void DrawVirtualObject(const char* object_name)
 {
+    glUseProgram(g_GpuProgramID);
+
     // "Ligamos" o VAO. Informamos que queremos utilizar os atributos de
     // vértices apontados pelo VAO criado pela função BuildTrianglesAndAddToVirtualScene(). Veja
     // comentários detalhados dentro da definição de BuildTrianglesAndAddToVirtualScene().
@@ -162,6 +164,8 @@ void DrawVirtualObject(const char* object_name)
     // "Desligamos" o VAO, evitando assim que operações posteriores venham a
     // alterar o mesmo. Isso evita bugs.
     glBindVertexArray(0);
+
+    glUseProgram(0);
 }
 
 // Função que carrega os shaders de vértices e de fragmentos que serão
@@ -226,62 +230,124 @@ void LoadShadersFromFiles()
     g_use_spherical_uv_uniform = glGetUniformLocation(g_GpuProgramID, "useSphericalUV");
 }
 
+void setModelMatrix(glm::mat4 mat)
+{
+    glUseProgram(g_GpuProgramID);
+    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(mat));
+    glUseProgram(0);
+}
+
+void setViewMatrix(glm::mat4 mat)
+{
+    glUseProgram(g_GpuProgramID);
+    glUniformMatrix4fv(g_view_uniform, 1 , GL_FALSE , glm::value_ptr(mat));
+    glUseProgram(0);
+}
+
+void setProjectionMatrix(glm::mat4 mat)
+{
+    glUseProgram(g_GpuProgramID);
+    glUniformMatrix4fv(g_projection_uniform, 1 , GL_FALSE , glm::value_ptr(mat));
+    glUseProgram(0);
+}
+
 // 'Liga' a textura com nome correspondente no dicionário (diffuse)
 void setDiffuseTexture(std::string name)
 {
+    glUseProgram(g_GpuProgramID);
     glUniform1i(g_diffuse_texture_image_uniform, g_TextureMap[name]);
     glUniform1i(g_use_diffuse_color_uniform, false);
+    glUseProgram(0);
 }
 
 // 'Liga' a textura com nome correspondente no dicionário (specular)
 void setSpecularTexture(std::string name)
 {
+    glUseProgram(g_GpuProgramID);
     glUniform1i(g_specular_texture_image_uniform, g_TextureMap[name]);
     glUniform1i(g_use_specular_color_uniform, false);
+    glUseProgram(0);
 }
 
 void setDiffuseColor(glm::vec3 color)
 {
+    glUseProgram(g_GpuProgramID);
     glUniform3f(g_diffuse_color_uniform, color.r, color.g, color.b);
     glUniform1i(g_use_diffuse_color_uniform, true);
+    glUseProgram(0);
 }
 
 void setSpecularColor(glm::vec3 color)
 {
+    glUseProgram(g_GpuProgramID);
     glUniform3f(g_specular_color_uniform, color.r, color.g, color.b);
     glUniform1i(g_use_specular_color_uniform, true);
+    glUseProgram(0);
 }
 
 void setTextureRepeat(float u, float v)
 {
+    glUseProgram(g_GpuProgramID);
     glUniform2f(g_repeat_uniform, u, v);
+    glUseProgram(0);
 }
 
 void resetTextureRepeat()
 {
+    glUseProgram(g_GpuProgramID);
     glUniform2f(g_repeat_uniform, 1.0f, 1.0f);
+    glUseProgram(0);
 }
 
 void setAlphaValue(float a)
 {
+    glUseProgram(g_GpuProgramID);
     glUniform1f(g_alpha_uniform, a);
+    glUseProgram(0);
 }
 
 void resetAlphaValue()
 {
+    glUseProgram(g_GpuProgramID);
     glUniform1f(g_alpha_uniform, 1.0f);
+    glUseProgram(0);
 }
 
 void setAlphaMask(glm::vec3 color)
 {
+    glUseProgram(g_GpuProgramID);
     glUniform3f(g_alpha_mask_uniform, color.r, color.g, color.b);
     glUniform1i(g_use_alpha_mask_uniform, true);
+    glUseProgram(0);
 }
 
 void resetAlphaMask()
 {
+    glUseProgram(g_GpuProgramID);
     glUniform3f(g_alpha_mask_uniform, -1.0f, -1.0f, -1.0f);
     glUniform1i(g_use_alpha_mask_uniform, false);
+    glUseProgram(0);
+}
+
+void setIgnoreLighting(bool b)
+{
+    glUseProgram(g_GpuProgramID);
+    glUniform1i(g_ignore_lighting_uniform, b);
+    glUseProgram(0);
+}
+
+void setUseSphericalUV(bool b)
+{
+    glUseProgram(g_GpuProgramID);
+    glUniform1i(g_use_spherical_uv_uniform, b);
+    glUseProgram(0);
+}
+
+void setUseGouraud(bool b)
+{
+    glUseProgram(g_GpuProgramID);
+    glUniform1i(g_use_gouraud_uniform, b);
+    glUseProgram(0);
 }
 
 // Função que computa as normais de um ObjModel, caso elas não tenham sido

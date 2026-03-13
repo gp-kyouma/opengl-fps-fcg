@@ -75,6 +75,11 @@ void LoadShader(const char* filename, GLuint shader_id); // Função utilizada pel
 GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id); // Cria um programa de GPU
 void PrintObjModelInfo(ObjModel*); // Função para debugging
 
+// Seta as matrizes MVP
+void setModelMatrix(glm::mat4 mat);
+void setViewMatrix(glm::mat4 mat);
+void setProjectionMatrix(glm::mat4 mat);
+
 // Constrói as arestas de um cubo para futura renderização.
 // (usado para desenhar AABBs)
 void BuildCubeEdgesAndAddToVirtualScene();
@@ -122,11 +127,16 @@ void setSpecularColor(glm::vec3 color);
 void setTextureRepeat(float u, float v);
 void resetTextureRepeat();
 
-//determina alpha
+// determina alpha
 void setAlphaValue(float a);
 void resetAlphaValue();
 void setAlphaMask(glm::vec3 color);
 void resetAlphaMask();
+
+// misc flags
+void setIgnoreLighting(bool b);
+void setUseSphericalUV(bool b);
+void setUseGouraud(bool b);
 
 /*
 DECLARAÇÃO DE VARIÁVEIS GLOBAIS

@@ -518,8 +518,8 @@ void Game::Draw(GLFWwindow* window)
     // Enviamos as matrizes "view" e "projection" para a placa de vídeo
     // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
     // efetivamente aplicadas em todos os pontos.
-    glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
-    glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
+    setViewMatrix(view);
+    setProjectionMatrix(projection);
 
     // reseta repetição de texturas
     resetTextureRepeat(); // this FAILS the first frame it runs. god only knows why
@@ -530,11 +530,12 @@ void Game::Draw(GLFWwindow* window)
     resetAlphaValue();
 
     //reset misc flags
-    glUniform1i(g_ignore_lighting_uniform, false);
-    glUniform1i(g_use_gouraud_uniform, false);
-    glUniform1i(g_use_spherical_uv_uniform, false);
+    setIgnoreLighting(false);
+    setUseGouraud(false);
+    setUseSphericalUV(false);
 
     // (/INICIALIZAÇÃO)
+    std::vector<glm::vec3> healthColors = {COLOR_GREEN, COLOR_GREEN, COLOR_YELLOW, COLOR_RED};
 
     // (DESENHA OBJETOS)
 
@@ -551,7 +552,15 @@ void Game::Draw(GLFWwindow* window)
         projectiles[i].draw();
 
     for (unsigned int i = 0; i < enemies.size(); i++)
+    {
         enemies[i].draw();
+        if (enemies[i].dmgCooldown > 0.0f)
+        {
+            glm::vec3 bar_pos = enemies[i].pos;
+            bar_pos.y = enemies[i].getHitbox().aabb_max.y + 0.25f;
+            drawBarBillboard(view, bar_pos, (float)enemies[i].health, (float)enemies[i].maxHealth, healthColors);
+        }
+    }
 
     // se g_ShowInfo = true, mostra as AABBs na tela
     if (g_ShowInfo)
@@ -576,7 +585,7 @@ void Game::Draw(GLFWwindow* window)
         // draw weapon with separate fov
         float weapon_fov = 3.141592 / 3.0f; //60graus
         projection = Matrix_Perspective(weapon_fov, g_ScreenRatio, nearplane, farplane);
-        glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
+        setProjectionMatrix(projection);
 
         drawWeapon(player, player.getCurrentWeapon().wpn_type, g_CameraTheta, g_CameraPhi);
     }
@@ -589,8 +598,11 @@ void Game::Draw(GLFWwindow* window)
     view       = Matrix_Identity();
     projection = Matrix_Identity();
 
-    glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
-    glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
+    setViewMatrix(view);
+    setProjectionMatrix(projection);
+
+    // print level timer on top right
+    drawTimer(window, levelTime, true);
 
     // Dá um flash vermelho na tela se tiver tomado dano
     if (player.dmgCooldown > 0)
@@ -607,12 +619,14 @@ void Game::Draw(GLFWwindow* window)
         drawCrosshair(g_ScreenRatio);
 
         // Desenha barra de vida
-        std::vector<glm::vec3> healthColors = {COLOR_GREEN, COLOR_GREEN, COLOR_YELLOW, COLOR_RED};
-        drawBar((float)player.health, (float)player.maxHealth, g_ScreenRatio, healthColors, 0);
+        drawBarNDC((float)player.health, (float)player.maxHealth, g_ScreenRatio, healthColors, 0);
 
         // Desenha barra de cooldown da arma se estiver em cooldown
         if (player.wpnCooldown > 0)
-            drawBar(player.wpnCooldown, player.getCurrentWeapon().cooldown, g_ScreenRatio, COLOR_WHITE, 1);
+            drawBarNDC(player.wpnCooldown, player.getCurrentWeapon().cooldown, g_ScreenRatio, COLOR_WHITE, 1);
+
+        // print current player hp
+        drawHealth(window, player);
     }
 
     /*
@@ -626,16 +640,6 @@ void Game::Draw(GLFWwindow* window)
     glEnable(GL_DEPTH_TEST);
 
     // (/DESENHA OBJETOS)
-
-    // NOTE:
-    // Text has to be the last thing that gets drawn in a frame otherwise it glitches out
-
-    // print level timer on top right
-    drawTimer(window, levelTime, true);
-
-    // print current player hp
-    if (!noUpdate)
-        drawHealth(window, player);
 
     // Imprimimos na tela informação sobre o número de quadros renderizados
     // por segundo (frames per second).
@@ -733,8 +737,8 @@ void Game::drawCutscene(GLFWwindow* window)
     // Enviamos as matrizes "view" e "projection" para a placa de vídeo
     // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
     // efetivamente aplicadas em todos os pontos.
-    glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
-    glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
+    setViewMatrix(view);
+    setProjectionMatrix(projection);
 
     // reseta repetição de texturas
     resetTextureRepeat(); // this FAILS the first time it runs. god only knows why
@@ -745,9 +749,9 @@ void Game::drawCutscene(GLFWwindow* window)
     resetAlphaValue();
 
     //reset misc flags
-    glUniform1i(g_ignore_lighting_uniform, false);
-    glUniform1i(g_use_gouraud_uniform, false);
-    glUniform1i(g_use_spherical_uv_uniform, false);
+    setIgnoreLighting(false);
+    setUseGouraud(false);
+    setUseSphericalUV(false);
 
     // Desenha o chão e as paredes da fase
     drawFloor(level_queue.front());
@@ -764,6 +768,9 @@ void Game::drawCutscene(GLFWwindow* window)
     // Os objetos a seguir sempre serão desenhados na frente; desativa o z-buffer
     glDisable(GL_DEPTH_TEST);
 
+    // Desenha tempo da fase final
+    drawTimer(window, levelTime, true);
+
     // Se tiver acabado a cutscene
     if (cutsceneStep == 6.0f)
     {
@@ -772,8 +779,8 @@ void Game::drawCutscene(GLFWwindow* window)
         view       = Matrix_Identity();
         projection = Matrix_Identity();
 
-        glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
-        glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
+        setViewMatrix(view);
+        setProjectionMatrix(projection);
 
         // Desenha mensagem de fim de jogo
         drawBanner(g_ScreenRatio, "game_clear");
@@ -782,12 +789,6 @@ void Game::drawCutscene(GLFWwindow* window)
         DrawString(window, "FINAL TIME:", 0.0f, -0.625f, TEXTPOS_CENTER, TEXTPOS_CENTER, 4.0f, false, COLOR_WHITE);
         drawTimer(window, totalTime, false);
     }
-
-    // Desenha tempo da fase final
-    drawTimer(window, levelTime, true);
-
-    // NOTE:
-    // Text has to be the last thing that gets drawn in a frame otherwise it glitches out
 
     // Reativa o z-buffer
     glEnable(GL_DEPTH_TEST);

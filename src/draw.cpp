@@ -35,6 +35,22 @@ glm::vec3 COLOR_CYAN    = glm::vec3(0.0f,   1.0f,   1.0f);
 glm::vec3 COLOR_MAGENTA = glm::vec3(1.0f,   0.0f,   1.0f);
 glm::vec3 COLOR_YELLOW  = glm::vec3(1.0f,   1.0f,   0.0f);
 
+// W
+glm::mat4 Matrix_Billboard(glm::mat4 view, glm::vec3 world_pos, glm::vec3 local_offset, glm::vec3 billboard_size)
+{
+    glm::mat4 transview = glm::transpose(view);
+
+    transview[3][0] = world_pos.x;
+    transview[3][1] = world_pos.y;
+    transview[3][2] = world_pos.z;
+
+    transview[0][3] = 0.0f;
+    transview[1][3] = 0.0f;
+    transview[2][3] = 0.0f;
+
+    return transview * Matrix_Translate(local_offset.x, local_offset.y, local_offset.z) * Matrix_Scale(billboard_size.x, billboard_size.y, billboard_size.z);
+}
+
 void drawAABB(AABB aabb) // para razões de debug
 {
     glm::vec3 aabb_center = aabb.getCenter();
@@ -43,14 +59,14 @@ void drawAABB(AABB aabb) // para razões de debug
     glm::mat4 model = Matrix_Translate(aabb_center.x, aabb_center.y, aabb_center.z) *
                       Matrix_Scale(aabb_size.x, aabb_size.y, aabb_size.z);
 
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+    setModelMatrix(model);
 
-    glUniform1i(g_ignore_lighting_uniform, true);
+    setIgnoreLighting(true);
     setDiffuseColor(COLOR_WHITE);
     setSpecularColor(COLOR_BLACK);
     glLineWidth(4.0f);
     DrawVirtualObject("cube_edges");
-    glUniform1i(g_ignore_lighting_uniform, false);
+    setIgnoreLighting(false);
 }
 
 void drawCrosshair(float aspect)
@@ -59,59 +75,34 @@ void drawCrosshair(float aspect)
 
     glm::mat4 model = Matrix_Scale(crosshair_size / aspect, crosshair_size, 1.0f);
 
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+    setModelMatrix(model);
 
-    glUniform1i(g_ignore_lighting_uniform, true);
+    setIgnoreLighting(true);
     setDiffuseColor(COLOR_WHITE);
     setSpecularColor(COLOR_BLACK);
     glLineWidth(2.0f);
     DrawVirtualObject("crosshair");
-    glUniform1i(g_ignore_lighting_uniform, false);
+    setIgnoreLighting(false);
 }
 
-// Desenha uma progress bar
-// (usado para barra de HP e barra de cooldown)
+// Dado as model matrixes relevantes, desenha uma progress bar
 // Cor (do vetor de cores) depende da % da barra
-// position começa de 0, cada incremento aumenta a posição vertical da barra (this is jank)
-void drawBar(float value, float maxValue, float aspect, std::vector<glm::vec3> colors, int position)
+void drawBarArbitrary(glm::mat4 bg_model, glm::mat4 bar_model, float barRatio, glm::vec3 bg_color, std::vector<glm::vec3> bar_colors)
 {
-    // REMINDER THAT "SQUARE" IS SIZE 2 [-1,1], NOT SIZE 1 [-0.5,0.5]
-    // SO SCALING BY 0.5 IS ACTUALLY SETTING SIZE TO 1
-    glm::vec2 bgSize = glm::vec2(0.25f,0.05f);
-    float barEdge    = 0.015f;
+    setIgnoreLighting(true);
 
-    bgSize.x /= aspect;
-
-    glm::vec2 translate = glm::vec2(1.0f - (bgSize.x), -1.0f + (bgSize.y)*(position*2+1));
-
-    // primeiro desenha o fundo
-    glm::mat4 model = Matrix_Translate(translate.x, translate.y, 0.0f) *
-                      Matrix_Scale(bgSize.x, bgSize.y, 1.0f);
-
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-
-    glUniform1i(g_ignore_lighting_uniform, true);
-    setDiffuseColor(COLOR_GREY);
     setSpecularColor(COLOR_BLACK);
+
+    setModelMatrix(bg_model);
+    setDiffuseColor(bg_color);
     DrawVirtualObject("square");
 
-    // depois desenha a barra
-    float barRatio = value / maxValue;
-    glm::vec2 barSize = glm::vec2(bgSize.x - barEdge, bgSize.y - barEdge);
-
-    model = Matrix_Translate(translate.x, translate.y, 0.0f)              *
-            Matrix_Translate((1.0f - (barRatio)) * barSize.x, 0.0f, 0.0f) *
-            Matrix_Scale(barRatio, 1.0f, 1.0f)                            *
-            Matrix_Scale(barSize.x, barSize.y, 1.0f);
-
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-
     //set appropriate color
-    int numColors = colors.size();
+    int numColors = bar_colors.size();
     if (numColors == 1 || barRatio >= 1.0f)
-        setDiffuseColor(colors[0]);
+        setDiffuseColor(bar_colors[0]);
     else if (barRatio <= 0.0f)
-        setDiffuseColor(colors[numColors-1]);
+        setDiffuseColor(bar_colors[numColors-1]);
     else
     {
         int index = numColors - (std::ceil(barRatio * numColors));
@@ -119,19 +110,75 @@ void drawBar(float value, float maxValue, float aspect, std::vector<glm::vec3> c
         if (index >= numColors)
             index = numColors-1;
 
-        setDiffuseColor(colors[index]);
+        setDiffuseColor(bar_colors[index]);
     }
 
-    setSpecularColor(COLOR_BLACK);
+    setModelMatrix(bar_model);
     DrawVirtualObject("square");
-    glUniform1i(g_ignore_lighting_uniform, false);
+
+    setIgnoreLighting(false);
 }
 
-//Overload de drawBar para barras de 1 cor
-void drawBar(float value, float maxValue, float aspect, glm::vec3 color, int position)
+// Desenha uma progress bar diretamente na tela
+// (usado para barra de HP e barra de cooldown)
+// position começa de 0, cada incremento aumenta a posição vertical da barra (this is jank)
+void drawBarNDC(float value, float maxValue, float aspect, std::vector<glm::vec3> colors, int position)
+{
+    // REMINDER THAT "SQUARE" IS SIZE 2 [-1,1], NOT SIZE 1 [-0.5,0.5]
+    // SO SCALING BY 0.5 IS ACTUALLY SETTING SIZE TO 1
+    glm::vec2 bgSize = glm::vec2(0.25f/aspect,0.05f);
+    float barEdge    = 0.01f;
+
+    glm::vec2 translate = glm::vec2(1.0f - (bgSize.x), -1.0f + (bgSize.y)*(position*2+1));
+
+    // primeiro desenha o fundo
+    glm::mat4 bg_model = Matrix_Translate(translate.x, translate.y, 0.0f) * Matrix_Scale(bgSize.x, bgSize.y, 1.0f);
+
+    // depois desenha a barra
+    float barRatio = value / maxValue;
+    glm::vec2 barSize = glm::vec2(bgSize.x - barEdge, bgSize.y - barEdge);
+
+    glm::mat4 bar_model = Matrix_Translate(((1.0f - (barRatio)) * barSize.x) + translate.x, translate.y, 0.0f) *
+                          Matrix_Scale(barSize.x * barRatio, barSize.y, 1.0f);
+
+    drawBarArbitrary(bg_model, bar_model, barRatio, COLOR_GREY, colors);
+}
+
+//Overload de drawBarNDC para barras de 1 cor
+void drawBarNDC(float value, float maxValue, float aspect, glm::vec3 color, int position)
 {
     std::vector<glm::vec3> oneColor = {color};
-    drawBar(value, maxValue, aspect, oneColor, position);
+    drawBarNDC(value, maxValue, aspect, oneColor, position);
+}
+
+// Desenha uma progress bar em uma posição do mundo
+void drawBarBillboard(glm::mat4 view, glm::vec3 pos, float value, float maxValue, std::vector<glm::vec3> colors)
+{
+    float epsilon = 0.015625f;
+
+    glm::vec3 offset = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 bbsize  = glm::vec3(0.5f, 0.1f-epsilon, 1.0f);
+
+    glm::mat4 bg_model = Matrix_Billboard(view, pos, offset, bbsize);
+
+    float barRatio = value / maxValue;
+
+    offset.z += epsilon;//closer
+    offset.x  = (1.0f - (barRatio)) * bbsize.x;//right
+
+    bbsize.z  += epsilon;
+    bbsize.x  *= barRatio;
+
+    glm::mat4 bar_model = Matrix_Billboard(view, pos, offset, bbsize);
+
+    drawBarArbitrary(bg_model, bar_model, barRatio, COLOR_BLACK, colors);
+}
+
+//Overload de drawBarBillboard para barras de 1 cor
+void drawBarBillboard(glm::mat4 view, glm::vec3 pos, float value, float maxValue, glm::vec3 color)
+{
+    std::vector<glm::vec3> oneColor = {color};
+    drawBarBillboard(view, pos, value, maxValue, oneColor);
 }
 
 void drawBanner(float aspect, std::string tex) // used for game over, you won, etc...
@@ -140,43 +187,43 @@ void drawBanner(float aspect, std::string tex) // used for game over, you won, e
 
     glm::mat4 model = Matrix_Scale(bannerSize.x / aspect, bannerSize.y, 1.0f);
 
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+    setModelMatrix(model);
 
-    glUniform1i(g_ignore_lighting_uniform, true);
+    setIgnoreLighting(true);
     setDiffuseTexture(tex);
     setSpecularColor(COLOR_BLACK);
     DrawVirtualObject("square");
-    glUniform1i(g_ignore_lighting_uniform, false);
+    setIgnoreLighting(false);
 }
 
 void drawColorFade(glm::vec3 color, float alpha)
 {
     glm::mat4 model = Matrix_Identity();
 
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+    setModelMatrix(model);
 
-    glUniform1i(g_ignore_lighting_uniform, true);
+    setIgnoreLighting(true);
     setAlphaValue(alpha);
     setDiffuseColor(color);
     setSpecularColor(COLOR_BLACK);
     DrawVirtualObject("square");
     resetAlphaValue();
-    glUniform1i(g_ignore_lighting_uniform, false);
+    setIgnoreLighting(false);
 }
 
 void drawTextureFade(std::string tex, float alpha)
 {
     glm::mat4 model = Matrix_Identity();
 
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+    setModelMatrix(model);
 
-    glUniform1i(g_ignore_lighting_uniform, true);
+    setIgnoreLighting(true);
     setAlphaValue(alpha);
     setDiffuseTexture(tex);
     setSpecularColor(COLOR_BLACK);
     DrawVirtualObject("square");
     resetAlphaValue();
-    glUniform1i(g_ignore_lighting_uniform, false);
+    setIgnoreLighting(false);
 }
 
 void drawColorCompare(float aspect)//debug
@@ -191,13 +238,13 @@ void drawColorCompare(float aspect)//debug
 
     setSpecularColor(COLOR_BLACK);
 
-    glUniform1i(g_ignore_lighting_uniform, true);
+    setIgnoreLighting(true);
 
     for (int i = 0; i < 9; i++)
     {
         model = Matrix_Translate(translate.x, translate.y, 0.0f) * modelscale;
 
-        glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        setModelMatrix(model);
 
         setDiffuseColor(colors[i]);
         DrawVirtualObject("square");
@@ -205,7 +252,7 @@ void drawColorCompare(float aspect)//debug
         translate.x += 0.1;
     }
 
-    glUniform1i(g_ignore_lighting_uniform, false);
+    setIgnoreLighting(false);
 }
 
 void drawFloor(Level level)
@@ -216,7 +263,7 @@ void drawFloor(Level level)
     glm::mat4 model = Matrix_Translate(0.0f,level.levelFloor,0.0f) *
                       Matrix_Scale(halfWidth, 1.0f, halfLength);
 
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+    setModelMatrix(model);
 
     setTextureRepeat(halfWidth,halfLength);
     setDiffuseTexture("floor");
@@ -266,7 +313,7 @@ void drawWall(Level level, CardinalDirection direction)
         default: break;
     }
 
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+    setModelMatrix(model);
 
     setDiffuseTexture("wall");
     setSpecularTexture("wall_spec");
@@ -284,7 +331,7 @@ void drawObstacle(Obstacle obstacle)
     model = Matrix_Translate(obstacle.pos.x, obstacle.pos.y, obstacle.pos.z) *
             Matrix_Scale(width, height, length);
 
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+    setModelMatrix(model);
 
     bool useSixSideTexture = false;
     switch (obstacle.type)
@@ -416,7 +463,7 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
             model                   *
             Matrix_Scale(scale.x, scale.y, scale.z);
 
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+    setModelMatrix(model);
 
     switch (type)
     {
@@ -473,7 +520,7 @@ void drawProjectile(Projectile proj)
             model                                *
             Matrix_Scale(width, height, length);
 
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+    setModelMatrix(model);
 
     switch (proj.type)
     {
@@ -486,11 +533,11 @@ void drawProjectile(Projectile proj)
             DrawVirtualObject("line");
             break;
         case PROJ_BULLET:
-            glUniform1i(g_use_spherical_uv_uniform, true);
+            setUseSphericalUV(true);
             setDiffuseTexture("silver");
             setSpecularTexture("silver");
             DrawVirtualObject("the_sphere");
-            glUniform1i(g_use_spherical_uv_uniform, false);
+            setUseSphericalUV(false);
             break;
         default: break;
     }
@@ -523,12 +570,12 @@ void drawEnemy(Enemy enemy)
                       Matrix_Rotate_Y(getTheta(enemy.view) + pi2)             *
                       Matrix_Resize(og_size, model_size);
 
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+    setModelMatrix(model);
 
     bool isInCooldown = enemy.dmgCooldown > 0.0f;
 
     // inimigos são desenhados usando GOURAUD
-    glUniform1i(g_use_gouraud_uniform, true);
+    setUseGouraud(true);
 
     switch (enemy.type)
     {
@@ -572,7 +619,7 @@ void drawEnemy(Enemy enemy)
         default: break;
     }
 
-    glUniform1i(g_use_gouraud_uniform, false);
+    setUseGouraud(false);
 }
 
 // Escrevemos na tela um tempo (em segundos).
