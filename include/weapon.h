@@ -37,6 +37,10 @@ struct Weapon
     float cooldown;
 
     int spread;
+    glm::vec3 aim_displace;
+
+    bool forced_aim = false; // arma precisa estar mirada (sem hipfire)
+
     WeaponEffect effect; // efeito extra causado pela arma
 
     Projectile fire(glm::vec3 pos, glm::vec3 dir);

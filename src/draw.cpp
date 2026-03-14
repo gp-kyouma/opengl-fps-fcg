@@ -69,6 +69,56 @@ void drawAABB(AABB aabb) // para razões de debug
     setIgnoreLighting(false);
 }
 
+void drawPoint(glm::vec3 point) // para razões de debug
+{
+    float point_size = 0.015f;
+
+    glm::mat4 model = Matrix_Translate(point.x, point.y, point.z) * Matrix_Scale(point_size, point_size, point_size);
+
+    setModelMatrix(model);
+
+    setIgnoreLighting(true);
+    setDiffuseColor(COLOR_CYAN);
+    setSpecularColor(COLOR_BLACK);
+    DrawVirtualObject("the_sphere");
+    setIgnoreLighting(false);
+}
+
+void drawAxes(glm::vec3 center, glm::vec4 u, glm::vec4 v, glm::vec4 w) // para razões de debug
+{
+    glm::vec3 u3, v3, w3;
+    float axis_size = 0.25f;
+
+    u3 = toVec3(u);
+    v3 = toVec3(v);
+    w3 = toVec3(w);
+
+    glm::mat4 model_center = Matrix_Translate(center.x, center.y, center.z);
+    glm::mat4 model_scaler = Matrix_Scale(axis_size, axis_size, axis_size);
+
+    glm::mat4 model_u = model_center * Matrix_Rotate_Y(getTheta(u3))  * Matrix_Rotate_X(-getPhi(u3)) * model_scaler;
+    glm::mat4 model_v = model_center * Matrix_Rotate_Y(getTheta(v3))  * Matrix_Rotate_X(-getPhi(v3)) * model_scaler;
+    glm::mat4 model_w = model_center * Matrix_Rotate_Y(getTheta(w3))  * Matrix_Rotate_X(-getPhi(w3)) * model_scaler;
+
+    glLineWidth(6.0f);
+    setSpecularColor(COLOR_BLACK);
+    setIgnoreLighting(true);
+
+    setModelMatrix(model_u);
+    setDiffuseColor(COLOR_RED);
+    DrawVirtualObject("line");
+
+    setModelMatrix(model_v);
+    setDiffuseColor(COLOR_GREEN);
+    DrawVirtualObject("line");
+
+    setModelMatrix(model_w);
+    setDiffuseColor(COLOR_BLUE);
+    DrawVirtualObject("line");
+
+    setIgnoreLighting(false);
+}
+
 void drawCrosshair(float aspect)
 {
     const float crosshair_size = 0.0625f; // 1/16
@@ -166,8 +216,8 @@ void drawBarBillboard(glm::mat4 view, glm::vec3 pos, float value, float maxValue
     offset.z += epsilon;//closer
     offset.x  = (1.0f - (barRatio)) * bbsize.x;//right
 
-    bbsize.z  += epsilon;
-    bbsize.x  *= barRatio;
+    bbsize.z += epsilon;
+    bbsize.x *= barRatio;
 
     glm::mat4 bar_model = Matrix_Billboard(view, pos, offset, bbsize);
 
@@ -413,7 +463,11 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
     glm::vec4 horizontal_displace =  u*displace.x;
     glm::vec4 forward_displace    = -w*displace.z;
 
-    glm::mat4 model;
+    glm::mat4 model = Matrix_Identity();
+
+    // forced aim, held up while not aiming
+    if (type == WPN_MINIGUN)
+        model = Matrix_Rotate_Z(-pi2 + player.wpnAnimation * pi2);
 
     // arma melee tem uma animação extra
     // (v3: now with ACTUAL swings!)
@@ -448,10 +502,7 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
         model = Matrix_Rotate_X(wide_rotate * -pi2 * 0.875f) * Matrix_Rotate_Z(-pi2 + melee_rotate * pi2);
     }
     else
-    {
-        model = Matrix_Identity();
         horizontal_displace *= (1.0f - player.wpnAnimation);
-    }
 
     glm::vec4 weapon_pos = Ponto(player.pos)+vertical_displace+horizontal_displace+forward_displace;
     weapon_pos.y += player.neck;
@@ -507,17 +558,34 @@ void drawProjectile(Projectile proj)
     float length = (proj.e_size.z);
     float height = (proj.e_size.y);
 
-    glm::mat4 model;
+    glm::mat4 model = Matrix_Identity();
+
+    glm::vec3 proj_pos = proj.pos;
 
     if (proj.type == PROJ_BULLET)
-        model = Matrix_Rotate_Y(pi);
-    else
-        model = Matrix_Identity();
+        model = Matrix_Rotate_Y(pi); // texture seam facing towards enemy
 
-    model = Matrix_Translate(proj.pos.x, proj.pos.y, proj.pos.z) *
+    if (proj.type == PROJ_HITSCAN)
+    {
+        // simulate bullet moving
+        float move_speed = 50.0f;//should be the same as max length
+        float wall_embed = 0.125f;
+        float move_factor = (0.15f - proj.lifespan) * move_speed;
+
+        if (move_factor > length-wall_embed)
+        {
+            move_factor = length-wall_embed;
+            length  = wall_embed+wall_embed; // bullet embedded into whatever it hit
+        }
+        else length = 1.0f; // bullet "length"
+
+        proj_pos = proj.pos + proj.view * move_factor;
+    }
+
+    model = Matrix_Translate(proj_pos.x, proj_pos.y, proj_pos.z) *
             Matrix_Rotate_Y(getTheta(proj.view))  *
             Matrix_Rotate_X(-getPhi(proj.view))   *
-            model                                *
+            model                                 *
             Matrix_Scale(width, height, length);
 
     setModelMatrix(model);
@@ -525,10 +593,8 @@ void drawProjectile(Projectile proj)
     switch (proj.type)
     {
         case PROJ_HITSCAN:
-            //setDiffuseColor(COLOR_BLUE);
-            //setSpecularColor(COLOR_WHITE);
-            setDiffuseColor(COLOR_YELLOW);
-            setSpecularColor(COLOR_RED);
+            setDiffuseColor(COLOR_BLUE);
+            setSpecularColor(COLOR_WHITE);
             glLineWidth(4.0f);
             DrawVirtualObject("line");
             break;
@@ -663,6 +729,13 @@ void drawHealth(GLFWwindow* window, Actor& actor)
 void Enemy::draw()
 {
     drawEnemy(*this);
+    if (this->dmgCooldown > 0.0f)
+    {
+        glm::vec3 bar_pos = this->pos;
+        bar_pos.y = this->getHitbox().aabb_max.y + 0.25f;
+        std::vector<glm::vec3> healthColors = {COLOR_GREEN, COLOR_GREEN, COLOR_YELLOW, COLOR_RED};
+        drawBarBillboard(g_CurrentViewMatrix, bar_pos, (float)this->health, (float)this->maxHealth, healthColors);
+    }
 }
 
 void Obstacle::draw()

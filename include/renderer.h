@@ -170,4 +170,10 @@ extern GLint g_specular_color_uniform;
 // Número de texturas carregadas pela função LoadTextureImage()
 extern GLuint g_NumLoadedTextures;
 
+// As matrizes de Model/View/Projection, expostas para uso global
+// (Isso provavelmente deveria ser uma struct, com esses atributos sendo privados)
+extern glm::mat4 g_CurrentModelMatrix;
+extern glm::mat4 g_CurrentViewMatrix;
+extern glm::mat4 g_CurrentProjectionMatrix;
+
 #endif // FCG_RENDERER

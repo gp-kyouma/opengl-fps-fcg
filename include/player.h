@@ -39,6 +39,7 @@ struct Player : Actor
 
     Weapon getCurrentWeapon();
 
+    glm::vec3 calculateWeaponPos();
     bool fire(Projectile &new_proj);
 
     void resetHealth();

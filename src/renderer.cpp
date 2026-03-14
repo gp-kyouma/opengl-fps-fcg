@@ -30,6 +30,12 @@ GLint g_specular_color_uniform;
 // Número de texturas carregadas pela função LoadTextureImage()
 GLuint g_NumLoadedTextures = 0;
 
+// As matrizes de Model/View/Projection, expostas para uso global
+// (Isso provavelmente deveria ser uma struct, com esses atributos sendo privados)
+glm::mat4 g_CurrentModelMatrix = Matrix_Identity();
+glm::mat4 g_CurrentViewMatrix = Matrix_Identity();
+glm::mat4 g_CurrentProjectionMatrix = Matrix_Identity();
+
 ObjModel::ObjModel(const char* filename, const char* basepath /*= NULL*/, bool triangulate /*= true*/)
 {
     printf("Carregando objetos do arquivo \"%s\"...\n", filename);
@@ -235,6 +241,7 @@ void setModelMatrix(glm::mat4 mat)
     glUseProgram(g_GpuProgramID);
     glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(mat));
     glUseProgram(0);
+    g_CurrentModelMatrix = mat;
 }
 
 void setViewMatrix(glm::mat4 mat)
@@ -242,6 +249,7 @@ void setViewMatrix(glm::mat4 mat)
     glUseProgram(g_GpuProgramID);
     glUniformMatrix4fv(g_view_uniform, 1 , GL_FALSE , glm::value_ptr(mat));
     glUseProgram(0);
+    g_CurrentViewMatrix = mat;
 }
 
 void setProjectionMatrix(glm::mat4 mat)
@@ -249,6 +257,7 @@ void setProjectionMatrix(glm::mat4 mat)
     glUseProgram(g_GpuProgramID);
     glUniformMatrix4fv(g_projection_uniform, 1 , GL_FALSE , glm::value_ptr(mat));
     glUseProgram(0);
+    g_CurrentProjectionMatrix = mat;
 }
 
 // 'Liga' a textura com nome correspondente no dicionário (diffuse)

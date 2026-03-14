@@ -82,7 +82,7 @@ void Player::doPlayerMovement(float deltaTime)
 
 void Player::doWeaponAnimation(float deltaTime)
 {
-    if (g_LeftMouseButtonPressed || g_RightMouseButtonPressed)
+    if (g_RightMouseButtonPressed || (getCurrentWeapon().forced_aim && g_LeftMouseButtonPressed))
         incrementTimer(wpnAnimation, deltaTime*6, 1.0f);
     else
         decrementTimer(wpnAnimation, deltaTime*6, 0.0f);
@@ -120,14 +120,33 @@ Weapon Player::getCurrentWeapon()
     return weapons[currentWeapon];
 }
 
+glm::vec3 Player::calculateWeaponPos()
+{
+    glm::vec3 result = pos;
+
+    result.y += neck;
+
+    glm::vec3 aim_displace = getCurrentWeapon().aim_displace;
+
+    glm::vec4 u,v,w;
+    calculate_uvw(view,u,v,w);
+
+    glm::vec4 vertical_displace   = -v*aim_displace.y;
+    glm::vec4 horizontal_displace = u*aim_displace.x *= (1.0f - wpnAnimation);
+    glm::vec4 forward_displace    = -w*aim_displace.z;
+
+    result += toVec3(vertical_displace) + toVec3(horizontal_displace) + toVec3(forward_displace);
+
+    return result;
+}
+
 bool Player::fire(Projectile &new_proj)
 {
-    if (wpnCooldown == 0.0f && wpnAnimation == 1.0f && g_LeftMouseButtonPressed)
+    if (wpnCooldown == 0.0f &&
+        g_LeftMouseButtonPressed &&
+        (!getCurrentWeapon().forced_aim || wpnAnimation == 1.0f))
     {
-        glm::vec3 proj_pos = pos;
-        proj_pos.y += neck/1.5f;
-
-        new_proj = getCurrentWeapon().fire(proj_pos,view);
+        new_proj = getCurrentWeapon().fire(calculateWeaponPos(),view);
 
         wpnCooldown = getCurrentWeapon().cooldown;
         return true;

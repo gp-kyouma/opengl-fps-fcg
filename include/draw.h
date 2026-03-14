@@ -38,6 +38,8 @@ DECLARAÇÃO DE FUNÇÕES
 */
 
 void drawAABB(AABB aabb); // para razões de debug
+void drawPoint(glm::vec3 point); // para razões de debug
+void drawAxes(glm::vec3 center, glm::vec4 u, glm::vec4 v, glm::vec4 w); // para razões de debug
 void drawColorCompare(float aspect);//debug
 
 void drawCrosshair(float aspect);

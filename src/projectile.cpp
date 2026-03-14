@@ -10,7 +10,7 @@ void Projectile::setProjectileData(ProjectileType type)
 {
     this->type = type;
 
-    const float max_range = 100.0f;
+    const float max_range = 50.0f;
 
     switch (type)
     {

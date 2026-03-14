@@ -19,7 +19,7 @@ float getPhi(glm::vec3 v);
 // Função que calcula a distância entre 2 pontos
 float distance(glm::vec3 p1, glm::vec3 p2);
 
-// Função que calcula um sistema de coordenadas a partir de um vetor de view
+// Função que calcula um sistema de coordenadas DE CÂMERA a partir de um vetor de view
 void calculate_uvw(glm::vec3 view, glm::vec4& u, glm::vec4& v, glm::vec4& w, bool no_up = false);
 
 // Função que normaliza um vec4 (não nulo)

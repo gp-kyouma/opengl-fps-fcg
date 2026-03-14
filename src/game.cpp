@@ -81,12 +81,13 @@ void Game::Init()
     shotgun.spread    = 10;
     shotgun.effect    = SCATTER;
 
-    minigun.wpn_type  = WPN_MINIGUN;
-    minigun.proj_type = PROJ_HITSCAN;
-    minigun.cooldown  = 0.10f;
-    minigun.damage    = 8;
-    minigun.spread    = 35; // upgraded from 20
-    minigun.effect    = NO_EFFECT;
+    minigun.wpn_type   = WPN_MINIGUN;
+    minigun.proj_type  = PROJ_HITSCAN;
+    minigun.cooldown   = 0.10f;
+    minigun.damage     = 8;
+    minigun.spread     = 35; // upgraded from 20
+    minigun.effect     = NO_EFFECT;
+    minigun.forced_aim = true;
 
     sniper.wpn_type  = WPN_SNIPER;
     sniper.proj_type = PROJ_BULLET;
@@ -94,6 +95,13 @@ void Game::Init()
     sniper.damage    = 50;
     sniper.spread    = 0;
     sniper.effect    = SLOWDOWN;
+
+    // these look a little off because of fov differences in first person
+    sword.aim_displace   = glm::vec3(0.0f, 0.1f, 0.75f);    //lines up with blade...? also no horizontal displace
+    pistol.aim_displace  = glm::vec3(0.3f, 0.125f, 0.45f);  //acceptable
+    shotgun.aim_displace = glm::vec3(0.3f, 0.15f, 0.8f);    //actually good
+    minigun.aim_displace = glm::vec3(0.3f, 0.125f, 0.4f);   //middling
+    sniper.aim_displace  = glm::vec3(0.3f, 0.125f, 0.55f);  //decent
 
     player.weapons.push_back(sword);
     player.weapons.push_back(pistol);
@@ -535,7 +543,6 @@ void Game::Draw(GLFWwindow* window)
     setUseSphericalUV(false);
 
     // (/INICIALIZAÇÃO)
-    std::vector<glm::vec3> healthColors = {COLOR_GREEN, COLOR_GREEN, COLOR_YELLOW, COLOR_RED};
 
     // (DESENHA OBJETOS)
 
@@ -552,15 +559,7 @@ void Game::Draw(GLFWwindow* window)
         projectiles[i].draw();
 
     for (unsigned int i = 0; i < enemies.size(); i++)
-    {
         enemies[i].draw();
-        if (enemies[i].dmgCooldown > 0.0f)
-        {
-            glm::vec3 bar_pos = enemies[i].pos;
-            bar_pos.y = enemies[i].getHitbox().aabb_max.y + 0.25f;
-            drawBarBillboard(view, bar_pos, (float)enemies[i].health, (float)enemies[i].maxHealth, healthColors);
-        }
-    }
 
     // se g_ShowInfo = true, mostra as AABBs na tela
     if (g_ShowInfo)
@@ -570,9 +569,38 @@ void Game::Draw(GLFWwindow* window)
         for (unsigned int i = 0; i < projectiles.size(); i++)
             if (projectiles[i].hit_type == BOX)
                 drawAABB(projectiles[i].getHitbox());
+            else if (projectiles[i].hit_type == RAY)
+                drawPoint(projectiles[i].pos + projectiles[i].view * projectiles[i].e_size.z);//impact point
 
         for (unsigned int i = 0; i < enemies.size(); i++)
             drawAABB(enemies[i].getHitbox());
+
+        //drawPoint(player.calculateWeaponPos());
+
+        // weapons in 3rd person view
+        Player fakeplayer[(int)player.weapons.size()];
+
+        for (int i = 1; i < (int)player.weapons.size(); i++)
+        {
+            fakeplayer[i].pos  = glm::vec3(4.5f - (i * 1.5f),2.25f,-12.0f);
+            fakeplayer[i].neck = 0.5f;
+            fakeplayer[i].view = glm::vec3(0.0f,0.0f,1.0f);
+            fakeplayer[i].wpnAnimation = 0.0f;
+            fakeplayer[i].wpnCooldown  = 0.0f;
+            fakeplayer[i].weapons = {player.weapons[i]};
+            fakeplayer[i].currentWeapon = 0;
+
+            drawWeapon(fakeplayer[i],fakeplayer[i].getCurrentWeapon().wpn_type,getTheta(fakeplayer[i].view),getPhi(fakeplayer[i].view));
+            drawPoint(fakeplayer[i].calculateWeaponPos());
+        }
+
+        // bullet for checking spherical uv
+        Projectile fakebullet;
+        fakebullet.setProjectileData(PROJ_BULLET);
+        fakebullet.pos = glm::vec3(0.0f,2.0f,-13.5f);
+        fakebullet.view = glm::vec3(0.0f,0.0f,1.0f);
+        drawAxes(fakebullet.pos,glm::vec4(1.0f,0.0f,0.0f,0.0f),glm::vec4(0.0f,1.0f,0.0f,0.0f),glm::vec4(0.0f,0.0f,1.0f,0.0f));
+        drawProjectile(fakebullet);
     }
 
     // Resetamos todos os pixels do Z-buffer (depth buffer)
@@ -619,6 +647,7 @@ void Game::Draw(GLFWwindow* window)
         drawCrosshair(g_ScreenRatio);
 
         // Desenha barra de vida
+        std::vector<glm::vec3> healthColors = {COLOR_GREEN, COLOR_GREEN, COLOR_YELLOW, COLOR_RED};
         drawBarNDC((float)player.health, (float)player.maxHealth, g_ScreenRatio, healthColors, 0);
 
         // Desenha barra de cooldown da arma se estiver em cooldown
