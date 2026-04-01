@@ -61,5 +61,6 @@ void drawEnemy(Enemy enemy);
 
 void drawTimer(GLFWwindow* window, float timer, bool hud);
 void drawHealth(GLFWwindow* window, Actor& actor);
+void drawPosition(GLFWwindow* window, Entity& entity);
 
 #endif // FCG_DRAW

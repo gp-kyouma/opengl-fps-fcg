@@ -13,8 +13,7 @@
 #include "bezier.h"
 
 // protótipos de funções auxiliares
-void playerWithinLevel(Player &player, Level level);
-void enemyWithinLevel(Enemy &enemy, Level level);
+void entityWithinLevel(Entity &entity, Level level);
 
 void Game::Init()
 {
@@ -49,7 +48,8 @@ void Game::Init()
     player.maxHealth = 100;
     player.health = player.maxHealth;
 
-    player.currentWeapon  =  0; // melee
+    player.currentWeapon =  0; // melee
+    player.wpnState = WPNSTATE_READY;
 
     // WEAPONS
     Weapon sword;
@@ -63,38 +63,48 @@ void Game::Init()
     sword.wpn_type  = WPN_SWORD;
     sword.proj_type = PROJ_MELEE_INVISIBLE;
     sword.cooldown  = 0.5f;
+    sword.drw_speed = 0.375f;
     sword.damage    = 25;
     sword.spread    = 0;
+    sword.aim_speed = 4.0f;//0.25s
     sword.effect    = NO_EFFECT;
 
     pistol.wpn_type  = WPN_PISTOL;
     pistol.proj_type = PROJ_HITSCAN;
     pistol.cooldown  = 0.625f;
+    pistol.drw_speed = 0.25f;
     pistol.damage    = 15;
     pistol.spread    = 5;
+    pistol.aim_speed = 4.0f;//0.25s
     pistol.effect    = NO_EFFECT;
 
     shotgun.wpn_type  = WPN_SHOTGUN;
     shotgun.proj_type = PROJ_HITSCAN;
     shotgun.cooldown  = 0.875f;
+    shotgun.drw_speed = 0.5f;
     shotgun.damage    = 12;
     shotgun.spread    = 10;
+    shotgun.aim_speed = 3.0f;//0.33s
     shotgun.effect    = SCATTER;
 
     minigun.wpn_type   = WPN_MINIGUN;
     minigun.proj_type  = PROJ_HITSCAN;
     minigun.cooldown   = 0.10f;
+    minigun.drw_speed  = 1.0f;
     minigun.damage     = 8;
     minigun.spread     = 35; // upgraded from 20
-    minigun.effect     = NO_EFFECT;
+    minigun.aim_speed  = 1.0f;//1.0s
+    minigun.effect     = AIM_SLOWDOWN;
     minigun.forced_aim = true;
 
     sniper.wpn_type  = WPN_SNIPER;
     sniper.proj_type = PROJ_BULLET;
     sniper.cooldown  = 1.125f;
+    sniper.drw_speed = 1.0f;
     sniper.damage    = 50;
     sniper.spread    = 0;
-    sniper.effect    = SLOWDOWN;
+    sniper.aim_speed = 2.0f;//0.5s
+    sniper.effect    = AIM_SLOWDOWN;
 
     // these look a little off because of fov differences in first person
     sword.aim_displace   = glm::vec3(0.0f, 0.1f, 0.75f);    //lines up with blade...? also no horizontal displace
@@ -140,95 +150,31 @@ void Game::Update()
     // atualiza animação da arma
     // atualiza cooldown da arma
     // atualiza cooldown de dano
-    player.update(deltaTime);
     // atualiza arma
-    player.doWeaponSwitch();
+    player.update(deltaTime);
 
-    // testa se deve atirar
-    Projectile new_proj;
-    bool shoot = player.fire(new_proj);
-    if (shoot)
-    {
-        if (player.getCurrentWeapon().effect == SCATTER || player.getCurrentWeapon().spread > 0)
-        {
-            std::vector<Projectile> new_projectiles;
-            new_projectiles.push_back(new_proj);
-
-            // cria novos projéteis/faz alterações
-            // baseadas no projétil que acabou de ser atirado:
-            // obtém o "sistema de coordenadas" do projétil
-            glm::vec4 u,v,w;
-            calculate_uvw(player.view,u,v,w);
-
-            const float pi24 = 3.141592f / 24.0f;
-
-            if (player.getCurrentWeapon().effect == SCATTER)
-            {
-                Projectile spread1 = new_proj;
-                Projectile spread2 = new_proj;
-                Projectile spread3 = new_proj;
-                Projectile spread4 = new_proj;
-
-                Projectile spread5 = new_proj;
-                Projectile spread6 = new_proj;
-
-                // rotaciona
-
-                // old (radial spread)
-                /*
-                spread1.dir = toVec3(Matrix_Rotate( pi24*2, v) * Vetor(spread1.dir));
-                spread2.dir = toVec3(Matrix_Rotate( pi24,   v) * Vetor(spread2.dir));
-                spread3.dir = toVec3(Matrix_Rotate(-pi24,   v) * Vetor(spread3.dir));
-                spread4.dir = toVec3(Matrix_Rotate(-pi24*2, v) * Vetor(spread4.dir));
-                */
-
-                // new (x-spread)
-                spread1.view = toVec3(Matrix_Rotate( pi24, v) * Matrix_Rotate( pi24/2, u) * Vetor(spread1.view));
-                spread2.view = toVec3(Matrix_Rotate( pi24, v) * Matrix_Rotate(-pi24/2, u) * Vetor(spread2.view));
-                spread3.view = toVec3(Matrix_Rotate(-pi24, v) * Matrix_Rotate( pi24/2, u) * Vetor(spread3.view));
-                spread4.view = toVec3(Matrix_Rotate(-pi24, v) * Matrix_Rotate(-pi24/2, u) * Vetor(spread4.view));
-
-                spread5.view = toVec3(Matrix_Rotate( pi24*2, v) * Vetor(spread5.view));
-                spread6.view = toVec3(Matrix_Rotate(-pi24*2, v) * Vetor(spread6.view));
-
-                new_projectiles.push_back(spread1);
-                new_projectiles.push_back(spread2);
-                new_projectiles.push_back(spread3);
-                new_projectiles.push_back(spread4);
-
-                new_projectiles.push_back(spread5);
-                new_projectiles.push_back(spread6);
-            }
-
-            if (player.getCurrentWeapon().spread > 0)
-            {
-                for (unsigned int i = 0; i < new_projectiles.size(); i++)
-                    new_projectiles[i].doRandomSpread(player.getCurrentWeapon().spread, u, v);
-            }
-
-            if (new_projectiles.size() > 1)
-                projectiles.insert(projectiles.end(), new_projectiles.begin(), new_projectiles.end());
-            else
-                projectiles.push_back(new_projectiles[0]);
-        }
-        else
-            projectiles.push_back(new_proj);
-    }
-
-    // testa colisão com obstáculos
+    // CHECA SE PLAYER ESTÁ GROUNDED
     player.grounded = false;
+
+    // testa colisão com fase (para grounded)
+    entityWithinLevel(player, level_queue.front());
+
+    // testa colisão com obstáculos 1 (para grounded)
+    std::vector<Obstacle> obs_touching_player; // guarda os obstáculos que colidem com o jogador e precisam ser processados depois na ordem
+    obs_touching_player.clear();
 
     for (unsigned int i = 0; i < obstacles.size(); i++)
     {
-        bool col_result;
         glm::vec3 resolve;
 
-        col_result = Collide(player.getHitbox(),obstacles[i].getHitbox(),resolve);
-        if (col_result)
+        AABB player_hb = player.getHitbox();
+        AABB obstcl_hb = obstacles[i].getHitbox();
+
+        if (Collide(player_hb,obstcl_hb,resolve))
         {
-            player.pos += resolve;
             if (resolve.y != 0) // colisão vertical
             {
+                player.pos += resolve;
                 if (resolve.y > 0) // colisão em cima
                 {
                     player.grounded = true;
@@ -239,11 +185,70 @@ void Game::Update()
                     if (player.y_velocity > 0)
                         player.y_velocity = 0.0f;
             }
+            else
+                obs_touching_player.push_back(obstacles[i]);
         }
     }
 
-    // testa colisão com a fase
-    playerWithinLevel(player, level_queue.front());
+    // testa colisão com obstáculos 2 (para step up)
+    float step_up = 0.0f;
+    bool ignore_step = false;
+
+    auto obj = obs_touching_player.begin();
+    while (obj != obs_touching_player.end())
+    {
+        glm::vec3 resolve;
+        float step_limit = 0.25f;
+        Obstacle ob = *obj;
+
+        AABB player_hb = player.getHitbox();
+        AABB obstcl_hb = ob.getHitbox();
+
+        if (Collide(player_hb,obstcl_hb))
+        {
+            float height_diff = (obstcl_hb.aabb_max.y - player_hb.aabb_min.y);
+
+            if (height_diff <= step_limit && player.grounded)
+            {
+                if (height_diff > step_up)
+                    step_up = height_diff;
+                obj = obs_touching_player.erase(obj);
+            }
+            else
+            {
+                obj++;
+                ignore_step = true;//this fixes triple step, but sometimes it catches on the steps...? good enough
+            }
+        }
+    }
+
+    if (!ignore_step)
+        player.pos.y += step_up;
+
+    // testa colisão com obstáculos 3 (o resto dos resolves)
+    for (unsigned int i = 0; i < obs_touching_player.size(); i++)
+    {
+        glm::vec3 resolve;
+
+        AABB player_hb = player.getHitbox();
+        AABB obstcl_hb = obs_touching_player[i].getHitbox();
+
+        if (Collide(player_hb,obstcl_hb,resolve))
+        {
+            player.pos += resolve;
+        }
+    }
+
+    // testa colisão com a fase (para manter in bounds)
+    entityWithinLevel(player, level_queue.front());
+
+    // testa se deve atirar
+    std::vector<Projectile> new_projectiles;
+
+    if (player.fire(new_projectiles))
+    {
+        projectiles.insert(projectiles.end(), new_projectiles.begin(), new_projectiles.end());
+    }
 
     // PROJECTILES
 
@@ -269,13 +274,11 @@ void Game::Update()
                         break;
                     case SPHERE:
                         projectiles[i_proj].lifespan = 0.0f;
-                        //printf("SPHERE HIT OBSTACLE %d\n", i);
                         break;
                     case RAY:
                         if (min_dist < projectiles[i_proj].e_size.z)
                         {
                             projectiles[i_proj].e_size.z = min_dist;
-                            //printf("RAY HIT OBSTACLE %d\n", i);
                         }
                         break;
                     default:
@@ -308,7 +311,6 @@ void Game::Update()
                 else
                 {
                     damageTaken[i] += (projectiles[i_proj].damage);
-                    //printf("PROJECTILE HIT ENEMY %d FOR %d DAMAGE\n", i, (projectiles[i_proj].damage));
                 }
             }
         }
@@ -316,7 +318,6 @@ void Game::Update()
         if (closest_enemy != -1)
         {
             damageTaken[closest_enemy] += (projectiles[i_proj].damage);
-            //printf("PROJECTILE HIT ENEMY %d FOR %d DAMAGE\n", closest_enemy, (projectiles[i_proj].damage));
         }
 
         // testa colisão com fase
@@ -333,13 +334,11 @@ void Game::Update()
                         break;
                     case SPHERE:
                         projectiles[i_proj].lifespan = 0.0f;
-                        //printf("SPHERE HIT LEVEL WALL %d\n", i);
                         break;
                     case RAY:
                         if (min_dist < projectiles[i_proj].e_size.z)
                         {
                             projectiles[i_proj].e_size.z = min_dist;
-                            //printf("RAY HIT LEVEL WALL %d\n", i);
                         }
                         break;
                     default:
@@ -358,7 +357,6 @@ void Game::Update()
         if (!Collide(projectiles[i_proj].pos,level_boundary))//maybe use the generic check here??
         {
             projectiles[i_proj].lifespan = 0.0f;
-            //printf("PROJECTILE %d OUT OF LEVEL\n", i_proj);
         }
 
         // deleta projéteis "velhos"
@@ -435,11 +433,10 @@ void Game::Update()
         }
 
         // testa colisão com a fase
-        enemyWithinLevel(enemies[i], level_queue.front());
+        entityWithinLevel(enemies[i], level_queue.front());
     }
 
     // update level timer
-    // should this be here or at the start? hmm...
     levelTime += deltaTime;
 
     // liga noUpdate se estiver numa condição de fim de fase
@@ -565,6 +562,7 @@ void Game::Draw(GLFWwindow* window)
     if (g_ShowInfo)
     {
         drawAABB(player.getHitbox());
+        drawPosition(window, player);
 
         for (unsigned int i = 0; i < projectiles.size(); i++)
             if (projectiles[i].hit_type == BOX)
@@ -587,6 +585,7 @@ void Game::Draw(GLFWwindow* window)
             fakeplayer[i].view = glm::vec3(0.0f,0.0f,1.0f);
             fakeplayer[i].wpnAnimation = 0.0f;
             fakeplayer[i].wpnCooldown  = 0.0f;
+            fakeplayer[i].wpnState = WPNSTATE_READY;
             fakeplayer[i].weapons = {player.weapons[i]};
             fakeplayer[i].currentWeapon = 0;
 
@@ -652,7 +651,12 @@ void Game::Draw(GLFWwindow* window)
 
         // Desenha barra de cooldown da arma se estiver em cooldown
         if (player.wpnCooldown > 0)
-            drawBarNDC(player.wpnCooldown, player.getCurrentWeapon().cooldown, g_ScreenRatio, COLOR_WHITE, 1);
+        {
+            if (player.wpnState == WPNSTATE_COOLDOWN)
+                drawBarNDC(player.wpnCooldown, player.getCurrentWeapon().cooldown, g_ScreenRatio, COLOR_WHITE, 1);
+            else
+                drawBarNDC(player.wpnCooldown, player.getCurrentWeapon().drw_speed, g_ScreenRatio, COLOR_WHITE, 1);
+        }
 
         // print current player hp
         drawHealth(window, player);
@@ -834,77 +838,40 @@ void Game::drawCutscene(GLFWwindow* window)
     incrementTimer(cutsceneStep, deltaTime, 6.0f);
 }
 
-// Checa se o jogador está dentro dos limites da fase e ajusta sua posição se não estiver
+// Checa se a entidade está dentro dos limites da fase e ajusta sua posição se não estiver
 // Como não é uma função entre dois corpos (AABB x AABB, etc) fica fora de collisions.cpp
-void playerWithinLevel(Player &player, Level level)
+void entityWithinLevel(Entity &entity, Level level)
 {
-    AABB hitbox = player.getHitbox();
+    AABB hitbox = entity.getHitbox();
 
     float halfWidth  = (level.levelWidth /2.0f);
     float halfLength = (level.levelLength/2.0f);
 
-    glm::vec3 halfSize = (player.e_size / 2.0f);
+    glm::vec3 halfSize = (entity.e_size / 2.0f);
 
     if (hitbox.aabb_min.x < -halfWidth)
     {
-        player.pos.x = -halfWidth + halfSize.x;
+        entity.pos.x = -halfWidth + halfSize.x;
     }
     else if (hitbox.aabb_max.x > halfWidth)
     {
-        player.pos.x =  halfWidth - halfSize.x;
+        entity.pos.x =  halfWidth - halfSize.x;
     }
 
     if (hitbox.aabb_min.z < -halfLength)
     {
-        player.pos.z = -halfLength + halfSize.z;
+        entity.pos.z = -halfLength + halfSize.z;
     }
     else if (hitbox.aabb_max.z > halfLength)
     {
-        player.pos.z =  halfLength - halfSize.z;
+        entity.pos.z =  halfLength - halfSize.z;
     }
 
-    if (hitbox.aabb_min.y < level.levelFloor)
+    if (hitbox.aabb_min.y <= level.levelFloor) // constant grounded state when on floor, no matter what
     {
-        player.pos.y = level.levelFloor + halfSize.y;
-        player.grounded = true;
-        player.y_velocity = 0.0f;
-    }
-}
-
-// Checa se o inimigo está dentro dos limites da fase e ajusta sua posição se não estiver
-// Como não é uma função entre dois corpos (AABB x AABB, etc) fica fora de collisions.cpp
-void enemyWithinLevel(Enemy &enemy, Level level)
-{
-    AABB hitbox = enemy.getHitbox();
-
-    float halfWidth  = (level.levelWidth /2.0f);
-    float halfLength = (level.levelLength/2.0f);
-
-    glm::vec3 halfSize = (enemy.e_size / 2.0f);
-
-    if (hitbox.aabb_min.x < -halfWidth)
-    {
-        enemy.pos.x = -halfWidth + halfSize.x;
-    }
-    else if (hitbox.aabb_max.x > halfWidth)
-    {
-        enemy.pos.x =  halfWidth - halfSize.x;
-    }
-
-    if (hitbox.aabb_min.z < -halfLength)
-    {
-        enemy.pos.z = -halfLength + halfSize.z;
-    }
-    else if (hitbox.aabb_max.z > halfLength)
-    {
-        enemy.pos.z =  halfLength - halfSize.z;
-    }
-
-    if (hitbox.aabb_min.y < level.levelFloor)
-    {
-        enemy.pos.y = level.levelFloor + halfSize.y;
-        enemy.grounded = true;
-        enemy.y_velocity = 0.0f;
+        entity.pos.y = level.levelFloor + halfSize.y;
+        entity.grounded = true;
+        entity.y_velocity = 0.0f;
     }
 }
 
@@ -942,6 +909,8 @@ void Game::loadTopLevel()
     player.dmgCooldown  = 0.0f;
     player.wpnCooldown  = 0.0f;
     player.wpnAnimation = 0.0f;
+
+    player.wpnState = WPNSTATE_READY;
 
     player.resetHealth();
 

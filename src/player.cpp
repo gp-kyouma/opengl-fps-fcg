@@ -57,6 +57,7 @@ void Player::doPlayerMovement(float deltaTime)
     normalize_vec4(offset);
 
     // jump mechanic
+    // jump height with these values is ~2.0 units
     const float gravity = 5.0f;
     const float jump_force = 4.5f;
 
@@ -65,14 +66,17 @@ void Player::doPlayerMovement(float deltaTime)
         grounded = false;
         y_velocity = jump_force;
     }
-    else if (!grounded)
+    else// if (!grounded)//constant gravity...
     {
         y_velocity -= (gravity * deltaTime);
     }
 
-    float trueSpeed = speed;
-    if (getCurrentWeapon().effect == SLOWDOWN && wpnCooldown > 0.0f)
-        trueSpeed *= std::max(0.5f,1.0f-(wpnCooldown/2.0f));
+    float speedMultiplier = 1.0f;
+    if (getCurrentWeapon().effect == AIM_SLOWDOWN && wpnAnimation > 0.0f && grounded)
+        speedMultiplier = 0.5f;
+        //speedMultiplier = std::max(0.5f,1.0f-(wpnCooldown/2.0f));
+
+    float trueSpeed = speed * speedMultiplier;
 
     offset   *= (trueSpeed  * deltaTime);
     offset.y += (y_velocity * deltaTime);
@@ -82,10 +86,11 @@ void Player::doPlayerMovement(float deltaTime)
 
 void Player::doWeaponAnimation(float deltaTime)
 {
-    if (g_RightMouseButtonPressed || (getCurrentWeapon().forced_aim && g_LeftMouseButtonPressed))
-        incrementTimer(wpnAnimation, deltaTime*6, 1.0f);
+    float aim_speed = getCurrentWeapon().aim_speed;
+    if (wpnState != WPNSTATE_DRAW && (g_RightMouseButtonPressed || (getCurrentWeapon().forced_aim && g_LeftMouseButtonPressed)))
+        incrementTimer(wpnAnimation, deltaTime*aim_speed, 1.0f);
     else
-        decrementTimer(wpnAnimation, deltaTime*6, 0.0f);
+        decrementTimer(wpnAnimation, deltaTime*aim_speed, 0.0f);
 }
 
 void Player::doDamageCooldown(float deltaTime)
@@ -98,13 +103,17 @@ void Player::doWeaponSwitch()
     if (g_LastNumberPressed != currentWeapon && g_LastNumberPressed < (int)weapons.size())
     {
         currentWeapon = g_LastNumberPressed;
-        wpnCooldown = getCurrentWeapon().cooldown;//0.0f;
+        wpnCooldown = getCurrentWeapon().drw_speed;
+        wpnState = WPNSTATE_DRAW;
+        wpnAnimation = 0.0f;
     }
 }
 
 void Player::doWeaponCooldown(float deltaTime)
 {
     decrementTimer(wpnCooldown, deltaTime, 0.0f);
+    if (wpnCooldown == 0.0f)
+        wpnState = WPNSTATE_READY;
 }
 
 void Player::update(float deltaTime)
@@ -113,6 +122,7 @@ void Player::update(float deltaTime)
     doWeaponAnimation(deltaTime);
     doWeaponCooldown(deltaTime);
     doDamageCooldown(deltaTime);
+    doWeaponSwitch();
 }
 
 Weapon Player::getCurrentWeapon()
@@ -140,15 +150,16 @@ glm::vec3 Player::calculateWeaponPos()
     return result;
 }
 
-bool Player::fire(Projectile &new_proj)
+bool Player::fire(std::vector<Projectile> &new_projectiles)
 {
-    if (wpnCooldown == 0.0f &&
+    if (wpnState == WPNSTATE_READY &&
         g_LeftMouseButtonPressed &&
         (!getCurrentWeapon().forced_aim || wpnAnimation == 1.0f))
     {
-        new_proj = getCurrentWeapon().fire(calculateWeaponPos(),view);
+        new_projectiles = getCurrentWeapon().fire(calculateWeaponPos(),view);
 
         wpnCooldown = getCurrentWeapon().cooldown;
+        wpnState = WPNSTATE_COOLDOWN;
         return true;
     }
     else return false;

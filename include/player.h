@@ -24,9 +24,10 @@ struct Player : Actor
 
     float neck;       // offset no eixo y em relação a pos que define onde a câmera vai ser posicionada
 
-    int currentWeapon;  // índice no vetor de armas que determina a arma equipada
-    float wpnCooldown;  // tempo em segundos até que o jogador possa atirar de novo
-    float wpnAnimation; // valor entre 0.0f e 1.0f, define a animação da arma quando está pressionado o botão esquerdo do mouse
+    int currentWeapon;    // índice no vetor de armas que determina a arma equipada
+    float wpnCooldown;    // tempo em segundos até que o jogador possa atirar de novo
+    float wpnAnimation;   // valor entre 0.0f e 1.0f, define a animação da arma quando está pressionado o botão esquerdo do mouse
+    WeaponState wpnState; // estado atual da arma
 
     std::vector<Weapon> weapons;    // armas disponíveis ao jogador
 
@@ -40,7 +41,7 @@ struct Player : Actor
     Weapon getCurrentWeapon();
 
     glm::vec3 calculateWeaponPos();
-    bool fire(Projectile &new_proj);
+    bool fire(std::vector<Projectile> &new_projectiles);
 
     void resetHealth();
     void takeDamage(int dmg);

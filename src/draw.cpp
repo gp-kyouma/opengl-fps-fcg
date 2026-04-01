@@ -121,7 +121,7 @@ void drawAxes(glm::vec3 center, glm::vec4 u, glm::vec4 v, glm::vec4 w) // para r
 
 void drawCrosshair(float aspect)
 {
-    const float crosshair_size = 0.0625f; // 1/16
+    const float crosshair_size = 0.0625f; // 1/16 // make this dynamic, aka reuse this for sniper aiming // or maybe just change the color??
 
     glm::mat4 model = Matrix_Scale(crosshair_size / aspect, crosshair_size, 1.0f);
 
@@ -475,7 +475,7 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
     if (type == WPN_SWORD)
     {
         float melee_rotate; // 1 is pointed forward, 0 is pointed up
-        float cooldown_percent = player.wpnCooldown / player.getCurrentWeapon().cooldown;
+        float cooldown_percent = (player.wpnState == WPNSTATE_COOLDOWN) ? (player.wpnCooldown / player.getCurrentWeapon().cooldown) : 0.0f;
 
         float wide_rotate = player.wpnAnimation;//aim...
 
@@ -516,6 +516,9 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
 
     setModelMatrix(model);
 
+    if (player.wpnState == WPNSTATE_DRAW)
+        setAlphaValue(0.5f);
+
     switch (type)
     {
         case WPN_SWORD:
@@ -545,6 +548,8 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
             break;
         default: break;
     }
+
+    resetAlphaValue();
 }
 
 void drawProjectile(Projectile proj)
@@ -724,6 +729,23 @@ void drawHealth(GLFWwindow* window, Actor& actor)
     snprintf(buffer, 10, "%d/%d", actor.health, actor.maxHealth);
 
     DrawString(window, buffer, 0.995f, -0.97f, TEXTPOS_BOTTOM, TEXTPOS_RIGHT, 3.0f, false, COLOR_BLACK);
+}
+
+// Escrevemos na tela a posição de uma entidade
+void drawPosition(GLFWwindow* window, Entity& entity)
+{
+    char bufferX[20] = "X = -???.??????";
+    char bufferY[20] = "Y = -???.??????";
+    char bufferZ[20] = "Z = -???.??????";
+
+    snprintf(bufferX, 20, "X = %+f", entity.pos.x);
+    snprintf(bufferY, 20, "Y = %+f", entity.pos.y);
+    snprintf(bufferZ, 20, "Z = %+f", entity.pos.z);
+
+    DrawString(window, bufferX, 1.0f, 0.80f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
+    DrawString(window, bufferY, 1.0f, 0.75f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
+    DrawString(window, bufferZ, 1.0f, 0.70f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
+    DrawString(window, "GROUNDED", 1.0f, 0.65f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, entity.grounded ? COLOR_GREEN : COLOR_RED);//show if grounded
 }
 
 void Enemy::draw()

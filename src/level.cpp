@@ -191,6 +191,15 @@ void Level::createLevel1()
 
     obstacles.push_back(AABBtoObstacle(boxbox, OBSTACLE_WALL));
 
+    for (int i = 0; i < 6; i++)
+    {
+        Obstacle step;
+        step.e_size = glm::vec3(1.0f,1.0f,0.5f);
+        step.pos = glm::vec3(-1.0f, 0.75f + (i * 0.25f), -13.25f + (i * 0.5f));
+        step.type = OBSTACLE_PLATFORM;
+        obstacles.push_back(step);
+    }
+
     EnemyData enemy1, enemy2, enemy3, enemy4, enemy5, enemy6;
     enemy1.pos  = glm::vec3(1.0f, 2.0f, -8.0f);
     enemy1.type = ENEMY_SKELETON;

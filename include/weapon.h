@@ -8,6 +8,8 @@
 
 #include "projectile.h"
 
+#include <vector>
+
 /*
 STRUCTS/CLASSES
 */
@@ -25,7 +27,15 @@ enum WeaponEffect
 {
     NO_EFFECT,
     SCATTER,
-    SLOWDOWN,
+    AIM_SLOWDOWN,
+};
+
+enum WeaponState
+{
+    WPNSTATE_DRAW,
+    WPNSTATE_READY,
+    WPNSTATE_COOLDOWN,
+    //WPNSTATE_RELOAD,
 };
 
 struct Weapon
@@ -37,13 +47,15 @@ struct Weapon
     float cooldown;
 
     int spread;
-    glm::vec3 aim_displace;
 
+    glm::vec3 aim_displace;
     bool forced_aim = false; // arma precisa estar mirada (sem hipfire)
+    float aim_speed;
+    float drw_speed;
 
     WeaponEffect effect; // efeito extra causado pela arma
 
-    Projectile fire(glm::vec3 pos, glm::vec3 dir);
+    std::vector<Projectile> fire(glm::vec3 pos, glm::vec3 dir);
 };
 
 #endif // FCG_WEAPON
