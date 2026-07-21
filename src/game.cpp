@@ -13,8 +13,7 @@
 #include "bezier.h"
 
 // protótipos de funções auxiliares
-void playerWithinLevel(Player &player, Level level);
-void enemyWithinLevel(Enemy &enemy, Level level);
+void entityWithinLevel(Entity &entity, Level level);
 
 void Game::Init()
 {
@@ -43,11 +42,14 @@ void Game::Init()
 
     // PLAYER
 
-    player.p_size = glm::vec3(1.0f,2.0f,1.0f);
+    player.e_size = glm::vec3(1.0f,2.0f,1.0f);
     player.neck   = 0.5f;
     player.speed  = 3.0f;
+    player.maxHealth = 100;
+    player.health = player.maxHealth;
 
-    player.currentWeapon  =  0; // melee
+    player.currentWeapon =  0; // melee
+    player.wpnState = WPNSTATE_READY;
 
     // WEAPONS
     Weapon sword;
@@ -61,32 +63,55 @@ void Game::Init()
     sword.wpn_type  = WPN_SWORD;
     sword.proj_type = PROJ_MELEE_INVISIBLE;
     sword.cooldown  = 0.5f;
+    sword.drw_speed = 0.375f;
     sword.damage    = 25;
+    sword.spread    = 0;
+    sword.aim_speed = 4.0f;//0.25s
     sword.effect    = NO_EFFECT;
 
     pistol.wpn_type  = WPN_PISTOL;
     pistol.proj_type = PROJ_HITSCAN;
     pistol.cooldown  = 0.625f;
+    pistol.drw_speed = 0.25f;
     pistol.damage    = 15;
+    pistol.spread    = 5;
+    pistol.aim_speed = 4.0f;//0.25s
     pistol.effect    = NO_EFFECT;
 
     shotgun.wpn_type  = WPN_SHOTGUN;
     shotgun.proj_type = PROJ_HITSCAN;
     shotgun.cooldown  = 0.875f;
+    shotgun.drw_speed = 0.5f;
     shotgun.damage    = 12;
-    shotgun.effect    = SCATTER_5;
+    shotgun.spread    = 10;
+    shotgun.aim_speed = 3.0f;//0.33s
+    shotgun.effect    = SCATTER;
 
-    minigun.wpn_type  = WPN_MINIGUN;
-    minigun.proj_type = PROJ_HITSCAN;
-    minigun.cooldown  = 0.10f;
-    minigun.damage    = 8;
-    minigun.effect    = RANDOM_SPREAD_01;
+    minigun.wpn_type   = WPN_MINIGUN;
+    minigun.proj_type  = PROJ_HITSCAN;
+    minigun.cooldown   = 0.10f;
+    minigun.drw_speed  = 1.0f;
+    minigun.damage     = 8;
+    minigun.spread     = 35; // upgraded from 20
+    minigun.aim_speed  = 1.0f;//1.0s
+    minigun.effect     = AIM_SLOWDOWN;
+    minigun.forced_aim = true;
 
     sniper.wpn_type  = WPN_SNIPER;
     sniper.proj_type = PROJ_BULLET;
     sniper.cooldown  = 1.125f;
+    sniper.drw_speed = 1.0f;
     sniper.damage    = 50;
-    sniper.effect    = SLOWDOWN;
+    sniper.spread    = 0;
+    sniper.aim_speed = 2.0f;//0.5s
+    sniper.effect    = AIM_SLOWDOWN;
+
+    // these look a little off because of fov differences in first person
+    sword.aim_displace   = glm::vec3(0.0f, 0.1f, 0.75f);    //lines up with blade...? also no horizontal displace
+    pistol.aim_displace  = glm::vec3(0.3f, 0.125f, 0.45f);  //acceptable
+    shotgun.aim_displace = glm::vec3(0.3f, 0.15f, 0.8f);    //actually good
+    minigun.aim_displace = glm::vec3(0.3f, 0.125f, 0.4f);   //middling
+    sniper.aim_displace  = glm::vec3(0.3f, 0.125f, 0.55f);  //decent
 
     player.weapons.push_back(sword);
     player.weapons.push_back(pistol);
@@ -96,6 +121,7 @@ void Game::Init()
 
     // TEMPO
     prevTime = (float)glfwGetTime();
+    totalTime = 0.0f;
 }
 
 void Game::Update()
@@ -116,84 +142,39 @@ void Game::Update()
         return;
 
     // PLAYER
-    // faz a movimentação do jogador em função dos inputs do teclado
+
+    // faz o movimento da câmera pelo mouse
     player.setView(g_CameraTheta, g_CameraPhi);
-    player.doPlayerMovement(deltaTime);
 
+    // faz a movimentação do jogador em função dos inputs do teclado
     // atualiza animação da arma
-    player.doWeaponAnimation(deltaTime);
-
-    // atualiza arma e cooldown da arma
-    player.doWeaponCooldown(deltaTime);
-    player.doWeaponSwitch();
-
+    // atualiza cooldown da arma
     // atualiza cooldown de dano
-    player.doDamageCooldown(deltaTime);
+    // atualiza arma
+    player.update(deltaTime);
 
-    // testa se deve atirar
-    Projectile new_proj;
-    bool shoot = player.fire(new_proj);
-    if (shoot)
-    {
-        if (player.getCurrentWeapon().effect == SCATTER_5 || player.getCurrentWeapon().effect == RANDOM_SPREAD_01)
-        {
-            // cria novos projéteis/faz alterações
-            // baseadas no projétil que acabou de ser atirado:
-            // obtém o "sistema de coordenadas" do projétil
-            glm::vec4 v_up = glm::vec4(0.0f,1.0f,0.0f,0.0f);  // Vetor "up" fixado para apontar para o "céu" (eixo Y global)
-
-            glm::vec4 w = Vetor(-player.view);
-            glm::vec4 u = crossproduct(v_up,w);
-
-            w = w / norm(w);
-            u = u / norm(u);
-
-            glm::vec4 v = crossproduct(w,u);
-
-            const float pi24 = 3.141592f / 24.0f;
-
-            if (player.getCurrentWeapon().effect == SCATTER_5)
-            {
-                Projectile spread1 = new_proj;
-                Projectile spread2 = new_proj;
-                Projectile spread3 = new_proj;
-                Projectile spread4 = new_proj;
-
-                // rotaciona
-                spread1.dir = toVec3(Matrix_Rotate( pi24*2, v) * Vetor(spread1.dir));
-                spread2.dir = toVec3(Matrix_Rotate( pi24,   v) * Vetor(spread2.dir));
-                spread3.dir = toVec3(Matrix_Rotate(-pi24,   v) * Vetor(spread3.dir));
-                spread4.dir = toVec3(Matrix_Rotate(-pi24*2, v) * Vetor(spread4.dir));
-
-                projectiles.push_back(spread1);
-                projectiles.push_back(spread2);
-                projectiles.push_back(spread3);
-                projectiles.push_back(spread4);
-            }
-            else if (player.getCurrentWeapon().effect == RANDOM_SPREAD_01)
-            {
-                float offset_random = ((float)(rand() % 20) - (float)(rand() % 20)) / 100.0f;
-                new_proj.dir = toVec3(Matrix_Rotate(offset_random*pi24, v) * Matrix_Rotate(offset_random*pi24, u) * Vetor(new_proj.dir));
-            }
-        }
-
-        projectiles.push_back(new_proj);
-    }
-
-    // testa colisão com obstáculos
+    // CHECA SE PLAYER ESTÁ GROUNDED
     player.grounded = false;
+
+    // testa colisão com fase (para grounded)
+    entityWithinLevel(player, level_queue.front());
+
+    // testa colisão com obstáculos 1 (para grounded)
+    std::vector<Obstacle> obs_touching_player; // guarda os obstáculos que colidem com o jogador e precisam ser processados depois na ordem
+    obs_touching_player.clear();
 
     for (unsigned int i = 0; i < obstacles.size(); i++)
     {
-        bool col_result;
         glm::vec3 resolve;
 
-        col_result = Collide(player.getAABB(),obstacles[i].getAABB(),resolve);
-        if (col_result)
+        AABB player_hb = player.getHitbox();
+        AABB obstcl_hb = obstacles[i].getHitbox();
+
+        if (Collide(player_hb,obstcl_hb,resolve))
         {
-            player.movePos(resolve);
             if (resolve.y != 0) // colisão vertical
             {
+                player.pos += resolve;
                 if (resolve.y > 0) // colisão em cima
                 {
                     player.grounded = true;
@@ -204,11 +185,70 @@ void Game::Update()
                     if (player.y_velocity > 0)
                         player.y_velocity = 0.0f;
             }
+            else
+                obs_touching_player.push_back(obstacles[i]);
         }
     }
 
-    // testa colisão com a fase
-    playerWithinLevel(player, level_queue.front());
+    // testa colisão com obstáculos 2 (para step up)
+    float step_up = 0.0f;
+    bool ignore_step = false;
+
+    auto obj = obs_touching_player.begin();
+    while (obj != obs_touching_player.end())
+    {
+        glm::vec3 resolve;
+        float step_limit = 0.25f;
+        Obstacle ob = *obj;
+
+        AABB player_hb = player.getHitbox();
+        AABB obstcl_hb = ob.getHitbox();
+
+        if (Collide(player_hb,obstcl_hb))
+        {
+            float height_diff = (obstcl_hb.aabb_max.y - player_hb.aabb_min.y);
+
+            if (height_diff <= step_limit && player.grounded)
+            {
+                if (height_diff > step_up)
+                    step_up = height_diff;
+                obj = obs_touching_player.erase(obj);
+            }
+            else
+            {
+                obj++;
+                ignore_step = true;//this fixes triple step, but sometimes it catches on the steps...? good enough
+            }
+        }
+    }
+
+    if (!ignore_step)
+        player.pos.y += step_up;
+
+    // testa colisão com obstáculos 3 (o resto dos resolves)
+    for (unsigned int i = 0; i < obs_touching_player.size(); i++)
+    {
+        glm::vec3 resolve;
+
+        AABB player_hb = player.getHitbox();
+        AABB obstcl_hb = obs_touching_player[i].getHitbox();
+
+        if (Collide(player_hb,obstcl_hb,resolve))
+        {
+            player.pos += resolve;
+        }
+    }
+
+    // testa colisão com a fase (para manter in bounds)
+    entityWithinLevel(player, level_queue.front());
+
+    // testa se deve atirar
+    std::vector<Projectile> new_projectiles;
+
+    if (player.fire(new_projectiles))
+    {
+        projectiles.insert(projectiles.end(), new_projectiles.begin(), new_projectiles.end());
+    }
 
     // PROJECTILES
 
@@ -224,21 +264,24 @@ void Game::Update()
         for (unsigned int i = 0; i < obstacles.size(); i++)
         {
             float min_dist;
-            bool result;
-            if (projectiles[i_proj].lifespan > 0.0f)
+            bool result = projectiles[i_proj].collideAgainstEntity(obstacles[i],min_dist);
+
+            // Pierce Projectile logic goes here
+            if (result)
                 switch (projectiles[i_proj].hit_type)
                 {
-                    case BOX:   // o único projétil que usa box é o melee então ignora
+                    case BOX:   // o único projétil que usa box é o melee então ignora (THIS IS UNSUSTAINABLE, TO FIX)
                         break;
                     case SPHERE:
-                        result = Collide(projectiles[i_proj].getHitsphere(),obstacles[i].getAABB());
-                        if (result)
-                            projectiles[i_proj].lifespan = 0.0f;
+                        projectiles[i_proj].lifespan = 0.0f;
                         break;
                     case RAY:
-                        result = Collide(projectiles[i_proj].getHitscan(),obstacles[i].getAABB(),projectiles[i_proj].p_size.z,min_dist);
-                        if (result && min_dist < projectiles[i_proj].p_size.z)
-                            projectiles[i_proj].p_size.z = min_dist;
+                        if (min_dist < projectiles[i_proj].e_size.z)
+                        {
+                            projectiles[i_proj].e_size.z = min_dist;
+                        }
+                        break;
+                    default:
                         break;
                 }
         }
@@ -250,37 +293,71 @@ void Game::Update()
         for (unsigned int i = 0; i < enemies.size(); i++)
         {
             float min_dist;
-            bool result;
+            bool result = projectiles[i_proj].collideAgainstEntity(enemies[i],min_dist);
 
-            if (projectiles[i_proj].lifespan > 0.0f)
+            // Pierce Enemy logic goes here
+            if (result)
+            {
+                if (projectiles[i_proj].hit_type == RAY)
+                {
+                    if ((min_dist < projectiles[i_proj].e_size.z) && (min_dist < shortest_dist))
+                    {
+                        // isso é feito para que cada raio atinja somente o inimigo mais próximo
+                        shortest_dist = min_dist;
+                        closest_enemy = i;
+                        projectiles[i_proj].e_size.z = min_dist;
+                    }
+                }
+                else
+                {
+                    damageTaken[i] += (projectiles[i_proj].damage);
+                }
+            }
+        }
+
+        if (closest_enemy != -1)
+        {
+            damageTaken[closest_enemy] += (projectiles[i_proj].damage);
+        }
+
+        // testa colisão com fase
+        // 1: projéteis atingem as paredes e chão/teto
+        AABB* level_walls = level_queue.front().levelWalls;
+        for (int i = 0; i < 6; i++)
+        {
+            float min_dist;
+            bool result = projectiles[i_proj].collideAgainstAABB(level_walls[i],min_dist);
+            if (result)
                 switch (projectiles[i_proj].hit_type)
                 {
-                    case BOX:
-                        result = Collide(projectiles[i_proj].getHitbox(),enemies[i].getAABB());
-                        if (result)
-                            damageTaken[i] += (projectiles[i_proj].damage);
+                    case BOX:   // o único projétil que usa box é o melee então ignora (THIS IS UNSUSTAINABLE, TO FIX)
                         break;
                     case SPHERE:
-                        result = Collide(projectiles[i_proj].getHitsphere(),enemies[i].getAABB());
-                        if (result)
-                            damageTaken[i] += (projectiles[i_proj].damage);
+                        projectiles[i_proj].lifespan = 0.0f;
                         break;
                     case RAY:
-                        result = Collide(projectiles[i_proj].getHitscan(),enemies[i].getAABB(),projectiles[i_proj].p_size.z,min_dist);
-                        if (result && min_dist < projectiles[i_proj].p_size.z)
-                            if (min_dist < shortest_dist)
-                            {
-                                // isso é feito para que cada raio atinja somente o inimigo mais próximo
-                                shortest_dist = min_dist;
-                                closest_enemy = i;
-                                projectiles[i_proj].p_size.z = min_dist;
-                            }
+                        if (min_dist < projectiles[i_proj].e_size.z)
+                        {
+                            projectiles[i_proj].e_size.z = min_dist;
+                        }
+                        break;
+                    default:
                         break;
                 }
         }
 
-        if (closest_enemy != -1)
-            damageTaken[closest_enemy] += (projectiles[i_proj].damage);
+        // 2: projéteis não contidos na fase são deletados
+        // mais um failsafe do que qualquer outra coisa, o teste de verdade é o 1
+        // (this is a little jank)
+        AABB level_boundary = level_queue.front().getAABB();
+        glm::vec3 tolerance = glm::vec3(1.0f,1.0f,1.0f);
+        level_boundary.aabb_max += tolerance;
+        level_boundary.aabb_min -= tolerance;
+
+        if (!Collide(projectiles[i_proj].pos,level_boundary))//maybe use the generic check here??
+        {
+            projectiles[i_proj].lifespan = 0.0f;
+        }
 
         // deleta projéteis "velhos"
         if (projectiles[i_proj].isDead())
@@ -308,18 +385,16 @@ void Game::Update()
 
     for (unsigned int i = 0; i < enemies.size(); i++)
     {
-        // faz a movimentação do inimigo se o jogador estiver perto
-        if (enemies[i].isWithinRange(player.pos))
-        {
+        // checa se inimigo vê jogador
+        enemies[i].seesPlayer = enemies[i].isWithinRange(player.pos);
+
+        if (enemies[i].seesPlayer)
             enemies[i].updateView(player.pos);
-            enemies[i].doEnemyMovement(deltaTime);
-        }
 
-        // inimgo é afetado por gravidade independente do jogador estar perto
-        enemies[i].doEnemyGravity(deltaTime);
-
+        // faz a movimentação do inimigo se o jogador estiver perto
+        // inimigo é afetado por gravidade independente do jogador estar perto
         // atualiza cooldown de dano do inimigo
-        enemies[i].doDamageCooldown(deltaTime);
+        enemies[i].update(deltaTime);
 
         // testa colisão com obstáculos
         enemies[i].grounded = false;
@@ -329,7 +404,7 @@ void Game::Update()
 
         for (unsigned int j = 0; j < obstacles.size(); j++)
         {
-            col_result = Collide(enemies[i].getAABB(),obstacles[j].getAABB(),resolve);
+            col_result = Collide(enemies[i].getHitbox(),obstacles[j].getHitbox(),resolve);
             if (col_result)
             {
                 enemies[i].pos += resolve;
@@ -341,18 +416,28 @@ void Game::Update()
             }
         }
 
-        // testa colisão com a fase
-        enemyWithinLevel(enemies[i], level_queue.front());
-
         // testa colisão com o jogador (dá dano)
-        col_result = Collide(enemies[i].getAABB(),player.getAABB(),resolve);
+        col_result = Collide(enemies[i].getHitbox(),player.getHitbox(),resolve);
         if (col_result)
         {
-            enemies[i].pos += resolve/2.0f;
-            player.movePos(-resolve/2.0f);
+            enemies[i].pos +=  resolve/2.0f;
+            player.pos     += -resolve/2.0f;
             player.takeDamage(enemies[i].damage);
+            // checa se player está colidindo verticalmente com inimigo
+            if (resolve.y < 0) // colisão em cima
+            {
+                player.grounded = true;
+                if (player.y_velocity < 0)
+                    player.y_velocity = 0.0f;
+            }
         }
+
+        // testa colisão com a fase
+        entityWithinLevel(enemies[i], level_queue.front());
     }
+
+    // update level timer
+    levelTime += deltaTime;
 
     // liga noUpdate se estiver numa condição de fim de fase
     if (player.isDead() || (enemies.empty()))
@@ -372,11 +457,13 @@ void Game::checkLevelEnd()
     {
         if (level_queue.size() == 1) // se for o último nível
         {
+            totalTime += levelTime;
             initCutscene();
         }
         else if (g_EnterKeyPressed)
         {
             level_queue.pop();
+            totalTime += levelTime;
             loadTopLevel();
         }
     }
@@ -430,17 +517,27 @@ void Game::Draw(GLFWwindow* window)
 
     // Projeção Perspectiva.
     // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
-    float field_of_view = 3.141592 / 3.0f;
-    glm::mat4 projection = Matrix_Perspective(field_of_view, g_ScreenRatio, nearplane, farplane);
+    float camera_fov = 3.141592 / 2.0f; //90graus
+    glm::mat4 projection = Matrix_Perspective(camera_fov, g_ScreenRatio, nearplane, farplane);
 
     // Enviamos as matrizes "view" e "projection" para a placa de vídeo
     // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
     // efetivamente aplicadas em todos os pontos.
-    glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
-    glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
+    setViewMatrix(view);
+    setProjectionMatrix(projection);
 
     // reseta repetição de texturas
-    resetTextureRepeat();
+    resetTextureRepeat(); // this FAILS the first frame it runs. god only knows why
+
+    // reseta alpha stuff
+    // these FAIL the first frame they run. god only knows why
+    resetAlphaMask();
+    resetAlphaValue();
+
+    //reset misc flags
+    setIgnoreLighting(false);
+    setUseGouraud(false);
+    setUseSphericalUV(false);
 
     // (/INICIALIZAÇÃO)
 
@@ -453,25 +550,56 @@ void Game::Draw(GLFWwindow* window)
     drawWall(level_queue.front(), WEST);
 
     for (unsigned int i = 0; i < obstacles.size(); i++)
-        drawObstacle(obstacles[i]);
+        obstacles[i].draw();
 
     for (unsigned int i = 0; i < projectiles.size(); i++)
-        drawProjectile(projectiles[i]);
+        projectiles[i].draw();
 
     for (unsigned int i = 0; i < enemies.size(); i++)
-        drawEnemy(enemies[i]);
+        enemies[i].draw();
 
     // se g_ShowInfo = true, mostra as AABBs na tela
     if (g_ShowInfo)
     {
-        drawAABB(player.getAABB());
+        drawAABB(player.getHitbox());
+        drawPosition(window, player);
 
         for (unsigned int i = 0; i < projectiles.size(); i++)
             if (projectiles[i].hit_type == BOX)
                 drawAABB(projectiles[i].getHitbox());
+            else if (projectiles[i].hit_type == RAY)
+                drawPoint(projectiles[i].pos + projectiles[i].view * projectiles[i].e_size.z);//impact point
 
         for (unsigned int i = 0; i < enemies.size(); i++)
-            drawAABB(enemies[i].getAABB());
+            drawAABB(enemies[i].getHitbox());
+
+        //drawPoint(player.calculateWeaponPos());
+
+        // weapons in 3rd person view
+        Player fakeplayer[(int)player.weapons.size()];
+
+        for (int i = 1; i < (int)player.weapons.size(); i++)
+        {
+            fakeplayer[i].pos  = glm::vec3(4.5f - (i * 1.5f),2.25f,-12.0f);
+            fakeplayer[i].neck = 0.5f;
+            fakeplayer[i].view = glm::vec3(0.0f,0.0f,1.0f);
+            fakeplayer[i].wpnAnimation = 0.0f;
+            fakeplayer[i].wpnCooldown  = 0.0f;
+            fakeplayer[i].wpnState = WPNSTATE_READY;
+            fakeplayer[i].weapons = {player.weapons[i]};
+            fakeplayer[i].currentWeapon = 0;
+
+            drawWeapon(fakeplayer[i],fakeplayer[i].getCurrentWeapon().wpn_type,getTheta(fakeplayer[i].view),getPhi(fakeplayer[i].view));
+            drawPoint(fakeplayer[i].calculateWeaponPos());
+        }
+
+        // bullet for checking spherical uv
+        Projectile fakebullet;
+        fakebullet.setProjectileData(PROJ_BULLET);
+        fakebullet.pos = glm::vec3(0.0f,2.0f,-13.5f);
+        fakebullet.view = glm::vec3(0.0f,0.0f,1.0f);
+        drawAxes(fakebullet.pos,glm::vec4(1.0f,0.0f,0.0f,0.0f),glm::vec4(0.0f,1.0f,0.0f,0.0f),glm::vec4(0.0f,0.0f,1.0f,0.0f));
+        drawProjectile(fakebullet);
     }
 
     // Resetamos todos os pixels do Z-buffer (depth buffer)
@@ -480,7 +608,14 @@ void Game::Draw(GLFWwindow* window)
 
     // Desenha arma
     if (!noUpdate)
+    {
+        // draw weapon with separate fov
+        float weapon_fov = 3.141592 / 3.0f; //60graus
+        projection = Matrix_Perspective(weapon_fov, g_ScreenRatio, nearplane, farplane);
+        setProjectionMatrix(projection);
+
         drawWeapon(player, player.getCurrentWeapon().wpn_type, g_CameraTheta, g_CameraPhi);
+    }
 
     // Os objetos a seguir sempre serão desenhados na frente; desativa o z-buffer
     glDisable(GL_DEPTH_TEST);
@@ -490,8 +625,15 @@ void Game::Draw(GLFWwindow* window)
     view       = Matrix_Identity();
     projection = Matrix_Identity();
 
-    glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
-    glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
+    setViewMatrix(view);
+    setProjectionMatrix(projection);
+
+    // print level timer on top right
+    drawTimer(window, levelTime, true);
+
+    // Dá um flash vermelho na tela se tiver tomado dano
+    if (player.dmgCooldown > 0)
+        drawColorFade(COLOR_RED, player.dmgCooldown);
 
     // Desenha mensagem ao usuário se estiver morto/acabou fase
     if (player.isDead())
@@ -504,12 +646,28 @@ void Game::Draw(GLFWwindow* window)
         drawCrosshair(g_ScreenRatio);
 
         // Desenha barra de vida
-        drawBar((float)player.health, (float)player.maxHealth, g_ScreenRatio, "green", "yellow", "red", 0);
+        std::vector<glm::vec3> healthColors = {COLOR_GREEN, COLOR_GREEN, COLOR_YELLOW, COLOR_RED};
+        drawBarNDC((float)player.health, (float)player.maxHealth, g_ScreenRatio, healthColors, 0);
 
         // Desenha barra de cooldown da arma se estiver em cooldown
         if (player.wpnCooldown > 0)
-            drawBar(player.wpnCooldown, player.getCurrentWeapon().cooldown, g_ScreenRatio, "white", "white", "white", 1);
+        {
+            if (player.wpnState == WPNSTATE_COOLDOWN)
+                drawBarNDC(player.wpnCooldown, player.getCurrentWeapon().cooldown, g_ScreenRatio, COLOR_WHITE, 1);
+            else
+                drawBarNDC(player.wpnCooldown, player.getCurrentWeapon().drw_speed, g_ScreenRatio, COLOR_WHITE, 1);
+        }
+
+        // print current player hp
+        drawHealth(window, player);
     }
+
+    /*
+    if (g_ShowInfo)
+    {
+        drawColorCompare(g_ScreenRatio);
+    }
+    */
 
     // Reativa o z-buffer
     glEnable(GL_DEPTH_TEST);
@@ -557,8 +715,8 @@ void Game::drawCutscene(GLFWwindow* window)
                                      glm::vec3(-5.5f, 3.5f, 5.0f),
                                      glm::vec3( 0.0f, 3.5f, 5.0f)};
 
-    // Guarda o tamanho original do minotauro para futura referência
-    const glm::vec3 minotaur_og_size = glm::vec3(2.5f,5.0f,1.5f);
+    // Fade out no minotauro ao invés de shrink
+    float minotaur_alpha = 1.0f;
 
     // Variáveis da câmera virtual
     // A posição será obtida por curva de bézier, e o view vector será obtido através de look-at
@@ -586,7 +744,7 @@ void Game::drawCutscene(GLFWwindow* window)
     if (cutsceneStep > 5.0f && cutsceneStep <= 6.0f) // entre segundos 5 e 6
     {
         enemies[0].dmgCooldown = 1.0f;  // pra ele brilhar vermelho
-        enemies[0].model_size  = minotaur_og_size * (6.0f - cutsceneStep);
+        minotaur_alpha = 6.0f - cutsceneStep;
     }
 
     // Define o view vector
@@ -606,17 +764,27 @@ void Game::drawCutscene(GLFWwindow* window)
 
     // Projeção Perspectiva.
     // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
-    float field_of_view = 3.141592 / 3.0f;
+    float field_of_view = 3.141592 / 3.0f; //60graus
     glm::mat4 projection = Matrix_Perspective(field_of_view, g_ScreenRatio, nearplane, farplane);
 
     // Enviamos as matrizes "view" e "projection" para a placa de vídeo
     // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
     // efetivamente aplicadas em todos os pontos.
-    glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
-    glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
+    setViewMatrix(view);
+    setProjectionMatrix(projection);
 
     // reseta repetição de texturas
-    resetTextureRepeat();
+    resetTextureRepeat(); // this FAILS the first time it runs. god only knows why
+
+    // reseta alpha stuff
+    // these FAIL the first time they run. god only knows why
+    resetAlphaMask();
+    resetAlphaValue();
+
+    //reset misc flags
+    setIgnoreLighting(false);
+    setUseGouraud(false);
+    setUseSphericalUV(false);
 
     // Desenha o chão e as paredes da fase
     drawFloor(level_queue.front());
@@ -626,28 +794,37 @@ void Game::drawCutscene(GLFWwindow* window)
     drawWall(level_queue.front(), WEST);
 
     // Desenha o minotauro
+    setAlphaValue(minotaur_alpha);
     drawEnemy(enemies[0]);
+    resetAlphaValue();
+
+    // Os objetos a seguir sempre serão desenhados na frente; desativa o z-buffer
+    glDisable(GL_DEPTH_TEST);
+
+    // Desenha tempo da fase final
+    drawTimer(window, levelTime, true);
 
     // Se tiver acabado a cutscene
     if (cutsceneStep == 6.0f)
     {
-        // Os objetos a seguir sempre serão desenhados na frente; desativa o z-buffer
-        glDisable(GL_DEPTH_TEST);
-
         // Últimas coisas são desenhadas diretamente em NDC
         // Desativa matrizes de view e projeção
-        glm::mat4 view       = Matrix_Identity();
-        glm::mat4 projection = Matrix_Identity();
+        view       = Matrix_Identity();
+        projection = Matrix_Identity();
 
-        glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
-        glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
+        setViewMatrix(view);
+        setProjectionMatrix(projection);
 
         // Desenha mensagem de fim de jogo
         drawBanner(g_ScreenRatio, "game_clear");
 
-        // Reativa o z-buffer
-        glEnable(GL_DEPTH_TEST);
+        // Desenha tempo final de jogo
+        DrawString(window, "FINAL TIME:", 0.0f, -0.625f, TEXTPOS_CENTER, TEXTPOS_CENTER, 4.0f, false, COLOR_WHITE);
+        drawTimer(window, totalTime, false);
     }
+
+    // Reativa o z-buffer
+    glEnable(GL_DEPTH_TEST);
 
     // O framebuffer onde OpenGL executa as operações de renderização não
     // é o mesmo que está sendo mostrado para o usuário, caso contrário
@@ -661,77 +838,40 @@ void Game::drawCutscene(GLFWwindow* window)
     incrementTimer(cutsceneStep, deltaTime, 6.0f);
 }
 
-// Checa se o jogador está dentro dos limites da fase e ajusta sua posição se não estiver
+// Checa se a entidade está dentro dos limites da fase e ajusta sua posição se não estiver
 // Como não é uma função entre dois corpos (AABB x AABB, etc) fica fora de collisions.cpp
-void playerWithinLevel(Player &player, Level level)
+void entityWithinLevel(Entity &entity, Level level)
 {
-    AABB hitbox = player.getAABB();
+    AABB hitbox = entity.getHitbox();
 
     float halfWidth  = (level.levelWidth /2.0f);
     float halfLength = (level.levelLength/2.0f);
 
-    glm::vec3 halfSize = (player.p_size / 2.0f);
+    glm::vec3 halfSize = (entity.e_size / 2.0f);
 
     if (hitbox.aabb_min.x < -halfWidth)
     {
-        player.pos.x = -halfWidth + halfSize.x;
+        entity.pos.x = -halfWidth + halfSize.x;
     }
     else if (hitbox.aabb_max.x > halfWidth)
     {
-        player.pos.x =  halfWidth - halfSize.x;
+        entity.pos.x =  halfWidth - halfSize.x;
     }
 
     if (hitbox.aabb_min.z < -halfLength)
     {
-        player.pos.z = -halfLength + halfSize.z;
+        entity.pos.z = -halfLength + halfSize.z;
     }
     else if (hitbox.aabb_max.z > halfLength)
     {
-        player.pos.z =  halfLength - halfSize.z;
+        entity.pos.z =  halfLength - halfSize.z;
     }
 
-    if (hitbox.aabb_min.y < level.levelFloor)
+    if (hitbox.aabb_min.y <= level.levelFloor) // constant grounded state when on floor, no matter what
     {
-        player.pos.y = level.levelFloor + halfSize.y;
-        player.grounded = true;
-        player.y_velocity = 0.0f;
-    }
-}
-
-// Checa se o inimigo está dentro dos limites da fase e ajusta sua posição se não estiver
-// Como não é uma função entre dois corpos (AABB x AABB, etc) fica fora de collisions.cpp
-void enemyWithinLevel(Enemy &enemy, Level level)
-{
-    AABB hitbox = enemy.getAABB();
-
-    float halfWidth  = (level.levelWidth /2.0f);
-    float halfLength = (level.levelLength/2.0f);
-
-    glm::vec3 halfSize = (enemy.hitbox_size / 2.0f);
-
-    if (hitbox.aabb_min.x < -halfWidth)
-    {
-        enemy.pos.x = -halfWidth + halfSize.x;
-    }
-    else if (hitbox.aabb_max.x > halfWidth)
-    {
-        enemy.pos.x =  halfWidth - halfSize.x;
-    }
-
-    if (hitbox.aabb_min.z < -halfLength)
-    {
-        enemy.pos.z = -halfLength + halfSize.z;
-    }
-    else if (hitbox.aabb_max.z > halfLength)
-    {
-        enemy.pos.z =  halfLength - halfSize.z;
-    }
-
-    if (hitbox.aabb_min.y < level.levelFloor)
-    {
-        enemy.pos.y = level.levelFloor + halfSize.y;
-        enemy.grounded = true;
-        enemy.y_velocity = 0.0f;
+        entity.pos.y = level.levelFloor + halfSize.y;
+        entity.grounded = true;
+        entity.y_velocity = 0.0f;
     }
 }
 
@@ -770,7 +910,11 @@ void Game::loadTopLevel()
     player.wpnCooldown  = 0.0f;
     player.wpnAnimation = 0.0f;
 
+    player.wpnState = WPNSTATE_READY;
+
     player.resetHealth();
+
+    levelTime = 0.0f;
 
     noUpdate = false;
 }

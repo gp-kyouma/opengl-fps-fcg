@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "collisions.h"
+#include "entity.h"
 
 /*
 STRUCTS/CLASSES
@@ -19,28 +20,31 @@ enum ProjectileType
     PROJ_MELEE_INVISIBLE,
 };
 
-struct Projectile
+struct Projectile : Entity
 {
+    //Entity attributes omitted
+
     ProjectileType type;
     HitboxType hit_type;
 
-    glm::vec3 pos;
-    glm::vec3 dir;
-    glm::vec3 p_size;
-
-    float speed;
     float lifespan;
 
     int damage;
 
     void setProjectileData(ProjectileType type);
+    void doRandomSpread(int maxOffset, glm::vec4 u, glm::vec4 v);
 
     AABB   getHitbox();
     Sphere getHitsphere();
     Ray    getHitscan();
 
+    bool collideAgainstAABB(AABB aabb, float& min_dist);
+    bool collideAgainstEntity(Entity& entity, float& min_dist);
+
     void update(float deltaTime);
     bool isDead();
+
+    void draw(); //Defined in draw.cpp
 };
 
 #endif // FCG_PROJECTILE

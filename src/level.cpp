@@ -34,8 +34,11 @@ Enemy EnemyData::buildEnemy()
     enemy.grounded    = false;
     enemy.y_velocity  = 0.0f;
 
+    enemy.seesPlayer  = false;
+
     enemy.pos         = pos;
     enemy.view        = glm::vec3(0.0f,0.0f,1.0f);
+    enemy.move_dir    = enemy.view;
 
     return enemy;
 }
@@ -52,6 +55,41 @@ AABB Level::getAABB()
     return result;
 }
 
+void Level::setLevelWalls()
+{
+    AABB floor, ceiling, positiveX, negativeX, positiveZ, negativeZ;
+
+    float epsilon    = 0.125f;
+    float thickness  = 0.5f + epsilon;
+    float halfWidth  = (levelWidth /2.0f) + epsilon;
+    float halfLength = (levelLength/2.0f) + epsilon;
+
+    floor.aabb_max = glm::vec3(halfWidth,  levelFloor-epsilon, halfLength);
+    floor.aabb_min = glm::vec3(-halfWidth, levelFloor-thickness,  -halfLength);
+
+    ceiling.aabb_max = glm::vec3(halfWidth,  levelCeiling+thickness, halfLength);
+    ceiling.aabb_min = glm::vec3(-halfWidth, levelCeiling+epsilon,  -halfLength);
+
+    positiveX.aabb_max = glm::vec3(halfWidth+thickness,  levelCeiling, halfLength);
+    positiveX.aabb_min = glm::vec3(halfWidth, levelFloor,  -halfLength);
+
+    negativeX.aabb_max = glm::vec3(-halfWidth,  levelCeiling, halfLength);
+    negativeX.aabb_min = glm::vec3(-halfWidth-thickness, levelFloor,  -halfLength);
+
+    positiveZ.aabb_max = glm::vec3(halfWidth,  levelCeiling, halfLength+thickness);
+    positiveZ.aabb_min = glm::vec3(-halfWidth, levelFloor,   halfLength);
+
+    negativeZ.aabb_max = glm::vec3(halfWidth,  levelCeiling, -halfLength);
+    negativeZ.aabb_min = glm::vec3(-halfWidth, levelFloor,   -halfLength-thickness);
+
+    levelWalls[0] = floor;
+    levelWalls[1] = ceiling;
+    levelWalls[2] = positiveX;
+    levelWalls[3] = negativeX;
+    levelWalls[4] = positiveZ;
+    levelWalls[5] = negativeZ;
+}
+
 void Level::createTestLevel()
 {
     obstacles.clear();
@@ -64,27 +102,27 @@ void Level::createTestLevel()
 
     Obstacle ob1, ob2, ob3, ob4, ob5, ob6;
 
-    ob1.o_size = glm::vec3(1.0f,1.0f,1.0f);
+    ob1.e_size = glm::vec3(1.0f,1.0f,1.0f);
     ob1.pos    = glm::vec3(3.0f,1.5f,4.0f);
     ob1.type   = OBSTACLE_BOX;
 
-    ob2.o_size = glm::vec3(3.0f,0.5f,3.0f);
+    ob2.e_size = glm::vec3(3.0f,0.5f,3.0f);
     ob2.pos    = glm::vec3(1.0f,3.5f,0.0f);
     ob2.type   = OBSTACLE_PLATFORM;
 
-    ob3.o_size = glm::vec3(1.5f,0.5f,1.5f);
+    ob3.e_size = glm::vec3(1.5f,0.5f,1.5f);
     ob3.pos    = glm::vec3(-0.5f,5.5f,-3.5f);
     ob3.type   = OBSTACLE_PLATFORM;
 
-    ob4.o_size = glm::vec3(1.5f,0.5f,1.5f);
+    ob4.e_size = glm::vec3(1.5f,0.5f,1.5f);
     ob4.pos    = glm::vec3(-1.5f,7.5f,-5.5f);
     ob4.type   = OBSTACLE_PLATFORM;
 
-    ob5.o_size = glm::vec3(1.0f,8.0f,4.0f);
+    ob5.e_size = glm::vec3(1.0f,8.0f,4.0f);
     ob5.pos    = glm::vec3(-2.0f,5.0f,-2.0f);
     ob5.type   = OBSTACLE_WALL;
 
-    ob6.o_size = glm::vec3(1.0f,10.0f,4.0f);
+    ob6.e_size = glm::vec3(1.0f,10.0f,4.0f);
     ob6.pos    = glm::vec3(-5.0f,6.0f,-2.0f);
     ob6.type   = OBSTACLE_WALL;
 
@@ -105,6 +143,8 @@ void Level::createTestLevel()
 
     enemies.push_back(test_enemy1);
     enemies.push_back(test_enemy2);
+
+    setLevelWalls();
 }
 
 void Level::createLevel1()
@@ -119,16 +159,16 @@ void Level::createLevel1()
 
     Obstacle ob1, ob2, ob3, ob4;
 
-    ob1.o_size = glm::vec3(5.0f,4.0f,1.0f);
+    ob1.e_size = glm::vec3(5.0f,4.0f,1.0f);
     ob1.pos    = glm::vec3(1.0f,1.5f,-10.0f);
     ob1.type   = OBSTACLE_WALL;
-    ob2.o_size = glm::vec3(1.0f,1.0f,1.0f);
+    ob2.e_size = glm::vec3(1.0f,1.0f,1.0f);
     ob2.pos    = glm::vec3(-3.0f,1.5f,6.0f);
     ob2.type   = OBSTACLE_BOX;
-    ob3.o_size = glm::vec3(1.0f,1.0f,1.0f);
+    ob3.e_size = glm::vec3(1.0f,1.0f,1.0f);
     ob3.pos    = glm::vec3(3.0f,1.5f,6.0f);
     ob3.type   = OBSTACLE_BOX;
-    ob4.o_size = glm::vec3(9.0f,0.5f,5.0f);
+    ob4.e_size = glm::vec3(9.0f,0.5f,5.0f);
     ob4.pos    = glm::vec3(0.0f,4.5f,15.0f);
     ob4.type   = OBSTACLE_PLATFORM;
 
@@ -136,6 +176,29 @@ void Level::createLevel1()
     obstacles.push_back(ob2);
     obstacles.push_back(ob3);
     obstacles.push_back(ob4);
+
+    Obstacle obDice;
+
+    obDice.e_size = glm::vec3(1.0f,1.0f,1.0f);
+    obDice.pos    = glm::vec3(2.0f,1.5f,-12.0f);
+    obDice.type   = OBSTACLE_DICE;
+
+    obstacles.push_back(obDice);
+
+    AABB boxbox;
+    boxbox.aabb_min = glm::vec3(-3.5f,1.0f,-12.5f);
+    boxbox.aabb_max = glm::vec3(-3.0f,3.0f,-11.0f);
+
+    obstacles.push_back(AABBtoObstacle(boxbox, OBSTACLE_WALL));
+
+    for (int i = 0; i < 6; i++)
+    {
+        Obstacle step;
+        step.e_size = glm::vec3(1.0f,1.0f,0.5f);
+        step.pos = glm::vec3(-1.0f, 0.75f + (i * 0.25f), -13.25f + (i * 0.5f));
+        step.type = OBSTACLE_PLATFORM;
+        obstacles.push_back(step);
+    }
 
     EnemyData enemy1, enemy2, enemy3, enemy4, enemy5, enemy6;
     enemy1.pos  = glm::vec3(1.0f, 2.0f, -8.0f);
@@ -157,6 +220,8 @@ void Level::createLevel1()
     enemies.push_back(enemy4);
     enemies.push_back(enemy5);
     enemies.push_back(enemy6);
+
+    setLevelWalls();
 }
 
 void Level::createLevel2()
@@ -171,22 +236,22 @@ void Level::createLevel2()
 
     Obstacle ob1, ob2, ob3, ob4, ob5, ob6;
 
-    ob1.o_size = glm::vec3(1.0f,1.0f,2.0f);
+    ob1.e_size = glm::vec3(1.0f,1.0f,2.0f);
     ob1.pos    = glm::vec3(-12.0f,1.5f,6.0f);
     ob1.type   = OBSTACLE_BOX;
-    ob2.o_size = glm::vec3(1.0f,1.0f,2.0f);
+    ob2.e_size = glm::vec3(1.0f,1.0f,2.0f);
     ob2.pos    = glm::vec3(3.0f,1.5f,6.0f);
     ob2.type   = OBSTACLE_BOX;
-    ob3.o_size = glm::vec3(1.0f,6.0f,2.0f);
+    ob3.e_size = glm::vec3(1.0f,6.0f,2.0f);
     ob3.pos    = glm::vec3(4.0f,1.5f,10.0f);
     ob3.type   = OBSTACLE_WALL;
-    ob4.o_size = glm::vec3(1.0f,6.0f,2.0f);
+    ob4.e_size = glm::vec3(1.0f,6.0f,2.0f);
     ob4.pos    = glm::vec3(-4.0f,1.5f,10.0f);
     ob4.type   = OBSTACLE_WALL;
-    ob5.o_size = glm::vec3(20.0f,8.0f,2.0f);
+    ob5.e_size = glm::vec3(20.0f,8.0f,2.0f);
     ob5.pos    = glm::vec3(6.0f,1.5f,-6.0f);
     ob5.type   = OBSTACLE_WALL;
-    ob6.o_size = glm::vec3(2.0f,8.0f,20.0f);
+    ob6.e_size = glm::vec3(2.0f,8.0f,20.0f);
     ob6.pos    = glm::vec3(-6.0f,1.5f,6.0f);
     ob6.type   = OBSTACLE_WALL;
 
@@ -226,6 +291,8 @@ void Level::createLevel2()
     enemies.push_back(enemy7);
     enemies.push_back(enemy8);
     enemies.push_back(enemy9);
+
+    setLevelWalls();
 }
 
 void Level::createLevel3()
@@ -239,10 +306,10 @@ void Level::createLevel3()
     player_view = glm::vec3(0.0f,0.0f,1.0f);
 
     Obstacle ob1, ob2;
-    ob1.o_size = glm::vec3(6.0f,0.5f,6.0f);
+    ob1.e_size = glm::vec3(6.0f,0.5f,6.0f);
     ob1.pos    = glm::vec3(0.0f,7.0f,-16.0f);
     ob1.type   = OBSTACLE_PLATFORM;
-    ob2.o_size = glm::vec3(6.0f,3.0f,3.0f);
+    ob2.e_size = glm::vec3(6.0f,3.0f,3.0f);
     ob2.pos    = glm::vec3(0.0f,8.0f,-10.0f);
     ob2.type   = OBSTACLE_WALL;
 
@@ -277,6 +344,7 @@ void Level::createLevel3()
     enemies.push_back(enemy7);
     enemies.push_back(enemy8);
 
+    setLevelWalls();
 }
 
 void Level::createBossLevel()
@@ -292,30 +360,30 @@ void Level::createBossLevel()
     Obstacle ob1, ob2, ob3, ob4, ob5, ob6, ob7, ob8;
 
     // platforms
-    ob1.o_size = glm::vec3(26.0f,0.5f,3.0f);
+    ob1.e_size = glm::vec3(26.0f,0.5f,3.0f);
     ob1.pos    = glm::vec3(0.0f,5.75f,-11.5f);
     ob1.type   = OBSTACLE_PLATFORM;
-    ob2.o_size = glm::vec3(26.0f,0.5f,3.0f);
+    ob2.e_size = glm::vec3(26.0f,0.5f,3.0f);
     ob2.pos    = glm::vec3(0.0f,5.75f,11.5f);
     ob2.type   = OBSTACLE_PLATFORM;
-    ob3.o_size = glm::vec3(3.0f,0.5f,20.0f);
+    ob3.e_size = glm::vec3(3.0f,0.5f,20.0f);
     ob3.pos    = glm::vec3(-11.5f,5.75f,0.0f);
     ob3.type   = OBSTACLE_PLATFORM;
-    ob4.o_size = glm::vec3(3.0f,0.5f,20.0f);
+    ob4.e_size = glm::vec3(3.0f,0.5f,20.0f);
     ob4.pos    = glm::vec3(11.5f,5.75f,0.0f);
     ob4.type   = OBSTACLE_PLATFORM;
 
     // "pillars"
-    ob5.o_size = glm::vec3(1.0f,10.0f,1.0f);
+    ob5.e_size = glm::vec3(1.0f,10.0f,1.0f);
     ob5.pos    = glm::vec3(7.0f,6.0f,7.0f);
     ob5.type   = OBSTACLE_WALL;
-    ob6.o_size = glm::vec3(1.0f,10.0f,1.0f);
+    ob6.e_size = glm::vec3(1.0f,10.0f,1.0f);
     ob6.pos    = glm::vec3(7.0f,6.0f,-7.0f);
     ob6.type   = OBSTACLE_WALL;
-    ob7.o_size = glm::vec3(1.0f,10.0f,1.0f);
+    ob7.e_size = glm::vec3(1.0f,10.0f,1.0f);
     ob7.pos    = glm::vec3(-7.0f,6.0f,7.0f);
     ob7.type   = OBSTACLE_WALL;
-    ob8.o_size = glm::vec3(1.0f,10.0f,1.0f);
+    ob8.e_size = glm::vec3(1.0f,10.0f,1.0f);
     ob8.pos    = glm::vec3(-7.0f,6.0f,-7.0f);
     ob8.type   = OBSTACLE_WALL;
 
@@ -339,4 +407,6 @@ void Level::createBossLevel()
     enemies.push_back(enemy1);
     enemies.push_back(enemy2);
     enemies.push_back(enemy3);
+
+    setLevelWalls();
 }

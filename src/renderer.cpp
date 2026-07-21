@@ -14,14 +14,27 @@ GLint g_object_id_uniform;
 GLint g_bbox_min_uniform;
 GLint g_bbox_max_uniform;
 GLint g_repeat_uniform;
+GLint g_alpha_uniform;
+GLint g_alpha_mask_uniform;
+GLint g_use_alpha_mask_uniform;
 GLint g_ignore_lighting_uniform;
 GLint g_use_gouraud_uniform;
 GLint g_use_spherical_uv_uniform;
 GLuint g_diffuse_texture_image_uniform;
 GLuint g_specular_texture_image_uniform;
+GLint g_use_diffuse_color_uniform;
+GLint g_use_specular_color_uniform;
+GLint g_diffuse_color_uniform;
+GLint g_specular_color_uniform;
 
 // Número de texturas carregadas pela função LoadTextureImage()
 GLuint g_NumLoadedTextures = 0;
+
+// As matrizes de Model/View/Projection, expostas para uso global
+// (Isso provavelmente deveria ser uma struct, com esses atributos sendo privados)
+glm::mat4 g_CurrentModelMatrix = Matrix_Identity();
+glm::mat4 g_CurrentViewMatrix = Matrix_Identity();
+glm::mat4 g_CurrentProjectionMatrix = Matrix_Identity();
 
 ObjModel::ObjModel(const char* filename, const char* basepath /*= NULL*/, bool triangulate /*= true*/)
 {
@@ -128,6 +141,8 @@ void LoadTextureImage(const char* filename, std::string name)
 // dos objetos na função BuildTrianglesAndAddToVirtualScene().
 void DrawVirtualObject(const char* object_name)
 {
+    glUseProgram(g_GpuProgramID);
+
     // "Ligamos" o VAO. Informamos que queremos utilizar os atributos de
     // vértices apontados pelo VAO criado pela função BuildTrianglesAndAddToVirtualScene(). Veja
     // comentários detalhados dentro da definição de BuildTrianglesAndAddToVirtualScene().
@@ -155,6 +170,8 @@ void DrawVirtualObject(const char* object_name)
     // "Desligamos" o VAO, evitando assim que operações posteriores venham a
     // alterar o mesmo. Isso evita bugs.
     glBindVertexArray(0);
+
+    glUseProgram(0);
 }
 
 // Função que carrega os shaders de vértices e de fragmentos que serão
@@ -201,36 +218,145 @@ void LoadShadersFromFiles()
     g_bbox_max_uniform   = glGetUniformLocation(g_GpuProgramID, "bbox_max");
 
     g_repeat_uniform = glGetUniformLocation(g_GpuProgramID, "repeat");
+    g_alpha_uniform = glGetUniformLocation(g_GpuProgramID, "alpha_value");
+    g_alpha_mask_uniform = glGetUniformLocation(g_GpuProgramID, "alpha_mask");
+    g_use_alpha_mask_uniform = glGetUniformLocation(g_GpuProgramID, "use_alpha_mask");
 
     // Variáveis em "shader_fragment.glsl" para acesso das imagens de textura
     g_diffuse_texture_image_uniform  = glGetUniformLocation(g_GpuProgramID, "TextureImageDiffuse");
     g_specular_texture_image_uniform = glGetUniformLocation(g_GpuProgramID, "TextureImageSpecular");
+
+    g_use_diffuse_color_uniform     = glGetUniformLocation(g_GpuProgramID, "useColorDiffuse");
+    g_use_specular_color_uniform    = glGetUniformLocation(g_GpuProgramID, "useColorSpecular");
+    g_diffuse_color_uniform         = glGetUniformLocation(g_GpuProgramID, "ColorDiffuse");
+    g_specular_color_uniform        = glGetUniformLocation(g_GpuProgramID, "ColorSpecular");
 
     g_ignore_lighting_uniform  = glGetUniformLocation(g_GpuProgramID, "ignoreLighting");
     g_use_gouraud_uniform      = glGetUniformLocation(g_GpuProgramID, "useGouraud");
     g_use_spherical_uv_uniform = glGetUniformLocation(g_GpuProgramID, "useSphericalUV");
 }
 
+void setModelMatrix(glm::mat4 mat)
+{
+    glUseProgram(g_GpuProgramID);
+    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(mat));
+    glUseProgram(0);
+    g_CurrentModelMatrix = mat;
+}
+
+void setViewMatrix(glm::mat4 mat)
+{
+    glUseProgram(g_GpuProgramID);
+    glUniformMatrix4fv(g_view_uniform, 1 , GL_FALSE , glm::value_ptr(mat));
+    glUseProgram(0);
+    g_CurrentViewMatrix = mat;
+}
+
+void setProjectionMatrix(glm::mat4 mat)
+{
+    glUseProgram(g_GpuProgramID);
+    glUniformMatrix4fv(g_projection_uniform, 1 , GL_FALSE , glm::value_ptr(mat));
+    glUseProgram(0);
+    g_CurrentProjectionMatrix = mat;
+}
+
 // 'Liga' a textura com nome correspondente no dicionário (diffuse)
 void setDiffuseTexture(std::string name)
 {
+    glUseProgram(g_GpuProgramID);
     glUniform1i(g_diffuse_texture_image_uniform, g_TextureMap[name]);
+    glUniform1i(g_use_diffuse_color_uniform, false);
+    glUseProgram(0);
 }
 
 // 'Liga' a textura com nome correspondente no dicionário (specular)
 void setSpecularTexture(std::string name)
 {
+    glUseProgram(g_GpuProgramID);
     glUniform1i(g_specular_texture_image_uniform, g_TextureMap[name]);
+    glUniform1i(g_use_specular_color_uniform, false);
+    glUseProgram(0);
+}
+
+void setDiffuseColor(glm::vec3 color)
+{
+    glUseProgram(g_GpuProgramID);
+    glUniform3f(g_diffuse_color_uniform, color.r, color.g, color.b);
+    glUniform1i(g_use_diffuse_color_uniform, true);
+    glUseProgram(0);
+}
+
+void setSpecularColor(glm::vec3 color)
+{
+    glUseProgram(g_GpuProgramID);
+    glUniform3f(g_specular_color_uniform, color.r, color.g, color.b);
+    glUniform1i(g_use_specular_color_uniform, true);
+    glUseProgram(0);
 }
 
 void setTextureRepeat(float u, float v)
 {
+    glUseProgram(g_GpuProgramID);
     glUniform2f(g_repeat_uniform, u, v);
+    glUseProgram(0);
 }
 
 void resetTextureRepeat()
 {
+    glUseProgram(g_GpuProgramID);
     glUniform2f(g_repeat_uniform, 1.0f, 1.0f);
+    glUseProgram(0);
+}
+
+void setAlphaValue(float a)
+{
+    glUseProgram(g_GpuProgramID);
+    glUniform1f(g_alpha_uniform, a);
+    glUseProgram(0);
+}
+
+void resetAlphaValue()
+{
+    glUseProgram(g_GpuProgramID);
+    glUniform1f(g_alpha_uniform, 1.0f);
+    glUseProgram(0);
+}
+
+void setAlphaMask(glm::vec3 color)
+{
+    glUseProgram(g_GpuProgramID);
+    glUniform3f(g_alpha_mask_uniform, color.r, color.g, color.b);
+    glUniform1i(g_use_alpha_mask_uniform, true);
+    glUseProgram(0);
+}
+
+void resetAlphaMask()
+{
+    glUseProgram(g_GpuProgramID);
+    glUniform3f(g_alpha_mask_uniform, -1.0f, -1.0f, -1.0f);
+    glUniform1i(g_use_alpha_mask_uniform, false);
+    glUseProgram(0);
+}
+
+void setIgnoreLighting(bool b)
+{
+    glUseProgram(g_GpuProgramID);
+    glUniform1i(g_ignore_lighting_uniform, b);
+    glUseProgram(0);
+}
+
+void setUseSphericalUV(bool b)
+{
+    glUseProgram(g_GpuProgramID);
+    glUniform1i(g_use_spherical_uv_uniform, b);
+    glUseProgram(0);
+}
+
+void setUseGouraud(bool b)
+{
+    glUseProgram(g_GpuProgramID);
+    glUniform1i(g_use_gouraud_uniform, b);
+    glUseProgram(0);
 }
 
 // Função que computa as normais de um ObjModel, caso elas não tenham sido
@@ -1003,15 +1129,11 @@ GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id)
 // second).
 void TextRendering_ShowFramesPerSecond(GLFWwindow* window)
 {
-    if ( !g_ShowInfo )
-        return;
-
     // Variáveis estáticas (static) mantém seus valores entre chamadas
     // subsequentes da função!
     static float old_seconds = (float)glfwGetTime();
     static int   ellapsed_frames = 0;
     static char  buffer[20] = "?? fps";
-    static int   numchars = 7;
 
     ellapsed_frames += 1;
 
@@ -1023,16 +1145,22 @@ void TextRendering_ShowFramesPerSecond(GLFWwindow* window)
 
     if ( ellapsed_seconds > 1.0f )
     {
-        numchars = snprintf(buffer, 20, "%.2f fps", ellapsed_frames / ellapsed_seconds);
-
+        snprintf(buffer, 20, "%.2f fps", ellapsed_frames / ellapsed_seconds);
         old_seconds = seconds;
         ellapsed_frames = 0;
     }
 
-    float lineheight = TextRendering_LineHeight(window);
-    float charwidth = TextRendering_CharWidth(window);
+    if ( !g_ShowInfo )
+        return;
 
-    TextRendering_PrintString(window, buffer, 1.0f-(numchars + 1)*charwidth, 1.0f-lineheight, 1.0f);
+    // absolute
+    DrawString(window, buffer, -1.0f, 1.0f, TEXTPOS_TOP, TEXTPOS_LEFT, 1.5f);
+
+    // relative (tests)
+    //DrawString(window, "red",   1.0f, 1.0f, TEXTPOS_TOP,    TEXTPOS_RIGHT,  0.05f, true, glm::vec3(1.0f,0.0f,0.0f));
+    //DrawString(window, "green",-1.0f,-1.0f, TEXTPOS_BOTTOM, TEXTPOS_LEFT,   0.05f, true, glm::vec3(0.0f,1.0f,0.0f));
+    //DrawString(window, "blue",  1.0f,-1.0f, TEXTPOS_BOTTOM, TEXTPOS_RIGHT,  0.05f, true, glm::vec3(0.0f,0.0f,1.0f));
+    //DrawString(window, buffer,  0.0f, 0.0f, TEXTPOS_CENTER, TEXTPOS_CENTER, 0.05f, true, glm::vec3(1.0f,1.0f,1.0f));
 }
 
 // Função para debugging: imprime no terminal todas informações de um modelo

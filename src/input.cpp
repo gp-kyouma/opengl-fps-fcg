@@ -59,6 +59,10 @@ void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
 // de tempo. Utilizadas no callback CursorPosCallback() abaixo.
 double g_LastCursorPosX, g_LastCursorPosY;
 
+// Váriavel global que guarda se a posição da câmera não precisa ser atualizada nesse momento,
+// usada para evitar bugs com a função de maximizar/restaurar a janela
+bool g_IgnoreMouse = false; // "works on my machine", mas não se pode garantir que funciona igualmente em todas as implementações do glfw...
+
 // Função callback chamada sempre que o usuário aperta algum dos botões do mouse
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
@@ -118,23 +122,28 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
     float dy = ypos - g_LastCursorPosY;
 
     // Atualizamos parâmetros da câmera com os deslocamentos
-    g_CameraTheta -= 0.01f*dx;
-    g_CameraPhi   -= 0.01f*dy;
+    if (!g_IgnoreMouse)
+    {
+        g_CameraTheta -= 0.01f*dx;
+        g_CameraPhi   -= 0.01f*dy;
 
-    // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
-    float phimax = 3.141592f/2;
-    float phimin = -phimax;
+        // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
+        const float phimax = 3.141592f/2;
+        const float phimin = -phimax;
 
-    if (g_CameraPhi > phimax)
-        g_CameraPhi = phimax;
+        if (g_CameraPhi > phimax)
+            g_CameraPhi = phimax;
 
-    if (g_CameraPhi < phimin)
-        g_CameraPhi = phimin;
+        if (g_CameraPhi < phimin)
+            g_CameraPhi = phimin;
+    }
 
     // Atualizamos as variáveis globais para armazenar a posição atual do
     // cursor como sendo a última posição conhecida do cursor.
     g_LastCursorPosX = xpos;
     g_LastCursorPosY = ypos;
+
+    if (g_IgnoreMouse) g_IgnoreMouse = false;
 }
 
 // Função callback chamada sempre que o usuário movimenta a "rodinha" do mouse.
@@ -235,6 +244,20 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
     if (key == GLFW_KEY_H && action == GLFW_PRESS)
     {
         g_ShowInfo = !g_ShowInfo;
+    }
+
+    // Se o usuário apertar a tecla M, maximiza/restaura a janela.
+    static bool maximized = false;
+    if (key == GLFW_KEY_M && action == GLFW_PRESS)
+    {
+        g_IgnoreMouse = true;
+
+        if (maximized)
+            glfwRestoreWindow(window);
+        else
+            glfwMaximizeWindow(window);
+
+        maximized = !maximized;
     }
 }
 

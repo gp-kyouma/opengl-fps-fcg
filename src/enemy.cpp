@@ -11,36 +11,34 @@ void Enemy::setEnemyData(EnemyType type)
     switch (type)
     {
         case ENEMY_SKELETON:
-            model_size  = glm::vec3(1.0f,2.0f,1.0f);
-            hitbox_size = glm::vec3(1.0f,2.0f,1.0f);
+            e_size      = glm::vec3(1.0f,2.0f,1.0f);
             speed       = 1.5f;
-            health      = 50;
+            maxHealth   = 50;
             damage      = 10;
             followRange = 20.0f;
             break;
         case ENEMY_BIG_SKELETON:
-            model_size  = glm::vec3(1.5f,3.0f,1.5f);
-            hitbox_size = glm::vec3(1.5f,3.0f,1.5f);
+            e_size      = glm::vec3(1.5f,3.0f,1.5f);
             speed       = 1.0f;
-            health      = 250;
+            maxHealth   = 250;
             damage      = 20;
             followRange = 30.0f;
             break;
         case ENEMY_MINOTAUR:
-            model_size  = glm::vec3(2.5f,5.0f,1.5f);
-            hitbox_size = glm::vec3(2.0f,5.0f,2.0f);
+            e_size      = glm::vec3(2.0f,5.0f,2.0f);
             speed       = 0.75f;
-            health      = 600;
+            maxHealth   = 600;
             damage      = 35;
             followRange = 40.0f;
             break;
     }
+    health = maxHealth;
 }
 
-AABB Enemy::getAABB()
+AABB Enemy::getHitbox()
 {
     AABB result;
-    glm::vec3 half = hitbox_size / 2.0f;
+    glm::vec3 half = e_size / 2.0f;
 
     result.aabb_max = pos + half;
     result.aabb_min = pos - half;
@@ -48,18 +46,29 @@ AABB Enemy::getAABB()
     return result;
 }
 
-void Enemy::doEnemyMovement(float deltaTime)
+void Enemy::update(float deltaTime)
 {
-    pos += view * speed * deltaTime;
-}
+    //doEnemyMovement
+    if (seesPlayer)
+    {
+        move_dir += view; // movement does not *SNAP* to view, it *converges* to it instead: this could definitely be improved upon
+        move_dir.y = 0;
+        float move_norm = norm(Vetor(move_dir));
+        if (move_norm != 0)
+            move_dir /= move_norm;
 
-void Enemy::doEnemyGravity(float deltaTime)
-{
+        pos += move_dir * speed * deltaTime;
+    }
+
+    //doEnemyGravity
     const float gravity = 5.0f;
     if (!grounded)
         y_velocity -= (gravity * deltaTime);
 
     pos.y += (y_velocity * deltaTime);
+
+    //doDamageCooldown
+    decrementTimer(dmgCooldown, deltaTime, 0.0f);
 }
 
 void Enemy::updateView(glm::vec3 player_pos)
@@ -74,10 +83,7 @@ bool Enemy::isWithinRange(glm::vec3 player_pos)
     return (distance(pos, player_pos) <= followRange);
 }
 
-void Enemy::doDamageCooldown(float deltaTime)
-{
-    decrementTimer(dmgCooldown, deltaTime, 0.0f);
-}
+void Enemy::resetHealth(){}//unimplemented
 
 void Enemy::takeDamage(int dmg)
 {

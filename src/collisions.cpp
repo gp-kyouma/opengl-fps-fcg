@@ -6,6 +6,11 @@
 
 #include <algorithm>
 
+//constructors, instance the Collider attr
+AABB::AABB(){type = BOX;}
+Sphere::Sphere(){type = SPHERE;}
+Ray::Ray(){type = RAY;}
+
 glm::vec3 AABB::getSize()
 {
     return aabb_max - aabb_min;
@@ -178,4 +183,15 @@ bool Collide(Ray ray, AABB aabb, float max_range, float &min_dist)
     min_dist = tmin;
 
 	return tmin <= tmax;
+}
+
+// Point x AABB
+// less of a "collision" and more of a "does the AABB contain this point"
+// FONTE:
+// https://github.com/juj/MathGeoLib/blob/master/src/Geometry/AABB.cpp
+bool Collide(glm::vec3 point, AABB aabb)
+{
+    return aabb.aabb_min.x <= point.x && point.x <= aabb.aabb_max.x &&
+	       aabb.aabb_min.y <= point.y && point.y <= aabb.aabb_max.y &&
+	       aabb.aabb_min.z <= point.z && point.z <= aabb.aabb_max.z;
 }

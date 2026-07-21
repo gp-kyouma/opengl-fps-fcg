@@ -24,11 +24,18 @@ enum HitboxType
 {
     BOX,
     SPHERE,
-    RAY
+    RAY,
+    POINT_3D // no i'm not making a struct that's just one vec3
+};
+
+// Estrutura base para elementos de colisão
+struct Collider
+{
+    HitboxType type;
 };
 
 // Estrutura que descreve uma AABB (axis-aligned bounding box) de um objeto
-struct AABB
+struct AABB : Collider
 {
     glm::vec3 aabb_min;
     glm::vec3 aabb_max;
@@ -36,20 +43,26 @@ struct AABB
     // funções auxiliares
     glm::vec3 getSize();
     glm::vec3 getCenter();
+
+    AABB();
 };
 
 // Estrutura que descreve uma esfera que envolve um objeto
-struct Sphere
+struct Sphere : Collider
 {
     glm::vec3 center;
     float radius;
+
+    Sphere();
 };
 
 // Estrutura que descreve um raio partindo de um ponto
-struct Ray
+struct Ray : Collider
 {
     glm::vec3 origin;
     glm::vec3 direction;
+
+    Ray();
 };
 
 /*
@@ -69,5 +82,8 @@ bool Collide(Sphere sphere, AABB aabb);
 // Ray x AABB
 // Retorna distância mínima como parâmetro extra
 bool Collide(Ray ray, AABB aabb, float max_range, float &min_dist);
+
+// Point x AABB
+bool Collide(glm::vec3 point, AABB aabb);
 
 #endif // FCG_COLLISIONS

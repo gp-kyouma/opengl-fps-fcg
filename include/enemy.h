@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "collisions.h"
+#include "entity.h"
 
 /*
 STRUCTS/CLASSES
@@ -19,39 +20,32 @@ enum EnemyType
     ENEMY_MINOTAUR,
 };
 
-struct Enemy
+struct Enemy : Actor
 {
+    //Entity + Actor attributes omitted
+
     EnemyType type;
 
-    glm::vec3 pos;
-    glm::vec3 view;
-    glm::vec3 model_size;
-    glm::vec3 hitbox_size;
+    glm::vec3 move_dir; // direction of movement, converges to view
 
-    float speed;
-    float dmgCooldown;
-
-    int health;
     int damage;
 
-    bool grounded;
-    float y_velocity;
-
+    bool seesPlayer;
     float followRange;
 
     void setEnemyData(EnemyType type);
 
-    AABB getAABB();
+    AABB getHitbox();
 
-    void doEnemyMovement(float deltaTime);
-    void doEnemyGravity(float deltaTime);
+    void update(float deltaTime); // merged 3 functions into 1 lol. they were tiny, it's ok
     void updateView(glm::vec3 player_pos);
     bool isWithinRange(glm::vec3 player_pos);
 
-    void doDamageCooldown(float deltaTime);
-
+    void resetHealth();//unimplemented
     void takeDamage(int dmg);
     bool isDead();
+
+    void draw(); //Defined in draw.cpp
 };
 
 #endif // FCG_ENEMY

@@ -22,6 +22,35 @@
 #include "matrices.h"
 #include "vec_aux.h"
 
+// some color constants
+glm::vec3 COLOR_WHITE   = glm::vec3(1.0f,   1.0f,   1.0f);
+glm::vec3 COLOR_GREY    = glm::vec3(0.05f,  0.05f,  0.05f);//does not map to [0,255] as i expected it to...?
+glm::vec3 COLOR_BLACK   = glm::vec3(0.0f,   0.0f,   0.0f);
+
+glm::vec3 COLOR_RED     = glm::vec3(1.0f,   0.0f,   0.0f);
+glm::vec3 COLOR_GREEN   = glm::vec3(0.0f,   1.0f,   0.0f);
+glm::vec3 COLOR_BLUE    = glm::vec3(0.0f,   0.0f,   1.0f);
+
+glm::vec3 COLOR_CYAN    = glm::vec3(0.0f,   1.0f,   1.0f);
+glm::vec3 COLOR_MAGENTA = glm::vec3(1.0f,   0.0f,   1.0f);
+glm::vec3 COLOR_YELLOW  = glm::vec3(1.0f,   1.0f,   0.0f);
+
+// W
+glm::mat4 Matrix_Billboard(glm::mat4 view, glm::vec3 world_pos, glm::vec3 local_offset, glm::vec3 billboard_size)
+{
+    glm::mat4 transview = glm::transpose(view);
+
+    transview[3][0] = world_pos.x;
+    transview[3][1] = world_pos.y;
+    transview[3][2] = world_pos.z;
+
+    transview[0][3] = 0.0f;
+    transview[1][3] = 0.0f;
+    transview[2][3] = 0.0f;
+
+    return transview * Matrix_Translate(local_offset.x, local_offset.y, local_offset.z) * Matrix_Scale(billboard_size.x, billboard_size.y, billboard_size.z);
+}
+
 void drawAABB(AABB aabb) // para razões de debug
 {
     glm::vec3 aabb_center = aabb.getCenter();
@@ -30,94 +59,250 @@ void drawAABB(AABB aabb) // para razões de debug
     glm::mat4 model = Matrix_Translate(aabb_center.x, aabb_center.y, aabb_center.z) *
                       Matrix_Scale(aabb_size.x, aabb_size.y, aabb_size.z);
 
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+    setModelMatrix(model);
 
-    glUniform1i(g_ignore_lighting_uniform, true);
-    setDiffuseTexture("white");
-    setSpecularTexture("black");
+    setIgnoreLighting(true);
+    setDiffuseColor(COLOR_WHITE);
+    setSpecularColor(COLOR_BLACK);
     glLineWidth(4.0f);
     DrawVirtualObject("cube_edges");
-    glUniform1i(g_ignore_lighting_uniform, false);
+    setIgnoreLighting(false);
+}
+
+void drawPoint(glm::vec3 point) // para razões de debug
+{
+    float point_size = 0.015f;
+
+    glm::mat4 model = Matrix_Translate(point.x, point.y, point.z) * Matrix_Scale(point_size, point_size, point_size);
+
+    setModelMatrix(model);
+
+    setIgnoreLighting(true);
+    setDiffuseColor(COLOR_CYAN);
+    setSpecularColor(COLOR_BLACK);
+    DrawVirtualObject("the_sphere");
+    setIgnoreLighting(false);
+}
+
+void drawAxes(glm::vec3 center, glm::vec4 u, glm::vec4 v, glm::vec4 w) // para razões de debug
+{
+    glm::vec3 u3, v3, w3;
+    float axis_size = 0.25f;
+
+    u3 = toVec3(u);
+    v3 = toVec3(v);
+    w3 = toVec3(w);
+
+    glm::mat4 model_center = Matrix_Translate(center.x, center.y, center.z);
+    glm::mat4 model_scaler = Matrix_Scale(axis_size, axis_size, axis_size);
+
+    glm::mat4 model_u = model_center * Matrix_Rotate_Y(getTheta(u3))  * Matrix_Rotate_X(-getPhi(u3)) * model_scaler;
+    glm::mat4 model_v = model_center * Matrix_Rotate_Y(getTheta(v3))  * Matrix_Rotate_X(-getPhi(v3)) * model_scaler;
+    glm::mat4 model_w = model_center * Matrix_Rotate_Y(getTheta(w3))  * Matrix_Rotate_X(-getPhi(w3)) * model_scaler;
+
+    glLineWidth(6.0f);
+    setSpecularColor(COLOR_BLACK);
+    setIgnoreLighting(true);
+
+    setModelMatrix(model_u);
+    setDiffuseColor(COLOR_RED);
+    DrawVirtualObject("line");
+
+    setModelMatrix(model_v);
+    setDiffuseColor(COLOR_GREEN);
+    DrawVirtualObject("line");
+
+    setModelMatrix(model_w);
+    setDiffuseColor(COLOR_BLUE);
+    DrawVirtualObject("line");
+
+    setIgnoreLighting(false);
 }
 
 void drawCrosshair(float aspect)
 {
-    const float crosshair_size = 0.0625f; // 1/16
+    const float crosshair_size = 0.0625f; // 1/16 // make this dynamic, aka reuse this for sniper aiming // or maybe just change the color??
 
     glm::mat4 model = Matrix_Scale(crosshair_size / aspect, crosshair_size, 1.0f);
 
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+    setModelMatrix(model);
 
-    glUniform1i(g_ignore_lighting_uniform, true);
-    setDiffuseTexture("white");
-    setSpecularTexture("black");
+    setIgnoreLighting(true);
+    setDiffuseColor(COLOR_WHITE);
+    setSpecularColor(COLOR_BLACK);
     glLineWidth(2.0f);
     DrawVirtualObject("crosshair");
-    glUniform1i(g_ignore_lighting_uniform, false);
+    setIgnoreLighting(false);
 }
 
-// Desenha uma progress bar
-// (usado para barra de HP e barra de cooldown)
-// tex1 é usada quando       value/maxvalue > 2/3
-// tex2 é usada quando 2/3 > value/maxvalue > 1/3
-// tex3 é usada quando 1/3 > value/maxvalue
-// position começa de 0, cada incremento aumenta a posição vertical da barra
-void drawBar(float value, float maxValue, float aspect, std::string tex1, std::string tex2, std::string tex3, int position)
+// Dado as model matrixes relevantes, desenha uma progress bar
+// Cor (do vetor de cores) depende da % da barra
+void drawBarArbitrary(glm::mat4 bg_model, glm::mat4 bar_model, float barRatio, glm::vec3 bg_color, std::vector<glm::vec3> bar_colors)
 {
-    glm::vec2 bgSize = glm::vec2(0.25f,0.05f);
-    float barEdge    = 0.015f;
+    setIgnoreLighting(true);
 
-    bgSize.x /= aspect;
+    setSpecularColor(COLOR_BLACK);
+
+    setModelMatrix(bg_model);
+    setDiffuseColor(bg_color);
+    DrawVirtualObject("square");
+
+    //set appropriate color
+    int numColors = bar_colors.size();
+    if (numColors == 1 || barRatio >= 1.0f)
+        setDiffuseColor(bar_colors[0]);
+    else if (barRatio <= 0.0f)
+        setDiffuseColor(bar_colors[numColors-1]);
+    else
+    {
+        int index = numColors - (std::ceil(barRatio * numColors));
+
+        if (index >= numColors)
+            index = numColors-1;
+
+        setDiffuseColor(bar_colors[index]);
+    }
+
+    setModelMatrix(bar_model);
+    DrawVirtualObject("square");
+
+    setIgnoreLighting(false);
+}
+
+// Desenha uma progress bar diretamente na tela
+// (usado para barra de HP e barra de cooldown)
+// position começa de 0, cada incremento aumenta a posição vertical da barra (this is jank)
+void drawBarNDC(float value, float maxValue, float aspect, std::vector<glm::vec3> colors, int position)
+{
+    // REMINDER THAT "SQUARE" IS SIZE 2 [-1,1], NOT SIZE 1 [-0.5,0.5]
+    // SO SCALING BY 0.5 IS ACTUALLY SETTING SIZE TO 1
+    glm::vec2 bgSize = glm::vec2(0.25f/aspect,0.05f);
+    float barEdge    = 0.01f;
 
     glm::vec2 translate = glm::vec2(1.0f - (bgSize.x), -1.0f + (bgSize.y)*(position*2+1));
 
     // primeiro desenha o fundo
-    glm::mat4 model = Matrix_Translate(translate.x, translate.y, 0.0f) *
-                      Matrix_Scale(bgSize.x, bgSize.y, 1.0f);
-
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
-
-    glUniform1i(g_ignore_lighting_uniform, true);
-    setDiffuseTexture("grey");
-    setSpecularTexture("black");
-    DrawVirtualObject("square");
+    glm::mat4 bg_model = Matrix_Translate(translate.x, translate.y, 0.0f) * Matrix_Scale(bgSize.x, bgSize.y, 1.0f);
 
     // depois desenha a barra
     float barRatio = value / maxValue;
     glm::vec2 barSize = glm::vec2(bgSize.x - barEdge, bgSize.y - barEdge);
 
-    model = Matrix_Translate(translate.x, translate.y, 0.0f)              *
-            Matrix_Translate((1.0f - (barRatio)) * barSize.x, 0.0f, 0.0f) *
-            Matrix_Scale(barRatio, 1.0f, 1.0f)                            *
-            Matrix_Scale(barSize.x, barSize.y, 1.0f);
+    glm::mat4 bar_model = Matrix_Translate(((1.0f - (barRatio)) * barSize.x) + translate.x, translate.y, 0.0f) *
+                          Matrix_Scale(barSize.x * barRatio, barSize.y, 1.0f);
 
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+    drawBarArbitrary(bg_model, bar_model, barRatio, COLOR_GREY, colors);
+}
 
-    if (barRatio >= 0.66f)
-        setDiffuseTexture(tex1);
-    else if (barRatio < 0.66f && barRatio > 0.33f)
-        setDiffuseTexture(tex2);
-    else
-        setDiffuseTexture(tex3);
+//Overload de drawBarNDC para barras de 1 cor
+void drawBarNDC(float value, float maxValue, float aspect, glm::vec3 color, int position)
+{
+    std::vector<glm::vec3> oneColor = {color};
+    drawBarNDC(value, maxValue, aspect, oneColor, position);
+}
 
-    setSpecularTexture("black");
-    DrawVirtualObject("square");
-    glUniform1i(g_ignore_lighting_uniform, false);
+// Desenha uma progress bar em uma posição do mundo
+void drawBarBillboard(glm::mat4 view, glm::vec3 pos, float value, float maxValue, std::vector<glm::vec3> colors)
+{
+    float epsilon = 0.015625f;
+
+    glm::vec3 offset = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 bbsize  = glm::vec3(0.5f, 0.1f-epsilon, 1.0f);
+
+    glm::mat4 bg_model = Matrix_Billboard(view, pos, offset, bbsize);
+
+    float barRatio = value / maxValue;
+
+    offset.z += epsilon;//closer
+    offset.x  = (1.0f - (barRatio)) * bbsize.x;//right
+
+    bbsize.z += epsilon;
+    bbsize.x *= barRatio;
+
+    glm::mat4 bar_model = Matrix_Billboard(view, pos, offset, bbsize);
+
+    drawBarArbitrary(bg_model, bar_model, barRatio, COLOR_BLACK, colors);
+}
+
+//Overload de drawBarBillboard para barras de 1 cor
+void drawBarBillboard(glm::mat4 view, glm::vec3 pos, float value, float maxValue, glm::vec3 color)
+{
+    std::vector<glm::vec3> oneColor = {color};
+    drawBarBillboard(view, pos, value, maxValue, oneColor);
 }
 
 void drawBanner(float aspect, std::string tex) // used for game over, you won, etc...
 {
-    glm::vec2 bannerSize = glm::vec2(0.8f,0.6f); // 3:4
+    glm::vec2 bannerSize = glm::vec2(0.8f,0.6f); // 4:3
 
     glm::mat4 model = Matrix_Scale(bannerSize.x / aspect, bannerSize.y, 1.0f);
 
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+    setModelMatrix(model);
 
-    glUniform1i(g_ignore_lighting_uniform, true);
+    setIgnoreLighting(true);
     setDiffuseTexture(tex);
-    setSpecularTexture("black");
+    setSpecularColor(COLOR_BLACK);
     DrawVirtualObject("square");
-    glUniform1i(g_ignore_lighting_uniform, false);
+    setIgnoreLighting(false);
+}
+
+void drawColorFade(glm::vec3 color, float alpha)
+{
+    glm::mat4 model = Matrix_Identity();
+
+    setModelMatrix(model);
+
+    setIgnoreLighting(true);
+    setAlphaValue(alpha);
+    setDiffuseColor(color);
+    setSpecularColor(COLOR_BLACK);
+    DrawVirtualObject("square");
+    resetAlphaValue();
+    setIgnoreLighting(false);
+}
+
+void drawTextureFade(std::string tex, float alpha)
+{
+    glm::mat4 model = Matrix_Identity();
+
+    setModelMatrix(model);
+
+    setIgnoreLighting(true);
+    setAlphaValue(alpha);
+    setDiffuseTexture(tex);
+    setSpecularColor(COLOR_BLACK);
+    DrawVirtualObject("square");
+    resetAlphaValue();
+    setIgnoreLighting(false);
+}
+
+void drawColorCompare(float aspect)//debug
+{
+    glm::vec2 bannerSize = glm::vec2(0.1f,0.2f);
+    glm::vec2 translate = glm::vec2(-0.4f,0.0f);
+
+    std::vector<glm::vec3> colors = {COLOR_WHITE, COLOR_GREY, COLOR_BLACK, COLOR_RED, COLOR_GREEN, COLOR_BLUE, COLOR_CYAN, COLOR_MAGENTA, COLOR_YELLOW};
+
+    glm::mat4 modelscale = Matrix_Scale(bannerSize.x / aspect, bannerSize.y, 1.0f);
+    glm::mat4 model;
+
+    setSpecularColor(COLOR_BLACK);
+
+    setIgnoreLighting(true);
+
+    for (int i = 0; i < 9; i++)
+    {
+        model = Matrix_Translate(translate.x, translate.y, 0.0f) * modelscale;
+
+        setModelMatrix(model);
+
+        setDiffuseColor(colors[i]);
+        DrawVirtualObject("square");
+
+        translate.x += 0.1;
+    }
+
+    setIgnoreLighting(false);
 }
 
 void drawFloor(Level level)
@@ -128,11 +313,11 @@ void drawFloor(Level level)
     glm::mat4 model = Matrix_Translate(0.0f,level.levelFloor,0.0f) *
                       Matrix_Scale(halfWidth, 1.0f, halfLength);
 
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+    setModelMatrix(model);
 
     setTextureRepeat(halfWidth,halfLength);
     setDiffuseTexture("floor");
-    setSpecularTexture("grey");
+    setSpecularColor(COLOR_GREY);
     DrawVirtualObject("the_plane");
     resetTextureRepeat();
 }
@@ -178,7 +363,7 @@ void drawWall(Level level, CardinalDirection direction)
         default: break;
     }
 
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+    setModelMatrix(model);
 
     setDiffuseTexture("wall");
     setSpecularTexture("wall_spec");
@@ -188,16 +373,17 @@ void drawWall(Level level, CardinalDirection direction)
 
 void drawObstacle(Obstacle obstacle)
 {
-    float width  = (obstacle.o_size.x);
-    float length = (obstacle.o_size.z);
-    float height = (obstacle.o_size.y);
+    float width  = (obstacle.e_size.x);
+    float length = (obstacle.e_size.z);
+    float height = (obstacle.e_size.y);
 
     glm::mat4 model;
     model = Matrix_Translate(obstacle.pos.x, obstacle.pos.y, obstacle.pos.z) *
             Matrix_Scale(width, height, length);
 
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+    setModelMatrix(model);
 
+    bool useSixSideTexture = false;
     switch (obstacle.type)
     {
         case OBSTACLE_PLATFORM:
@@ -217,14 +403,24 @@ void drawObstacle(Obstacle obstacle)
             setSpecularTexture("wall_obstacle_spec");
             break;
         case OBSTACLE_BOX:
-            resetTextureRepeat();
             setDiffuseTexture("box");
-            setSpecularTexture("black");
+            setSpecularColor(COLOR_BLACK);
             break;
+        case OBSTACLE_DICE:
+            useSixSideTexture = true;
+            setDiffuseTexture("dice");
+            setSpecularColor(COLOR_BLACK);
+            break;
+        case OBSTACLE_INVISIBLE_WALL:
+            return;//PLACEHOLDER
         default: break;
     }
 
-    DrawVirtualObject("cube");
+    if (useSixSideTexture)
+        DrawVirtualObject("cube_tex");
+    else
+        DrawVirtualObject("cube");
+
     resetTextureRepeat();
 }
 
@@ -232,15 +428,8 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
 {
     const float pi2 = 1.57079632679;
 
-    glm::vec4 v_up = glm::vec4(0.0f,1.0f,0.0f,0.0f);  // Vetor "up" fixado para apontar para o "céu" (eixo Y global)
-
-    glm::vec4 w = Vetor(-player.view);
-    glm::vec4 u = crossproduct(v_up,w);
-
-    w = w / norm(w);
-    u = u / norm(u);
-
-    glm::vec4 v = crossproduct(w,u);
+    glm::vec4 u,v,w;
+    calculate_uvw(player.view,u,v,w);
 
     glm::vec3 displace = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 scale    = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -271,19 +460,52 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
     }
 
     glm::vec4 vertical_displace   = -v*displace.y;
-    glm::vec4 horizontal_displace =  u*displace.x * (1.0f - player.wpnAnimation);
+    glm::vec4 horizontal_displace =  u*displace.x;
     glm::vec4 forward_displace    = -w*displace.z;
+
+    glm::mat4 model = Matrix_Identity();
+
+    // forced aim, held up while not aiming
+    if (type == WPN_MINIGUN)
+        model = Matrix_Rotate_Z(-pi2 + player.wpnAnimation * pi2);
+
+    // arma melee tem uma animação extra
+    // (v3: now with ACTUAL swings!)
+
+    if (type == WPN_SWORD)
+    {
+        float melee_rotate; // 1 is pointed forward, 0 is pointed up
+        float cooldown_percent = (player.wpnState == WPNSTATE_COOLDOWN) ? (player.wpnCooldown / player.getCurrentWeapon().cooldown) : 0.0f;
+
+        float wide_rotate = player.wpnAnimation;//aim...
+
+        //NONE OF THIS WILL MAKE SENSE IF I REPURPOSE WPNANIMATION FOR AIM
+        //SO WATCH OUT FOR THAT
+        /*
+        if (player.wpnAnimation < 1.0f)
+            melee_rotate = player.wpnAnimation;
+        else
+            melee_rotate = fabs((cooldown_percent * 2.0f) - 1.0f); //1-0-1
+        */
+
+        //proper swing (might be too slow)
+        //sword needs noAim(?)
+        melee_rotate = fabs((cooldown_percent * 2.0f) - 1.0f); //1-0-1
+        melee_rotate = -melee_rotate + 1.0f; //0-1-0
+
+        // mr 0, wr 0 = left
+        // mr 0, wr 1 = middle
+        // mr 1, wr 0 = middle
+        // mr 1, wr 1 = right
+        horizontal_displace *= (1.0f - melee_rotate - (wide_rotate*1.375));
+
+        model = Matrix_Rotate_X(wide_rotate * -pi2 * 0.875f) * Matrix_Rotate_Z(-pi2 + melee_rotate * pi2);
+    }
+    else
+        horizontal_displace *= (1.0f - player.wpnAnimation);
 
     glm::vec4 weapon_pos = Ponto(player.pos)+vertical_displace+horizontal_displace+forward_displace;
     weapon_pos.y += player.neck;
-
-    glm::mat4 model;
-
-    // arma melee tem uma animação extra
-    if (type == WPN_SWORD)
-        model = Matrix_Rotate_Z(-pi2 + player.wpnAnimation * pi2);
-    else
-        model = Matrix_Identity();
 
     model = Matrix_Translate(weapon_pos.x,weapon_pos.y,weapon_pos.z) *
             Matrix_Rotate_Y(theta)  *
@@ -292,9 +514,10 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
             model                   *
             Matrix_Scale(scale.x, scale.y, scale.z);
 
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+    setModelMatrix(model);
 
-    resetTextureRepeat();
+    if (player.wpnState == WPNSTATE_DRAW)
+        setAlphaValue(0.5f);
 
     switch (type)
     {
@@ -305,12 +528,12 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
             break;
         case WPN_PISTOL:
             setDiffuseTexture("pistol");
-            setSpecularTexture("black");
+            setSpecularColor(COLOR_BLACK);
             DrawVirtualObject("pistol");
             break;
         case WPN_SHOTGUN:
             setDiffuseTexture("shotgun");
-            setSpecularTexture("black");
+            setSpecularColor(COLOR_BLACK);
             DrawVirtualObject("shotgun");
             break;
         case WPN_MINIGUN:
@@ -325,6 +548,8 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
             break;
         default: break;
     }
+
+    resetAlphaValue();
 }
 
 void drawProjectile(Projectile proj)
@@ -334,39 +559,56 @@ void drawProjectile(Projectile proj)
 
     const float pi = 3.141592f;
 
-    float width  = (proj.p_size.x);
-    float length = (proj.p_size.z);
-    float height = (proj.p_size.y);
+    float width  = (proj.e_size.x);
+    float length = (proj.e_size.z);
+    float height = (proj.e_size.y);
 
-    glm::mat4 model;
+    glm::mat4 model = Matrix_Identity();
+
+    glm::vec3 proj_pos = proj.pos;
 
     if (proj.type == PROJ_BULLET)
-        model = Matrix_Rotate_Y(pi);
-    else
-        model = Matrix_Identity();
+        model = Matrix_Rotate_Y(pi); // texture seam facing towards enemy
 
-    model = Matrix_Translate(proj.pos.x, proj.pos.y, proj.pos.z) *
-            Matrix_Rotate_Y(getTheta(proj.dir))  *
-            Matrix_Rotate_X(-getPhi(proj.dir))   *
-            model                                *
+    if (proj.type == PROJ_HITSCAN)
+    {
+        // simulate bullet moving
+        float move_speed = 50.0f;//should be the same as max length
+        float wall_embed = 0.125f;
+        float move_factor = (0.15f - proj.lifespan) * move_speed;
+
+        if (move_factor > length-wall_embed)
+        {
+            move_factor = length-wall_embed;
+            length  = wall_embed+wall_embed; // bullet embedded into whatever it hit
+        }
+        else length = 1.0f; // bullet "length"
+
+        proj_pos = proj.pos + proj.view * move_factor;
+    }
+
+    model = Matrix_Translate(proj_pos.x, proj_pos.y, proj_pos.z) *
+            Matrix_Rotate_Y(getTheta(proj.view))  *
+            Matrix_Rotate_X(-getPhi(proj.view))   *
+            model                                 *
             Matrix_Scale(width, height, length);
 
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+    setModelMatrix(model);
 
     switch (proj.type)
     {
         case PROJ_HITSCAN:
-            setDiffuseTexture("blue");
-            setSpecularTexture("white");
+            setDiffuseColor(COLOR_BLUE);
+            setSpecularColor(COLOR_WHITE);
             glLineWidth(4.0f);
             DrawVirtualObject("line");
             break;
         case PROJ_BULLET:
-            glUniform1i(g_use_spherical_uv_uniform, true);
+            setUseSphericalUV(true);
             setDiffuseTexture("silver");
             setSpecularTexture("silver");
             DrawVirtualObject("the_sphere");
-            glUniform1i(g_use_spherical_uv_uniform, false);
+            setUseSphericalUV(false);
             break;
         default: break;
     }
@@ -377,49 +619,54 @@ void drawEnemy(Enemy enemy)
     const float pi2 = 1.57079632679;
 
     glm::vec3 og_size;
+    glm::vec3 model_size;
     switch (enemy.type)
     {
-
         case ENEMY_SKELETON:
+            og_size = glm::vec3(3.2f,7.2f,3.2f);
+            model_size = glm::vec3(1.0f,2.0f,1.0f);
+            break;
         case ENEMY_BIG_SKELETON:
             og_size = glm::vec3(3.2f,7.2f,3.2f);
+            model_size = glm::vec3(1.5f,3.0f,1.5f);
             break;
         case ENEMY_MINOTAUR:
             og_size = glm::vec3(1.0f,1.9f,0.6f);
+            model_size = glm::vec3(2.5f,5.0f,1.5f);
             break;
         default: break;
     }
 
     glm::mat4 model = Matrix_Translate(enemy.pos.x, enemy.pos.y, enemy.pos.z) *
                       Matrix_Rotate_Y(getTheta(enemy.view) + pi2)             *
-                      Matrix_Resize(og_size, enemy.model_size);
+                      Matrix_Resize(og_size, model_size);
 
-    glUniformMatrix4fv(g_model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+    setModelMatrix(model);
 
     bool isInCooldown = enemy.dmgCooldown > 0.0f;
 
     // inimigos são desenhados usando GOURAUD
-    glUniform1i(g_use_gouraud_uniform, true);
+    setUseGouraud(true);
 
     switch (enemy.type)
     {
         case ENEMY_SKELETON:
-            setDiffuseTexture("white");
+            setDiffuseColor(COLOR_GREY);
 
             if (isInCooldown)
-                setSpecularTexture("red");
+                setSpecularColor(COLOR_RED);
             else
-                setSpecularTexture("grey");
+                setSpecularColor(COLOR_WHITE);
 
             DrawVirtualObject("skeleton");
             break;
         case ENEMY_BIG_SKELETON:
-            setDiffuseTexture("black");
+            setDiffuseColor(COLOR_BLACK);
 
             if (isInCooldown)
-                setSpecularTexture("red");
+                setSpecularColor(COLOR_RED);
             else
-                setSpecularTexture("white");
+                setSpecularColor(COLOR_GREY);
 
             DrawVirtualObject("skeleton");
             break;
@@ -427,7 +674,7 @@ void drawEnemy(Enemy enemy)
             setDiffuseTexture("minotaur");
 
             if (isInCooldown)
-                setSpecularTexture("red");
+                setSpecularColor(COLOR_RED);
             else
                 setSpecularTexture("minotaur_spec");
 
@@ -443,5 +690,84 @@ void drawEnemy(Enemy enemy)
         default: break;
     }
 
-    glUniform1i(g_use_gouraud_uniform, false);
+    setUseGouraud(false);
 }
+
+// Escrevemos na tela um tempo (em segundos).
+// hud == true: desenha no canto superior direito
+// hud == false: desenha perto do meio
+void drawTimer(GLFWwindow* window, float timer, bool hud)
+{
+    char buffer[20] = "??:??:???";
+
+    int seconds = std::floor(timer);
+    int minutes = (seconds/60);
+    int hours   = (minutes/60);
+    int m_seconds = (timer - seconds) * 1000;
+
+    seconds = seconds % 60;
+    minutes = minutes % 60;
+
+    if (hours == 0)
+        snprintf(buffer, 20, "%02d:%02d:%03d", minutes, seconds, m_seconds);
+    else if (hours < 99)
+        snprintf(buffer, 20, "%02d:%02d:%02d:%03d", hours, minutes, seconds, m_seconds);
+    else
+        snprintf(buffer, 20, "Bro are you ok?");
+
+    if (hud)
+        DrawString(window, buffer, 1.0f, 1.0f, TEXTPOS_TOP, TEXTPOS_RIGHT, 3.0f, false, COLOR_WHITE);
+    else
+        DrawString(window, buffer, 0.0f, -0.75f, TEXTPOS_CENTER, TEXTPOS_CENTER, 4.5f, false, COLOR_WHITE);
+}
+
+// Escrevemos na tela a vida atual de um ator.
+void drawHealth(GLFWwindow* window, Actor& actor)
+{
+    char buffer[10] = "9999/9999";
+
+    snprintf(buffer, 10, "%d/%d", actor.health, actor.maxHealth);
+
+    DrawString(window, buffer, 0.995f, -0.97f, TEXTPOS_BOTTOM, TEXTPOS_RIGHT, 3.0f, false, COLOR_BLACK);
+}
+
+// Escrevemos na tela a posição de uma entidade
+void drawPosition(GLFWwindow* window, Entity& entity)
+{
+    char bufferX[20] = "X = -???.??????";
+    char bufferY[20] = "Y = -???.??????";
+    char bufferZ[20] = "Z = -???.??????";
+
+    snprintf(bufferX, 20, "X = %+f", entity.pos.x);
+    snprintf(bufferY, 20, "Y = %+f", entity.pos.y);
+    snprintf(bufferZ, 20, "Z = %+f", entity.pos.z);
+
+    DrawString(window, bufferX, 1.0f, 0.80f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
+    DrawString(window, bufferY, 1.0f, 0.75f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
+    DrawString(window, bufferZ, 1.0f, 0.70f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
+    DrawString(window, "GROUNDED", 1.0f, 0.65f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, entity.grounded ? COLOR_GREEN : COLOR_RED);//show if grounded
+}
+
+void Enemy::draw()
+{
+    drawEnemy(*this);
+    if (this->dmgCooldown > 0.0f)
+    {
+        glm::vec3 bar_pos = this->pos;
+        bar_pos.y = this->getHitbox().aabb_max.y + 0.25f;
+        std::vector<glm::vec3> healthColors = {COLOR_GREEN, COLOR_GREEN, COLOR_YELLOW, COLOR_RED};
+        drawBarBillboard(g_CurrentViewMatrix, bar_pos, (float)this->health, (float)this->maxHealth, healthColors);
+    }
+}
+
+void Obstacle::draw()
+{
+    drawObstacle(*this);
+}
+
+void Projectile::draw()
+{
+    drawProjectile(*this);
+}
+
+void Player::draw(){}//unimplemented

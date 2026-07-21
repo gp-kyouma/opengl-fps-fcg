@@ -50,85 +50,8 @@
 #include "input.h"
 #include "game.h"
 
-int main(int argc, char* argv[])
+void LoadAllTextures()
 {
-    // Inicializamos a biblioteca GLFW, utilizada para criar uma janela do
-    // sistema operacional, onde poderemos renderizar com OpenGL.
-    int success = glfwInit();
-    if (!success)
-    {
-        fprintf(stderr, "ERROR: glfwInit() failed.\n");
-        std::exit(EXIT_FAILURE);
-    }
-
-    // Definimos o callback para impressão de erros da GLFW no terminal
-    glfwSetErrorCallback(ErrorCallback);
-
-    // Pedimos para utilizar OpenGL versão 3.3 (ou superior)
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
-    #ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    #endif
-
-    // Pedimos para utilizar o perfil "core", isto é, utilizaremos somente as
-    // funções modernas de OpenGL.
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    // Criamos uma janela do sistema operacional, com 800 colunas e 600 linhas
-    // de pixels
-    GLFWwindow* window;
-    window = glfwCreateWindow(800, 600, "HALL OF THE MINOTAUR v1.0.1", NULL, NULL);
-    if (!window)
-    {
-        glfwTerminate();
-        fprintf(stderr, "ERROR: glfwCreateWindow() failed.\n");
-        std::exit(EXIT_FAILURE);
-    }
-
-    // Definimos a função de callback que será chamada sempre que o usuário
-    // pressionar alguma tecla do teclado ...
-    glfwSetKeyCallback(window, KeyCallback);
-    // ... ou clicar os botões do mouse ...
-    glfwSetMouseButtonCallback(window, MouseButtonCallback);
-    // ... ou movimentar o cursor do mouse em cima da janela ...
-    glfwSetCursorPosCallback(window, CursorPosCallback);
-    // ... ou rolar a "rodinha" do mouse.
-    glfwSetScrollCallback(window, ScrollCallback);
-
-    // Esconde o mouse
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-
-    // Indicamos que as chamadas OpenGL deverão renderizar nesta janela
-    glfwMakeContextCurrent(window);
-
-    // Carregamento de todas funções definidas por OpenGL 3.3, utilizando a
-    // biblioteca GLAD.
-    gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-
-    // Definimos a função de callback que será chamada sempre que a janela for
-    // redimensionada, por consequência alterando o tamanho do "framebuffer"
-    // (região de memória onde são armazenados os pixels da imagem).
-    glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
-    FramebufferSizeCallback(window, 800, 600); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
-
-    // Imprimimos no terminal informações sobre a GPU do sistema
-    const GLubyte *vendor      = glGetString(GL_VENDOR);
-    const GLubyte *renderer    = glGetString(GL_RENDERER);
-    const GLubyte *glversion   = glGetString(GL_VERSION);
-    const GLubyte *glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
-
-    printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);
-
-    // Carregamos os shaders de vértices e de fragmentos que serão utilizados
-    // para renderização. Veja slides 180-200 do documento Aula_03_Rendering_Pipeline_Grafico.pdf.
-    LoadShadersFromFiles();
-
-    /*
-    carregamento de todos os assets
-    */
-
     // Carregamos imagem para ser utilizada como textura
     LoadTextureImage("../../data/obstacles/stone_floor.jpg",         "floor");
     LoadTextureImage("../../data/obstacles/japanese_stone_wall.jpg", "wall");
@@ -136,10 +59,14 @@ int main(int argc, char* argv[])
     LoadTextureImage("../../data/obstacles/medieval_blocks.jpg",     "wall_obstacle");
     LoadTextureImage("../../data/obstacles/box.jpg",                 "box");
 
+    LoadTextureImage("../../data/obstacles/dice.png", "dice");
+    LoadTextureImage("../../data/obstacles/cubetex_template.png", "cubetex_template");
+
     LoadTextureImage("../../data/obstacles/japanese_stone_wall_spec_manual.jpg", "wall_spec");
     LoadTextureImage("../../data/obstacles/square_floor_spec_manual.jpg",        "platform_spec");
     LoadTextureImage("../../data/obstacles/medieval_blocks_spec.jpg",            "wall_obstacle_spec");
 
+    /*
     LoadTextureImage("../../data/full_white.jpg",  "white");
     LoadTextureImage("../../data/full_grey.jpg",   "grey");
     LoadTextureImage("../../data/full_black.jpg",  "black");
@@ -147,6 +74,7 @@ int main(int argc, char* argv[])
     LoadTextureImage("../../data/full_yellow.jpg", "yellow");
     LoadTextureImage("../../data/full_red.jpg",    "red");
     LoadTextureImage("../../data/full_blue.jpg",   "blue");
+    */
 
     LoadTextureImage("../../data/silver_texture.jpg", "silver");
 
@@ -167,7 +95,10 @@ int main(int argc, char* argv[])
     LoadTextureImage("../../data/enemies/Pants_diffuse.jpg", "pants");
     LoadTextureImage("../../data/enemies/Minotaur_specular.png", "minotaur_spec");
     LoadTextureImage("../../data/enemies/Pants_specular.png", "pants_spec");
+}
 
+void LoadAllModels()
+{
     ObjModel planemodel("../../data/obstacles/plane.obj");
     ComputeNormals(&planemodel);
     BuildTrianglesAndAddToVirtualScene(&planemodel);
@@ -175,6 +106,10 @@ int main(int argc, char* argv[])
     ObjModel cubemodel("../../data/obstacles/cube.obj");
     ComputeNormals(&cubemodel);
     BuildTrianglesAndAddToVirtualScene(&cubemodel);
+
+    ObjModel cubetexmodel("../../data/obstacles/cube-tex.obj");
+    ComputeNormals(&cubetexmodel);
+    BuildTrianglesAndAddToVirtualScene(&cubetexmodel);
 
     ObjModel pistol("../../data/weapons/pistol.obj");
     ComputeNormals(&pistol);
@@ -208,10 +143,101 @@ int main(int argc, char* argv[])
     ComputeNormals(&skeleton);
     BuildTrianglesAndAddToVirtualScene(&skeleton);
 
+    //hardcoded
     BuildCubeEdgesAndAddToVirtualScene();
     BuildCrosshairAndAddToVirtualScene();
     BuildLineAndAddToVirtualScene();
     BuildSquareAndAddToVirtualScene();
+}
+
+int main(int argc, char* argv[])
+{
+    // Inicializamos a biblioteca GLFW, utilizada para criar uma janela do
+    // sistema operacional, onde poderemos renderizar com OpenGL.
+    if (!glfwInit())
+    {
+        fprintf(stderr, "ERROR: glfwInit() failed.\n");
+        std::exit(EXIT_FAILURE);
+    }
+
+    // Definimos o callback para impressão de erros da GLFW no terminal
+    glfwSetErrorCallback(ErrorCallback);
+
+    // Pedimos para utilizar OpenGL versão 3.3 (ou superior)
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+
+    #ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    #endif
+
+    // Pedimos para utilizar o perfil "core", isto é, utilizaremos somente as
+    // funções modernas de OpenGL.
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    // Criamos uma janela do sistema operacional, com 800 colunas e 600 linhas
+    // de pixels
+    GLFWwindow* window;
+    window = glfwCreateWindow(800, 600, "HALL OF THE MINOTAUR v1.1.2", NULL, NULL);
+    if (!window)
+    {
+        glfwTerminate();
+        fprintf(stderr, "ERROR: glfwCreateWindow() failed.\n");
+        std::exit(EXIT_FAILURE);
+    }
+
+    // Definimos a função de callback que será chamada sempre que o usuário
+    // pressionar alguma tecla do teclado ...
+    glfwSetKeyCallback(window, KeyCallback);
+    // ... ou clicar os botões do mouse ...
+    glfwSetMouseButtonCallback(window, MouseButtonCallback);
+    // ... ou movimentar o cursor do mouse em cima da janela ...
+    glfwSetCursorPosCallback(window, CursorPosCallback);
+    // ... ou rolar a "rodinha" do mouse.
+    glfwSetScrollCallback(window, ScrollCallback);
+
+    // Esconde o mouse
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    // Seta posição da janela no centro da tela
+    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+    int width, height;
+    glfwGetWindowSize(window, &width, &height);
+
+    glfwSetWindowPos(window, (mode->width/2) - (width/2), (mode->height/2) - (height/2));//30 pixels off
+
+    // Indicamos que as chamadas OpenGL deverão renderizar nesta janela
+    glfwMakeContextCurrent(window);
+
+    // Carregamento de todas funções definidas por OpenGL 3.3, utilizando a
+    // biblioteca GLAD.
+    gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+
+    // Definimos a função de callback que será chamada sempre que a janela for
+    // redimensionada, por consequência alterando o tamanho do "framebuffer"
+    // (região de memória onde são armazenados os pixels da imagem).
+    glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
+    FramebufferSizeCallback(window, 800, 600); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
+
+    // Imprimimos no terminal informações sobre a GPU do sistema
+    const GLubyte *vendor      = glGetString(GL_VENDOR);
+    const GLubyte *renderer    = glGetString(GL_RENDERER);
+    const GLubyte *glversion   = glGetString(GL_VERSION);
+    const GLubyte *glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
+
+    printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);
+
+    // Carregamos os shaders de vértices e de fragmentos que serão utilizados
+    // para renderização. Veja slides 180-200 do documento Aula_03_Rendering_Pipeline_Grafico.pdf.
+    LoadShadersFromFiles();
+
+    /*
+    carregamento de todos os assets
+    */
+
+    LoadAllTextures();
+    LoadAllModels();
 
     // Inicializamos o código para renderização de texto.
     TextRendering_Init();
@@ -224,9 +250,9 @@ int main(int argc, char* argv[])
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
 
-    glUniform1i(g_ignore_lighting_uniform, false);
-    glUniform1i(g_use_gouraud_uniform, false);
-    glUniform1i(g_use_spherical_uv_uniform, false);
+    //enable blending
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     srand(time(0));
 

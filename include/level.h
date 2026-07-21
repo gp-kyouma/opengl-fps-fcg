@@ -30,8 +30,10 @@ struct Level
 
     float levelWidth;  // largura da fase no eixo X
     float levelLength; // comprimento da fase no eixo Z
-    const float levelFloor   = 1.0f;    // nível do chão
-    const float levelCeiling = 11.0f;   // altura máxima da fase
+    float levelFloor   = 1.0f;    // nível do chão
+    float levelCeiling = 11.0f;   // altura máxima da fase
+
+    AABB levelWalls[6]; // AABBs usadas para colisão com as paredes (pra não ter que implementar planos)//(This will not go on the json)
 
     // obstáculos da fase
     std::vector<Obstacle> obstacles;
@@ -40,6 +42,7 @@ struct Level
     std::vector<EnemyData> enemies;
 
     AABB getAABB();
+    void setLevelWalls();
 
     // funções que geram cada fase
     void createTestLevel();

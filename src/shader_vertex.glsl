@@ -73,7 +73,7 @@ void main()
     // Coordenadas de textura obtidas do arquivo OBJ (se existirem!)
     texcoords = texture_coefficients;
 
-    if (useGouraud)
+    if (useGouraud)//
     {
         // Obtemos a posição da câmera utilizando a inversa da matriz que define o
         // sistema de coordenadas da câmera.

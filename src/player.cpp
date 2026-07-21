@@ -18,15 +18,10 @@ void Player::setView(float theta, float phi)
     view.z = cos(phi)*cos(theta);
 }
 
-void Player::movePos(glm::vec3 offset)
-{
-    pos += offset;
-}
-
-AABB Player::getAABB()
+AABB Player::getHitbox()
 {
     AABB result;
-    glm::vec3 half = p_size / 2.0f;
+    glm::vec3 half = e_size / 2.0f;
 
     result.aabb_max = pos + half;
     result.aabb_min = pos - half;
@@ -37,17 +32,8 @@ AABB Player::getAABB()
 void Player::doPlayerMovement(float deltaTime)
 {
     // jogador anda na direção onde está olhando
-    glm::vec4 v_up = glm::vec4(0.0f,1.0f,0.0f,0.0f);  // Vetor "up" fixado para apontar para o "céu" (eixo Y global)
-
-    glm::vec4 w = Vetor(-view);
-    glm::vec4 u = crossproduct(v_up,w);
-
-    // faz com que o jogador não possa andar pra cima
-    w.y = 0.0f;
-    u.y = 0.0f;
-
-    w = w / norm(w);
-    u = u / norm(u);
+    glm::vec4 u,v,w;
+    calculate_uvw(view,u,v,w,true);
 
     glm::vec4 offset = glm::vec4(0.0f,0.0f,0.0f,0.0f);
 
@@ -68,10 +54,10 @@ void Player::doPlayerMovement(float deltaTime)
         offset += u;
     }
 
-    if (norm(offset) != 0) // evita divisão por 0
-        offset = offset / norm(offset);
+    normalize_vec4(offset);
 
     // jump mechanic
+    // jump height with these values is ~2.0 units
     const float gravity = 5.0f;
     const float jump_force = 4.5f;
 
@@ -80,27 +66,31 @@ void Player::doPlayerMovement(float deltaTime)
         grounded = false;
         y_velocity = jump_force;
     }
-    else if (!grounded)
+    else// if (!grounded)//constant gravity...
     {
         y_velocity -= (gravity * deltaTime);
     }
 
-    float trueSpeed = speed;
-    if (getCurrentWeapon().effect == SLOWDOWN && wpnCooldown > 0.0f)
-        trueSpeed *= std::max(0.5f,1.0f-(wpnCooldown/2.0f));
+    float speedMultiplier = 1.0f;
+    if (getCurrentWeapon().effect == AIM_SLOWDOWN && wpnAnimation > 0.0f && grounded)
+        speedMultiplier = 0.5f;
+        //speedMultiplier = std::max(0.5f,1.0f-(wpnCooldown/2.0f));
+
+    float trueSpeed = speed * speedMultiplier;
 
     offset   *= (trueSpeed  * deltaTime);
     offset.y += (y_velocity * deltaTime);
 
-    movePos(toVec3(offset));
+    pos += toVec3(offset);
 }
 
 void Player::doWeaponAnimation(float deltaTime)
 {
-    if (g_LeftMouseButtonPressed)
-        incrementTimer(wpnAnimation, deltaTime*6, 1.0f);
+    float aim_speed = getCurrentWeapon().aim_speed;
+    if (wpnState != WPNSTATE_DRAW && (g_RightMouseButtonPressed || (getCurrentWeapon().forced_aim && g_LeftMouseButtonPressed)))
+        incrementTimer(wpnAnimation, deltaTime*aim_speed, 1.0f);
     else
-        decrementTimer(wpnAnimation, deltaTime*6, 0.0f);
+        decrementTimer(wpnAnimation, deltaTime*aim_speed, 0.0f);
 }
 
 void Player::doDamageCooldown(float deltaTime)
@@ -113,13 +103,26 @@ void Player::doWeaponSwitch()
     if (g_LastNumberPressed != currentWeapon && g_LastNumberPressed < (int)weapons.size())
     {
         currentWeapon = g_LastNumberPressed;
-        wpnCooldown = 0.0f;
+        wpnCooldown = getCurrentWeapon().drw_speed;
+        wpnState = WPNSTATE_DRAW;
+        wpnAnimation = 0.0f;
     }
 }
 
 void Player::doWeaponCooldown(float deltaTime)
 {
     decrementTimer(wpnCooldown, deltaTime, 0.0f);
+    if (wpnCooldown == 0.0f)
+        wpnState = WPNSTATE_READY;
+}
+
+void Player::update(float deltaTime)
+{
+    doPlayerMovement(deltaTime);
+    doWeaponAnimation(deltaTime);
+    doWeaponCooldown(deltaTime);
+    doDamageCooldown(deltaTime);
+    doWeaponSwitch();
 }
 
 Weapon Player::getCurrentWeapon()
@@ -127,16 +130,36 @@ Weapon Player::getCurrentWeapon()
     return weapons[currentWeapon];
 }
 
-bool Player::fire(Projectile &new_proj)
+glm::vec3 Player::calculateWeaponPos()
 {
-    if (wpnCooldown == 0.0f && wpnAnimation == 1.0f && g_LeftMouseButtonPressed)
-    {
-        glm::vec3 proj_pos = pos;
-        proj_pos.y += neck/1.5f;
+    glm::vec3 result = pos;
 
-        new_proj = getCurrentWeapon().fire(proj_pos,view);
+    result.y += neck;
+
+    glm::vec3 aim_displace = getCurrentWeapon().aim_displace;
+
+    glm::vec4 u,v,w;
+    calculate_uvw(view,u,v,w);
+
+    glm::vec4 vertical_displace   = -v*aim_displace.y;
+    glm::vec4 horizontal_displace = u*aim_displace.x *= (1.0f - wpnAnimation);
+    glm::vec4 forward_displace    = -w*aim_displace.z;
+
+    result += toVec3(vertical_displace) + toVec3(horizontal_displace) + toVec3(forward_displace);
+
+    return result;
+}
+
+bool Player::fire(std::vector<Projectile> &new_projectiles)
+{
+    if (wpnState == WPNSTATE_READY &&
+        g_LeftMouseButtonPressed &&
+        (!getCurrentWeapon().forced_aim || wpnAnimation == 1.0f))
+    {
+        new_projectiles = getCurrentWeapon().fire(calculateWeaponPos(),view);
 
         wpnCooldown = getCurrentWeapon().cooldown;
+        wpnState = WPNSTATE_COOLDOWN;
         return true;
     }
     else return false;

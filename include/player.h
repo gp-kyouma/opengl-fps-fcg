@@ -11,52 +11,49 @@
 #include "collisions.h"
 #include "weapon.h"
 #include "projectile.h"
+#include "entity.h"
 
 /*
 STRUCTS/CLASSES
 */
 
 // Estrutura que descreve o jogador
-struct Player
+struct Player : Actor
 {
-    glm::vec3 pos;    // posição do jogador no mundo
-    glm::vec3 p_size; // tamanho da hitbox do jogador
-    glm::vec3 view;   // onde o jogador está olhando
+    //Entity + Actor attributes omitted
+
     float neck;       // offset no eixo y em relação a pos que define onde a câmera vai ser posicionada
 
-    bool grounded;    // indica se o jogador está tocando o chão
-    float y_velocity; // velocidade do jogador no eixo y
-
-    float speed;      // velocidade em que o jogador se move
-
-    const int maxHealth = 100;  // o valor máximo de vida que o jogador pode ter; reseta a cada fase
-    int health;         // vida atual do jogador
-    float dmgCooldown;  // tempo em segundos até que o jogador possa receber dano de novo
-
-    int currentWeapon;  // índice no vetor de armas que determina a arma equipada
-    float wpnCooldown;  // tempo em segundos até que o jogador possa atirar de novo
-    float wpnAnimation; // valor entre 0.0f e 1.0f, define a animação da arma quando está pressionado o botão esquerdo do mouse
+    int currentWeapon;    // índice no vetor de armas que determina a arma equipada
+    float wpnCooldown;    // tempo em segundos até que o jogador possa atirar de novo
+    float wpnAnimation;   // valor entre 0.0f e 1.0f, define a animação da arma quando está pressionado o botão esquerdo do mouse
+    WeaponState wpnState; // estado atual da arma
 
     std::vector<Weapon> weapons;    // armas disponíveis ao jogador
 
     void setView(float theta, float phi);
-    void movePos(glm::vec3 offset);
 
-    AABB getAABB();
+    AABB getHitbox();
 
-    void doPlayerMovement(float deltaTime);
-    void doDamageCooldown(float deltaTime);
-    void doWeaponAnimation(float deltaTime);
-    void doWeaponCooldown(float deltaTime);
+    void update(float deltaTime);
     void doWeaponSwitch();
 
     Weapon getCurrentWeapon();
 
-    bool fire(Projectile &new_proj);
+    glm::vec3 calculateWeaponPos();
+    bool fire(std::vector<Projectile> &new_projectiles);
 
     void resetHealth();
     void takeDamage(int dmg);
     bool isDead();
+
+    void draw(); //unimplemented
+
+private: // individual parts of update(deltaTime) because i don't want to merge all these things into 1 function, that's cringe
+    void doPlayerMovement(float deltaTime);
+    void doDamageCooldown(float deltaTime);
+    void doWeaponAnimation(float deltaTime);
+    void doWeaponCooldown(float deltaTime);
 };
 
 #endif // FCG_PLAYER

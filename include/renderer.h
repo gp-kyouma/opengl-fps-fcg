@@ -49,6 +49,15 @@ struct ObjModel
     ObjModel(const char* filename, const char* basepath = NULL, bool triangulate = true);
 };
 
+enum TextPos
+{
+    TEXTPOS_TOP,
+    TEXTPOS_LEFT,
+    TEXTPOS_CENTER,
+    TEXTPOS_RIGHT,
+    TEXTPOS_BOTTOM,
+};
+
 /*
 DECLARAÇÃO DE FUNÇÕES
 */
@@ -65,6 +74,11 @@ GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader
 void LoadShader(const char* filename, GLuint shader_id); // Função utilizada pelas duas acima
 GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id); // Cria um programa de GPU
 void PrintObjModelInfo(ObjModel*); // Função para debugging
+
+// Seta as matrizes MVP
+void setModelMatrix(glm::mat4 mat);
+void setViewMatrix(glm::mat4 mat);
+void setProjectionMatrix(glm::mat4 mat);
 
 // Constrói as arestas de um cubo para futura renderização.
 // (usado para desenhar AABBs)
@@ -84,10 +98,18 @@ void BuildSquareAndAddToVirtualScene();
 
 // Declaração de funções auxiliares para renderizar texto dentro da janela
 // OpenGL. Estas funções estão definidas no arquivo "textrendering.cpp".
+void TextRendering_SetColor(glm::vec3 color);
 void TextRendering_Init();
-float TextRendering_LineHeight(GLFWwindow* window);
-float TextRendering_CharWidth(GLFWwindow* window);
-void TextRendering_PrintString(GLFWwindow* window, const std::string &str, float x, float y, float scale = 1.0f);
+float TextRendering_LineHeight(GLFWwindow* window, bool relative = false);
+float TextRendering_CharWidth(GLFWwindow* window,  bool relative = false);
+void TextRendering_PrintString(GLFWwindow* window, const std::string &str, float x, float y, float scale = 1.0f, bool relative = false, glm::vec3 color = glm::vec3(0.0f,0.0f,0.0f));
+// wrapper for ^
+void DrawString(GLFWwindow* window, const std::string &str,
+                float x, float y,
+                TextPos vertical = TEXTPOS_TOP,
+                TextPos horizontal = TEXTPOS_RIGHT,
+                float scale = 1.0f, bool relative = false,
+                glm::vec3 color = glm::vec3(0.0f,0.0f,0.0f));
 
 // Funções abaixo renderizam como texto na janela OpenGL algumas
 // informações do programa.
@@ -97,9 +119,24 @@ void TextRendering_ShowFramesPerSecond(GLFWwindow* window);
 void setDiffuseTexture(std::string name);
 void setSpecularTexture(std::string name);
 
+//usar flat color
+void setDiffuseColor(glm::vec3 color);
+void setSpecularColor(glm::vec3 color);
+
 // determina repetição de textura
 void setTextureRepeat(float u, float v);
 void resetTextureRepeat();
+
+// determina alpha
+void setAlphaValue(float a);
+void resetAlphaValue();
+void setAlphaMask(glm::vec3 color);
+void resetAlphaMask();
+
+// misc flags
+void setIgnoreLighting(bool b);
+void setUseSphericalUV(bool b);
+void setUseGouraud(bool b);
 
 /*
 DECLARAÇÃO DE VARIÁVEIS GLOBAIS
@@ -117,13 +154,26 @@ extern GLint g_object_id_uniform;
 extern GLint g_bbox_min_uniform;
 extern GLint g_bbox_max_uniform;
 extern GLint g_repeat_uniform;
+extern GLint g_alpha_uniform;
+extern GLint g_alpha_mask_uniform;
+extern GLint g_use_alpha_mask_uniform;
 extern GLint g_ignore_lighting_uniform;
 extern GLint g_use_gouraud_uniform;
 extern GLint g_use_spherical_uv_uniform;
 extern GLuint g_diffuse_texture_image_uniform;
 extern GLuint g_specular_texture_image_uniform;
+extern GLint g_use_diffuse_color_uniform;
+extern GLint g_use_specular_color_uniform;
+extern GLint g_diffuse_color_uniform;
+extern GLint g_specular_color_uniform;
 
 // Número de texturas carregadas pela função LoadTextureImage()
 extern GLuint g_NumLoadedTextures;
+
+// As matrizes de Model/View/Projection, expostas para uso global
+// (Isso provavelmente deveria ser uma struct, com esses atributos sendo privados)
+extern glm::mat4 g_CurrentModelMatrix;
+extern glm::mat4 g_CurrentViewMatrix;
+extern glm::mat4 g_CurrentProjectionMatrix;
 
 #endif // FCG_RENDERER
