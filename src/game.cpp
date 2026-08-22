@@ -178,12 +178,12 @@ void Game::Update()
                 if (resolve.y > 0) // colisão em cima
                 {
                     player.grounded = true;
-                    if (player.y_velocity < 0)
-                        player.y_velocity = 0.0f;
+                    if (player.velocity.y < 0)
+                        player.velocity.y = 0.0f;
                 }
                 else // colisão em baixo
-                    if (player.y_velocity > 0)
-                        player.y_velocity = 0.0f;
+                    if (player.velocity.y > 0)
+                        player.velocity.y = 0.0f;
             }
             else
                 obs_touching_player.push_back(obstacles[i]);
@@ -411,7 +411,7 @@ void Game::Update()
                 if (resolve.y > 0) // colisão em cima
                 {
                     enemies[i].grounded = true;
-                    enemies[i].y_velocity = 0.0f;
+                    enemies[i].velocity.y = 0.0f;
                 }
             }
         }
@@ -427,8 +427,8 @@ void Game::Update()
             if (resolve.y < 0) // colisão em cima
             {
                 player.grounded = true;
-                if (player.y_velocity < 0)
-                    player.y_velocity = 0.0f;
+                if (player.velocity.y < 0)
+                    player.velocity.y = 0.0f;
             }
         }
 
@@ -871,7 +871,7 @@ void entityWithinLevel(Entity &entity, Level level)
     {
         entity.pos.y = level.levelFloor + halfSize.y;
         entity.grounded = true;
-        entity.y_velocity = 0.0f;
+        entity.velocity.y = 0.0f;
     }
 }
 
@@ -903,8 +903,8 @@ void Game::loadTopLevel()
     g_CameraPhi   = 0.0f;
     g_CameraTheta = 0.0f;
 
-    player.grounded   = false;
-    player.y_velocity = 0.0f;
+    player.grounded = false;
+    player.velocity = glm::vec3(0.0f,0.0f,0.0f);
 
     player.dmgCooldown  = 0.0f;
     player.wpnCooldown  = 0.0f;

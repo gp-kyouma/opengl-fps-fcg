@@ -61,10 +61,11 @@ void Enemy::update(float deltaTime)
     }
 
     //doEnemyGravity
+    //this will probably become some king of doEnemyVelocity
     if (!grounded)
-        y_velocity -= (Entity::gravity * deltaTime);
+        velocity.y -= (Entity::gravity * deltaTime);
 
-    pos.y += (y_velocity * deltaTime);
+    pos += (velocity * deltaTime);
 
     //doDamageCooldown
     decrementTimer(dmgCooldown, deltaTime, 0.0f);

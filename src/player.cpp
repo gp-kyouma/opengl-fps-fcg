@@ -35,52 +35,77 @@ void Player::doPlayerMovement(float deltaTime)
     glm::vec4 u,v,w;
     calculate_uvw(view,u,v,w,true);
 
-    glm::vec4 offset = glm::vec4(0.0f,0.0f,0.0f,0.0f);
+    glm::vec4 movedir = glm::vec4(0.0f,0.0f,0.0f,0.0f);
 
     if (g_WKeyPressed)
     {
-        offset -= w;
+        movedir -= w;
     }
     if (g_SKeyPressed)
     {
-        offset += w;
+        movedir += w;
     }
     if (g_AKeyPressed)
     {
-        offset -= u;
+        movedir -= u;
     }
     if (g_DKeyPressed)
     {
-        offset += u;
+        movedir += u;
     }
 
-    normalize_vec4(offset);
+    normalize_vec4(movedir);
+
+    glm::vec3 offset = toVec3(movedir);
 
     // jump mechanic
-    // jump height with these values is ~1.0 unit
-    const float jump_force = 4.5f;
+    const float jump_force = 4.5f; // ~1.0 unit jump height
 
     if (g_SpaceBarKeyPressed && grounded)
     {
         grounded = false;
-        y_velocity = jump_force;
+        velocity.y = jump_force;
     }
     else
     {
-        y_velocity -= (Entity::gravity * deltaTime);
+        velocity.y -= (Entity::gravity * deltaTime);
     }
+
+    //maybe movement when not grounded is lesser?
+
+    //cases for horizontal velocity
+    //grounded: reduce by friction (high)
+    //not grounded: reduce by air resistance (low)
+
+    //also need to find a way to do a movement cap
+    //when player is the one inputting
+    //or to be more precise
+    //player input should not be able to override other velocities
+    //aka it shouldnt just be velocity = input because it would eat knockback etc
+    //and player input needs a cap
+    //??? idk
+    //clamp final velocity to [input, current+input]
+    //???
+    //something along those lines but i'm not sure
+    //also no lol
+
+    //the entirety of below might need to be rewritten?
+    //regarding speed and such
+
+    //also the gravity code doesn't stop at 0 but horizontal movement does need to stop at 0
+
+    //movement code is hard...
 
     float speedMultiplier = 1.0f;
     if (getCurrentWeapon().effect == AIM_SLOWDOWN && wpnAnimation > 0.0f && grounded)
         speedMultiplier = 0.5f;
-        //speedMultiplier = std::max(0.5f,1.0f-(wpnCooldown/2.0f));
 
     float trueSpeed = speed * speedMultiplier;
 
-    offset   *= (trueSpeed  * deltaTime);
-    offset.y += (y_velocity * deltaTime);
+    offset *= (trueSpeed * deltaTime);
+    offset += (velocity * deltaTime);
 
-    pos += toVec3(offset);
+    pos += offset;
 }
 
 void Player::doWeaponAnimation(float deltaTime)

@@ -32,12 +32,12 @@ Enemy EnemyData::buildEnemy()
     enemy.dmgCooldown = 0.0f;
 
     enemy.grounded    = false;
-    enemy.y_velocity  = 0.0f;
 
     enemy.seesPlayer  = false;
 
     enemy.pos         = pos;
     enemy.view        = glm::vec3(0.0f,0.0f,1.0f);
+    enemy.velocity    = glm::vec3(0.0f,0.0f,0.0f);
     enemy.move_dir    = enemy.view;
 
     return enemy;
