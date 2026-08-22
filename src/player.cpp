@@ -57,8 +57,7 @@ void Player::doPlayerMovement(float deltaTime)
     normalize_vec4(offset);
 
     // jump mechanic
-    // jump height with these values is ~2.0 units
-    const float gravity = 5.0f;
+    // jump height with these values is ~1.0 unit
     const float jump_force = 4.5f;
 
     if (g_SpaceBarKeyPressed && grounded)
@@ -66,9 +65,9 @@ void Player::doPlayerMovement(float deltaTime)
         grounded = false;
         y_velocity = jump_force;
     }
-    else// if (!grounded)//constant gravity...
+    else
     {
-        y_velocity -= (gravity * deltaTime);
+        y_velocity -= (Entity::gravity * deltaTime);
     }
 
     float speedMultiplier = 1.0f;

@@ -20,6 +20,7 @@ struct Entity // All game objects with position and collision, may or may not mo
     // gravity related attributes
     bool grounded = false;
     float y_velocity = 0.0f;
+    static constexpr float gravity = 10.0f;
 
     virtual void update(float deltaTime) = 0;
     virtual AABB getHitbox() = 0;

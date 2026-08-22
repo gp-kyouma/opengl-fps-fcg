@@ -61,9 +61,8 @@ void Enemy::update(float deltaTime)
     }
 
     //doEnemyGravity
-    const float gravity = 5.0f;
     if (!grounded)
-        y_velocity -= (gravity * deltaTime);
+        y_velocity -= (Entity::gravity * deltaTime);
 
     pos.y += (y_velocity * deltaTime);
 
