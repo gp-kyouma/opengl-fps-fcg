@@ -204,24 +204,21 @@ void drawBarNDC(float value, float maxValue, float aspect, glm::vec3 color, int 
 // Desenha uma progress bar em uma posição do mundo
 void drawBarBillboard(glm::mat4 view, glm::vec3 pos, float value, float maxValue, std::vector<glm::vec3> colors)
 {
-    float epsilon = 0.015625f;
-
     glm::vec3 offset = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 bbsize  = glm::vec3(0.5f, 0.1f-epsilon, 1.0f);
+    glm::vec3 bbsize  = glm::vec3(0.5f, 0.1f, 1.0f);
 
     glm::mat4 bg_model = Matrix_Billboard(view, pos, offset, bbsize);
 
     float barRatio = value / maxValue;
 
-    offset.z += epsilon;//closer
     offset.x  = (1.0f - (barRatio)) * bbsize.x;//right
-
-    bbsize.z += epsilon;
     bbsize.x *= barRatio;
 
     glm::mat4 bar_model = Matrix_Billboard(view, pos, offset, bbsize);
 
+    glDepthMask(GL_FALSE);
     drawBarArbitrary(bg_model, bar_model, barRatio, COLOR_BLACK, colors);
+    glDepthMask(GL_TRUE);
 }
 
 //Overload de drawBarBillboard para barras de 1 cor
