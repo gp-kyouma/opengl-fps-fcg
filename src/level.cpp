@@ -214,6 +214,23 @@ void Level::createLevel1()
     enemy6.pos  = glm::vec3(3.0f, 5.0f, 15.0f);
     enemy6.type = ENEMY_SKELETON;
 
+    //cage for big skeleton
+    Obstacle cage1, cage2, cage3, cage4;
+    cage1.type = cage2.type = cage3.type = cage4.type = OBSTACLE_WALL;
+
+    cage1.e_size = cage2.e_size = glm::vec3(2.5f,  0.25f, 0.25f);
+    cage3.e_size = cage4.e_size = glm::vec3(0.25f, 0.25f, 2.5f);
+
+    cage1.pos    = glm::vec3(0.0f, 1.125f, 6.875f);
+    cage2.pos    = glm::vec3(0.0f, 1.125f, 9.125f);
+    cage3.pos    = glm::vec3(1.125f, 1.375f, 8.0f);
+    cage4.pos    = glm::vec3(-1.125f, 1.375f, 8.0f);
+
+    obstacles.push_back(cage1);
+    obstacles.push_back(cage2);
+    obstacles.push_back(cage3);
+    obstacles.push_back(cage4);
+
     enemies.push_back(enemy1);
     enemies.push_back(enemy2);
     enemies.push_back(enemy3);
