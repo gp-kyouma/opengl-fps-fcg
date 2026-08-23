@@ -26,6 +26,7 @@ AABB Obstacle::getHitbox()
 }
 
 void Obstacle::update(float deltaTime){}//unimplemented... for now.
+void Obstacle::apply_kb(float power, glm::vec3 direction){}//unimplemented... for now.
 
 Obstacle AABBtoObstacle(AABB aabb, ObstacleType type)
 {

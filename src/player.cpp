@@ -37,24 +37,29 @@ void Player::doPlayerMovement(float deltaTime)
 
     glm::vec4 movedir = glm::vec4(0.0f,0.0f,0.0f,0.0f);
 
-    if (g_WKeyPressed)
-    {
-        movedir -= w;
-    }
-    if (g_SKeyPressed)
-    {
-        movedir += w;
-    }
-    if (g_AKeyPressed)
-    {
-        movedir -= u;
-    }
-    if (g_DKeyPressed)
-    {
-        movedir += u;
-    }
+    bool movementInput = g_WKeyPressed || g_AKeyPressed || g_SKeyPressed || g_DKeyPressed;
 
-    normalize_vec4(movedir);
+    if (movementInput)
+    {
+        if (g_WKeyPressed)
+        {
+            movedir -= w;
+        }
+        if (g_SKeyPressed)
+        {
+            movedir += w;
+        }
+        if (g_AKeyPressed)
+        {
+            movedir -= u;
+        }
+        if (g_DKeyPressed)
+        {
+            movedir += u;
+        }
+
+        normalize_vec4(movedir);
+    }
 
     glm::vec3 offset = toVec3(movedir);
 
@@ -76,18 +81,12 @@ void Player::doPlayerMovement(float deltaTime)
     //cases for horizontal velocity
     //grounded: reduce by friction (high)
     //not grounded: reduce by air resistance (low)
+    //applying this in an omnidirectional way instead of x/z...
 
-    //also need to find a way to do a movement cap
-    //when player is the one inputting
-    //or to be more precise
-    //player input should not be able to override other velocities
-    //aka it shouldnt just be velocity = input because it would eat knockback etc
-    //and player input needs a cap
-    //??? idk
-    //clamp final velocity to [input, current+input]
-    //???
-    //something along those lines but i'm not sure
-    //also no lol
+    //MAYBE
+    //have input velocity as its own thing
+    //set to (input) when inputting, decay otherwise
+    //add velocity and input velocity to get true velocity
 
     //the entirety of below might need to be rewritten?
     //regarding speed and such
@@ -95,6 +94,7 @@ void Player::doPlayerMovement(float deltaTime)
     //also the gravity code doesn't stop at 0 but horizontal movement does need to stop at 0
 
     //movement code is hard...
+    //TODO
 
     float speedMultiplier = 1.0f;
     if (getCurrentWeapon().effect == AIM_SLOWDOWN && wpnAnimation > 0.0f && grounded)
@@ -209,4 +209,9 @@ void Player::takeDamage(int dmg)
 bool Player::isDead()
 {
     return (health == 0);
+}
+
+void Player::apply_kb(float power, glm::vec3 direction)
+{
+    //TODO
 }

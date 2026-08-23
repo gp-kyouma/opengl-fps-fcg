@@ -31,6 +31,8 @@ struct Obstacle : Entity
     AABB getHitbox();
     void update(float deltaTime);//unimplemented... for now.
 
+    void apply_kb(float power, glm::vec3 direction);//unimplemented... for now.
+
     void draw(); //Defined in draw.cpp
 };
 

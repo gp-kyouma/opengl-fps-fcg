@@ -216,6 +216,7 @@ void drawBarBillboard(glm::mat4 view, glm::vec3 pos, float value, float maxValue
 
     glm::mat4 bar_model = Matrix_Billboard(view, pos, offset, bbsize);
 
+    //This is not perfect, in fact this is a little bit fucked up and evil
     glDepthMask(GL_FALSE);
     drawBarArbitrary(bg_model, bar_model, barRatio, COLOR_BLACK, colors);
     glDepthMask(GL_TRUE);

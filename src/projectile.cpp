@@ -33,6 +33,7 @@ void Projectile::setProjectileData(ProjectileType type)
             lifespan = 0.15f;
             break;
     }
+    //TODO tinker with kb values
 }
 
 void Projectile::doRandomSpread(int maxOffset, glm::vec4 u, glm::vec4 v)
@@ -130,3 +131,5 @@ bool Projectile::isDead()
 {
     return (lifespan == 0.0f);
 }
+
+void Projectile::apply_kb(float power, glm::vec3 direction){}//unimplemented

@@ -2879,7 +2879,7 @@
 1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\gtc\type_ptr.inl
 	<cstring>
 
-1787431666 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\draw.cpp
+1787522499 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\draw.cpp
 	"draw.h"
 	<cmath>
 	<cstdio>
@@ -3008,7 +3008,7 @@
 	<glm/vec4.hpp>
 	<glm/gtc/matrix_transform.hpp>
 
-1784681498 c:\users\caosd\documents\github\opengl-fps-fcg\include\player.h
+1787524148 c:\users\caosd\documents\github\opengl-fps-fcg\include\player.h
 	<vector>
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
@@ -3026,7 +3026,7 @@
 	"obstacle.h"
 	"enemy.h"
 
-1787436341 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\game.cpp
+1787524148 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\game.cpp
 	"game.h"
 	<cstdio>
 	<cstdlib>
@@ -3144,7 +3144,7 @@
 1679259174 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\matrices.cpp
 	"matrices.h"
 
-1787436202 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\player.cpp
+1787523348 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\player.cpp
 	"player.h"
 	<cstdio>
 	<cstdlib>
@@ -3186,7 +3186,7 @@
 	<math.h>
 	"matrices.h"
 
-1784681498 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\obstacle.cpp
+1787523150 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\obstacle.cpp
 	"obstacle.h"
 	<cmath>
 	<cstdio>
@@ -3199,7 +3199,7 @@
 	<stdexcept>
 	<algorithm>
 
-1784681498 c:\users\caosd\documents\github\opengl-fps-fcg\include\obstacle.h
+1787523035 c:\users\caosd\documents\github\opengl-fps-fcg\include\obstacle.h
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
@@ -5563,28 +5563,28 @@
 	<algorithm>
 	"timer_aux.h"
 
-1784681498 c:\users\caosd\documents\github\opengl-fps-fcg\include\projectile.h
+1787523035 c:\users\caosd\documents\github\opengl-fps-fcg\include\projectile.h
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
 	"collisions.h"
 	"entity.h"
 
-1784681498 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\projectile.cpp
+1787523952 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\projectile.cpp
 	"projectile.h"
 	<algorithm>
 	"matrices.h"
 	"vec_aux.h"
 	"timer_aux.h"
 
-1784681498 c:\users\caosd\documents\github\opengl-fps-fcg\include\enemy.h
+1787523035 c:\users\caosd\documents\github\opengl-fps-fcg\include\enemy.h
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
 	"collisions.h"
 	"entity.h"
 
-1787436078 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\enemy.cpp
+1787523488 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\enemy.cpp
 	"enemy.h"
 	"timer_aux.h"
 	"vec_aux.h"
@@ -6819,7 +6819,7 @@
 1772826499 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\entity.cpp
 	"entity.h"
 
-1787436237 c:\users\caosd\documents\github\opengl-fps-fcg\include\entity.h
+1787522775 c:\users\caosd\documents\github\opengl-fps-fcg\include\entity.h
 	<glm/vec4.hpp>
 	"collisions.h"
 

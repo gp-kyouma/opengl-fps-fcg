@@ -41,12 +41,14 @@ void Game::Init()
     finalCutscene = false;
 
     // PLAYER
+    //this should probably be its own function
 
     player.e_size = glm::vec3(1.0f,2.0f,1.0f);
     player.neck   = 0.5f;
     player.speed  = 3.0f;
     player.maxHealth = 100;
     player.health = player.maxHealth;
+    //TODO tinker with kb values
 
     player.currentWeapon =  0; // melee
     player.wpnState = WPNSTATE_READY;
@@ -236,6 +238,7 @@ void Game::Update()
         if (Collide(player_hb,obstcl_hb,resolve))
         {
             player.pos += resolve;
+            //TODO KNOCKBACK RESOLVE
         }
     }
 
@@ -298,6 +301,13 @@ void Game::Update()
             // Pierce Enemy logic goes here
             if (result)
             {
+                //TODO KNOCKBACK APPLY
+                //USING PROJECTILE VIEW AS DIRECTION PROBABLY?
+                //OR VECTOR FROM PROJ CENTER TO ENEMY?
+                //DEPENDS, THIS MIGHT NEED TO BE A PROJ ATTRIBUTE
+                //AKA: FOR EXPLOSIONS
+                //LET IT STACK MAYBE?
+                //THIS MIGHT FUCK UP THE BULLET BUT OK
                 if (projectiles[i_proj].hit_type == RAY)
                 {
                     if ((min_dist < projectiles[i_proj].e_size.z) && (min_dist < shortest_dist))
@@ -413,6 +423,7 @@ void Game::Update()
                     enemies[i].grounded = true;
                     enemies[i].velocity.y = 0.0f;
                 }
+                //TODO KNOCKBACK RESOLVE
             }
         }
 
@@ -423,6 +434,7 @@ void Game::Update()
             enemies[i].pos +=  resolve/2.0f;
             player.pos     += -resolve/2.0f;
             player.takeDamage(enemies[i].damage);
+            //TODO KNOCKBACK APPLY
             // checa se player está colidindo verticalmente com inimigo
             if (resolve.y < 0) // colisão em cima
             {
@@ -852,19 +864,23 @@ void entityWithinLevel(Entity &entity, Level level)
     if (hitbox.aabb_min.x < -halfWidth)
     {
         entity.pos.x = -halfWidth + halfSize.x;
+            //TODO KNOCKBACK RESOLVE
     }
     else if (hitbox.aabb_max.x > halfWidth)
     {
         entity.pos.x =  halfWidth - halfSize.x;
+            //TODO KNOCKBACK RESOLVE
     }
 
     if (hitbox.aabb_min.z < -halfLength)
     {
         entity.pos.z = -halfLength + halfSize.z;
+            //TODO KNOCKBACK RESOLVE
     }
     else if (hitbox.aabb_max.z > halfLength)
     {
         entity.pos.z =  halfLength - halfSize.z;
+            //TODO KNOCKBACK RESOLVE
     }
 
     if (hitbox.aabb_min.y <= level.levelFloor) // constant grounded state when on floor, no matter what
@@ -905,6 +921,7 @@ void Game::loadTopLevel()
 
     player.grounded = false;
     player.velocity = glm::vec3(0.0f,0.0f,0.0f);
+    player.input_velocity = glm::vec3(0.0f,0.0f,0.0f);
 
     player.dmgCooldown  = 0.0f;
     player.wpnCooldown  = 0.0f;

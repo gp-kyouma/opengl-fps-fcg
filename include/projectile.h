@@ -44,6 +44,8 @@ struct Projectile : Entity
     void update(float deltaTime);
     bool isDead();
 
+    void apply_kb(float power, glm::vec3 direction);//unimplemented
+
     void draw(); //Defined in draw.cpp
 };
 

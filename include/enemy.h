@@ -41,9 +41,11 @@ struct Enemy : Actor
     void updateView(glm::vec3 player_pos);
     bool isWithinRange(glm::vec3 player_pos);
 
-    void resetHealth();//unimplemented
+    void resetHealth();//currently unused
     void takeDamage(int dmg);
     bool isDead();
+
+    void apply_kb(float power, glm::vec3 direction);
 
     void draw(); //Defined in draw.cpp
 };

@@ -33,6 +33,7 @@ void Enemy::setEnemyData(EnemyType type)
             break;
     }
     health = maxHealth;
+    //TODO tinker with kb values
 }
 
 AABB Enemy::getHitbox()
@@ -60,10 +61,9 @@ void Enemy::update(float deltaTime)
         pos += move_dir * speed * deltaTime;
     }
 
-    //doEnemyGravity
-    //this will probably become some king of doEnemyVelocity
-    if (!grounded)
-        velocity.y -= (Entity::gravity * deltaTime);
+    //doEnemyVelocity
+    velocity.y -= (Entity::gravity * deltaTime);
+    //TODO horizontal falloff
 
     pos += (velocity * deltaTime);
 
@@ -83,7 +83,10 @@ bool Enemy::isWithinRange(glm::vec3 player_pos)
     return (distance(pos, player_pos) <= followRange);
 }
 
-void Enemy::resetHealth(){}//unimplemented
+void Enemy::resetHealth()//currently unused
+{
+    health = maxHealth;
+}
 
 void Enemy::takeDamage(int dmg)
 {
@@ -102,3 +105,7 @@ bool Enemy::isDead()
     return (health == 0);
 }
 
+void Enemy::apply_kb(float power, glm::vec3 direction)
+{
+    //TODO
+}

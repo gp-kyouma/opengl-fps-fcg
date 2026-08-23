@@ -31,6 +31,8 @@ struct Player : Actor
 
     std::vector<Weapon> weapons;    // armas disponíveis ao jogador
 
+    glm::vec3 input_velocity;   // velocidade associada ao movimento pelo input do teclado
+
     void setView(float theta, float phi);
 
     AABB getHitbox();
@@ -46,6 +48,8 @@ struct Player : Actor
     void resetHealth();
     void takeDamage(int dmg);
     bool isDead();
+
+    void apply_kb(float power, glm::vec3 direction);
 
     void draw(); //unimplemented
 
