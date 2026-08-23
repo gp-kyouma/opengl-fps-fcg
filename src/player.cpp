@@ -59,53 +59,60 @@ void Player::doPlayerMovement(float deltaTime)
         }
 
         normalize_vec4(movedir);
-    }
 
-    glm::vec3 offset = toVec3(movedir);
+        input_velocity = toVec3(movedir);
+    }
 
     // jump mechanic
     const float jump_force = 4.5f; // ~1.0 unit jump height
 
+    bool jumpFrame = false;
     if (g_SpaceBarKeyPressed && grounded)
     {
         grounded = false;
         velocity.y = jump_force;
-    }
-    else
-    {
-        velocity.y -= (Entity::gravity * deltaTime);
+        jumpFrame = true;
     }
 
-    //maybe movement when not grounded is lesser?
-
-    //cases for horizontal velocity
-    //grounded: reduce by friction (high)
-    //not grounded: reduce by air resistance (low)
-    //applying this in an omnidirectional way instead of x/z...
-
-    //MAYBE
-    //have input velocity as its own thing
-    //set to (input) when inputting, decay otherwise
-    //add velocity and input velocity to get true velocity
-
-    //the entirety of below might need to be rewritten?
-    //regarding speed and such
-
-    //also the gravity code doesn't stop at 0 but horizontal movement does need to stop at 0
-
-    //movement code is hard...
-    //TODO
-
+    // movement speed
     float speedMultiplier = 1.0f;
     if (getCurrentWeapon().effect == AIM_SLOWDOWN && wpnAnimation > 0.0f && grounded)
         speedMultiplier = 0.5f;
 
     float trueSpeed = speed * speedMultiplier;
+    if (movementInput)
+        input_velocity *= trueSpeed;
 
-    offset *= (trueSpeed * deltaTime);
-    offset += (velocity * deltaTime);
+    // velocity falloff (gravity)
+    if (!jumpFrame)
+        velocity.y -= (Entity::gravity * deltaTime);
 
-    pos += offset;
+    //horizontal falloff is a little weird since it uses the velocity directly instead of just its direction
+    //also it can Wiggle (oscillate back and forth around 0)
+    //this can and should be improved
+
+    // velocity falloff (input)
+    if (!movementInput)
+    {
+        if (grounded)
+            input_velocity -= input_velocity * (Entity::friction * deltaTime);
+        else
+            input_velocity -= input_velocity * (Entity::air_resist * deltaTime);
+    }
+
+    // velocity falloff (horizontal, external)
+    glm::vec3 velocity_h = velocity;
+    velocity_h.y = 0.0f;
+
+    if (grounded)
+        velocity -= velocity_h * (Entity::friction * deltaTime);
+    else
+        velocity -= velocity_h * (Entity::air_resist * deltaTime);
+
+    pos += (input_velocity * deltaTime);
+    pos += (velocity * deltaTime);
+
+    //this is quite jank but it's ok. it's fine.
 }
 
 void Player::doWeaponAnimation(float deltaTime)
