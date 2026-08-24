@@ -566,7 +566,12 @@ void drawProjectile(Projectile proj)
     glm::vec3 proj_pos = proj.pos;
 
     if (proj.type == PROJ_BULLET)
+    {
         model = Matrix_Rotate_Y(pi); // texture seam facing towards enemy
+
+        float spin_factor = proj.lifespan * 5.0f;
+        model = Matrix_Rotate_Z(spin_factor * pi) * model;
+    }
 
     if (proj.type == PROJ_HITSCAN)
     {
