@@ -62,8 +62,28 @@ void Enemy::update(float deltaTime)
     }
 
     //doEnemyVelocity
+
+    //gravity
     velocity.y -= (Entity::gravity * deltaTime);
-    //TODO horizontal falloff
+
+    //knockback
+    float v_decay = grounded ? Entity::friction : Entity::air_resist;
+    float v_m = 0;
+    glm::vec3 v_dir;
+
+    glm::vec3 velocity_h = velocity;
+    velocity_h.y = 0.0f;
+
+    vec3_to_attributes(velocity_h, v_dir, v_m);
+
+    v_m -= (v_decay * deltaTime);
+    if (v_m < 0.0f)
+        v_m = 0.0f;
+
+    velocity_h = v_dir * v_m;
+
+    velocity.x = velocity_h.x;
+    velocity.z = velocity_h.z;
 
     pos += (velocity * deltaTime);
 
@@ -107,5 +127,5 @@ bool Enemy::isDead()
 
 void Enemy::apply_kb(float power, glm::vec3 direction)
 {
-    //TODO
+    velocity += direction * power;
 }

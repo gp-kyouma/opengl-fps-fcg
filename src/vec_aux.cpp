@@ -66,3 +66,12 @@ void normalize_vec4(glm::vec4& v)
     if (norm_v != 0)
         v = v / norm_v;
 }
+
+void vec3_to_attributes(glm::vec3 v, glm::vec3& dir, float& m)
+{
+    if (glm::length(v) != 0.0f)
+    {
+        dir = glm::normalize(v);
+        m = glm::length(v);
+    }
+}

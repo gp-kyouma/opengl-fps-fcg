@@ -37,7 +37,7 @@ struct Enemy : Actor
 
     AABB getHitbox();
 
-    void update(float deltaTime); // merged 3 functions into 1 lol. they were tiny, it's ok
+    void update(float deltaTime);
     void updateView(glm::vec3 player_pos);
     bool isWithinRange(glm::vec3 player_pos);
 

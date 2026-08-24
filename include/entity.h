@@ -15,9 +15,10 @@ struct Entity // All game objects with position and collision, may or may not mo
     glm::vec3 view;     // vector associated with entity, usually the direction the entity is "looking" at
     glm::vec3 e_size;   // size of entity
 
-    glm::vec3 velocity; // current velocity of entity (gravity, knockback)
-
     float speed = 0.0f; // speed of entity (if it moves)
+
+    // current velocity of entity (gravity, knockback)
+    glm::vec3 velocity;
 
     // gravity related attributes
     bool grounded = false;
@@ -26,8 +27,8 @@ struct Entity // All game objects with position and collision, may or may not mo
     // knockback related attributes
     float kb_power  = 1.0f;
     float kb_resist = 0.0f; //percentage
-    static constexpr float air_resist = 2.0f;
-    static constexpr float friction = 8.0f;
+    static constexpr float air_resist = 3.0f;
+    static constexpr float friction = 10.0f;
 
     virtual void apply_kb(float power, glm::vec3 direction) = 0;
 

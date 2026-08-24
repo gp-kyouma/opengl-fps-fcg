@@ -83,31 +83,43 @@ void Player::doPlayerMovement(float deltaTime)
     if (movementInput)
         input_velocity *= trueSpeed;
 
-    // velocity falloff (gravity)
-    if (!jumpFrame)
-        velocity.y -= (Entity::gravity * deltaTime);
-
-    //horizontal falloff is a little weird since it uses the velocity directly instead of just its direction
-    //also it can Wiggle (oscillate back and forth around 0)
-    //this can and should be improved
+    // variables for velocity falloff
+    float v_decay = grounded ? Entity::friction : Entity::air_resist;
+    float v_m = 0;
+    glm::vec3 v_dir;
 
     // velocity falloff (input)
     if (!movementInput)
     {
-        if (grounded)
-            input_velocity -= input_velocity * (Entity::friction * deltaTime);
-        else
-            input_velocity -= input_velocity * (Entity::air_resist * deltaTime);
+        vec3_to_attributes(input_velocity, v_dir, v_m);
+
+        v_m -= (v_decay * deltaTime);
+        if (v_m < 0.0f)
+            v_m = 0.0f;
+
+        input_velocity = v_dir * v_m;
+        v_m = 0;
     }
 
     // velocity falloff (horizontal, external)
+    // (maybe this should also affect y? just buff jump height then... meh, not really worth it)
     glm::vec3 velocity_h = velocity;
     velocity_h.y = 0.0f;
 
-    if (grounded)
-        velocity -= velocity_h * (Entity::friction * deltaTime);
-    else
-        velocity -= velocity_h * (Entity::air_resist * deltaTime);
+    vec3_to_attributes(velocity_h, v_dir, v_m);
+
+    v_m -= (v_decay * deltaTime);
+    if (v_m < 0.0f)
+        v_m = 0.0f;
+
+    velocity_h = v_dir * v_m;
+
+    velocity.x = velocity_h.x;
+    velocity.z = velocity_h.z;
+
+    // velocity falloff (gravity)
+    if (!jumpFrame)
+        velocity.y -= (Entity::gravity * deltaTime);
 
     pos += (input_velocity * deltaTime);
     pos += (velocity * deltaTime);
@@ -220,5 +232,5 @@ bool Player::isDead()
 
 void Player::apply_kb(float power, glm::vec3 direction)
 {
-    //TODO
+    velocity += direction * power;
 }
