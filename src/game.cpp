@@ -41,17 +41,7 @@ void Game::Init()
     finalCutscene = false;
 
     // PLAYER
-    //this should probably be its own function
-
-    player.e_size = glm::vec3(1.0f,2.0f,1.0f);
-    player.neck   = 0.5f;
-    player.speed  = 3.0f;
-    player.maxHealth = 100;
-    player.health = player.maxHealth;
-    //TODO tinker with kb values
-
-    player.currentWeapon =  0; // melee
-    player.wpnState = WPNSTATE_READY;
+    player.init();
 
     // WEAPONS
     Weapon sword;
@@ -59,8 +49,6 @@ void Game::Init()
     Weapon shotgun;
     Weapon minigun;
     Weapon sniper;
-
-    player.weapons.clear();
 
     sword.wpn_type  = WPN_SWORD;
     sword.proj_type = PROJ_MELEE_INVISIBLE;
@@ -433,8 +421,16 @@ void Game::Update()
         {
             enemies[i].pos +=  resolve/2.0f;
             player.pos     += -resolve/2.0f;
+
+            //KNOCKBACK APPLY
+            glm::vec3 kb_dir = player.pos - enemies[i].pos;
+            kb_dir = glm::normalize(kb_dir);
+            kb_dir.y = 1.0f;
+            kb_dir = glm::normalize(kb_dir);
+            player.apply_kb(enemies[i].kb_power, kb_dir);
+
             player.takeDamage(enemies[i].damage);
-            //TODO KNOCKBACK APPLY
+
             // checa se player está colidindo verticalmente com inimigo
             if (resolve.y < 0) // colisão em cima
             {

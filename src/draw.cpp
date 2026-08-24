@@ -732,18 +732,33 @@ void drawHealth(GLFWwindow* window, Actor& actor)
 // Escrevemos na tela a posição de uma entidade
 void drawPosition(GLFWwindow* window, Entity& entity)
 {
-    char bufferX[20] = "X = -???.??????";
-    char bufferY[20] = "Y = -???.??????";
-    char bufferZ[20] = "Z = -???.??????";
+    char bufferXpos[20] = "X = -???.??????";
+    char bufferYpos[20] = "Y = -???.??????";
+    char bufferZpos[20] = "Z = -???.??????";
 
-    snprintf(bufferX, 20, "X = %+f", entity.pos.x);
-    snprintf(bufferY, 20, "Y = %+f", entity.pos.y);
-    snprintf(bufferZ, 20, "Z = %+f", entity.pos.z);
+    char bufferXvel[20] = "X = -???.??????";
+    char bufferYvel[20] = "Y = -???.??????";
+    char bufferZvel[20] = "Z = -???.??????";
 
-    DrawString(window, bufferX, 1.0f, 0.80f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
-    DrawString(window, bufferY, 1.0f, 0.75f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
-    DrawString(window, bufferZ, 1.0f, 0.70f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
-    DrawString(window, "GROUNDED", 1.0f, 0.65f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, entity.grounded ? COLOR_GREEN : COLOR_RED);//show if grounded
+    snprintf(bufferXpos, 20, "X = %+f", entity.pos.x);
+    snprintf(bufferYpos, 20, "Y = %+f", entity.pos.y);
+    snprintf(bufferZpos, 20, "Z = %+f", entity.pos.z);
+
+    snprintf(bufferXvel, 20, "X = %+f", entity.velocity.x);
+    snprintf(bufferYvel, 20, "Y = %+f", entity.velocity.y);
+    snprintf(bufferZvel, 20, "Z = %+f", entity.velocity.z);
+
+    DrawString(window, "POSITION", 1.0f, 0.80f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
+    DrawString(window, bufferXpos, 1.0f, 0.75f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
+    DrawString(window, bufferYpos, 1.0f, 0.70f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
+    DrawString(window, bufferZpos, 1.0f, 0.65f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
+
+    DrawString(window, "VELOCITY", 1.0f, 0.60f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
+    DrawString(window, bufferXvel, 1.0f, 0.55f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
+    DrawString(window, bufferYvel, 1.0f, 0.50f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
+    DrawString(window, bufferZvel, 1.0f, 0.45f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
+
+    DrawString(window, "GROUNDED", 1.0f, 0.40f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, entity.grounded ? COLOR_GREEN : COLOR_RED);//show if grounded
 }
 
 void Enemy::draw()

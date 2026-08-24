@@ -33,6 +33,8 @@ struct Player : Actor
 
     glm::vec3 input_velocity;   // velocidade associada ao movimento pelo input do teclado
 
+    void init();
+
     void setView(float theta, float phi);
 
     AABB getHitbox();

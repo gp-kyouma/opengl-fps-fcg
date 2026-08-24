@@ -11,6 +11,22 @@
 #include "matrices.h"
 #include "timer_aux.h"
 
+void Player::init()
+{
+    e_size = glm::vec3(1.0f,2.0f,1.0f);
+    neck   = 0.5f;
+    speed  = 3.0f;
+    maxHealth = 100;
+    health = maxHealth;
+
+    kb_resist = 0.125;
+
+    currentWeapon =  0; // melee
+    wpnState = WPNSTATE_READY;
+
+    weapons.clear();
+}
+
 void Player::setView(float theta, float phi)
 {
     view.x = cos(phi)*sin(theta);
@@ -232,5 +248,6 @@ bool Player::isDead()
 
 void Player::apply_kb(float power, glm::vec3 direction)
 {
-    velocity += direction * power;
+    if (dmgCooldown == 0.0f)
+        velocity += direction * (power * (1.0f - kb_resist));
 }

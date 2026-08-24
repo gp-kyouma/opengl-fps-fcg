@@ -16,6 +16,8 @@ void Enemy::setEnemyData(EnemyType type)
             maxHealth   = 50;
             damage      = 10;
             followRange = 20.0f;
+            kb_power    = 5.0f;
+            kb_resist   = 0.0f;
             break;
         case ENEMY_BIG_SKELETON:
             e_size      = glm::vec3(1.5f,3.0f,1.5f);
@@ -23,6 +25,8 @@ void Enemy::setEnemyData(EnemyType type)
             maxHealth   = 250;
             damage      = 20;
             followRange = 30.0f;
+            kb_power    = 7.5f;
+            kb_resist   = 0.25f;
             break;
         case ENEMY_MINOTAUR:
             e_size      = glm::vec3(2.0f,5.0f,2.0f);
@@ -30,10 +34,11 @@ void Enemy::setEnemyData(EnemyType type)
             maxHealth   = 600;
             damage      = 35;
             followRange = 40.0f;
+            kb_power    = 9.0f;
+            kb_resist   = 0.5f;
             break;
     }
     health = maxHealth;
-    //TODO tinker with kb values
 }
 
 AABB Enemy::getHitbox()
@@ -127,5 +132,6 @@ bool Enemy::isDead()
 
 void Enemy::apply_kb(float power, glm::vec3 direction)
 {
-    velocity += direction * power;
+    if (dmgCooldown == 0.0f)
+        velocity += direction * (power * (1.0f - kb_resist));
 }
