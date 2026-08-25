@@ -555,7 +555,7 @@ void drawProjectile(Projectile proj)
     if (proj.type == PROJ_MELEE_INVISIBLE)
         return;
 
-    const float pi = 3.141592f;
+    const float pi2 = 1.57079632679;
 
     float width  = (proj.e_size.x);
     float length = (proj.e_size.z);
@@ -567,10 +567,8 @@ void drawProjectile(Projectile proj)
 
     if (proj.type == PROJ_BULLET)
     {
-        model = Matrix_Rotate_Y(pi); // texture seam facing towards enemy
-
-        float spin_factor = proj.lifespan * 5.0f;
-        model = Matrix_Rotate_Z(spin_factor * pi) * model;
+        float spin_factor = proj.lifespan * 10.0f;
+        model = Matrix_Rotate_Z(spin_factor * pi2);
     }
 
     if (proj.type == PROJ_HITSCAN)
