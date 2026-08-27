@@ -6,6 +6,16 @@
 #include <glm/vec4.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+//JSON
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
+
+//VEC3 TO/FROM JSON
+namespace glm {
+    void to_json(json& j, const vec3& v);
+    void from_json(const json& j, vec3& v);
+} // namespace glm
+
 // Funções que transformam vec3s em pontos ou vetores para renderização (vec4s)
 glm::vec4 Ponto(glm::vec3 v);
 glm::vec4 Vetor(glm::vec3 v);

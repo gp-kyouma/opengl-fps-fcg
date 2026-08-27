@@ -11,6 +11,7 @@
 #include <limits>
 #include <fstream>
 #include <sstream>
+#include <iostream>
 #include <stdexcept>
 #include <algorithm>
 
@@ -426,4 +427,11 @@ void Level::createBossLevel()
     enemies.push_back(enemy3);
 
     setLevelWalls();
+}
+
+//for export reasons
+void exportLevelToFile(Level level)
+{
+    json j = level;
+    std::cout << j.dump(1) << std::endl << std::endl;
 }

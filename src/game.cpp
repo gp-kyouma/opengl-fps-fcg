@@ -929,4 +929,6 @@ void Game::loadTopLevel()
     levelTime = 0.0f;
 
     noUpdate = false;
+
+    exportLevelToFile(level_queue.front());
 }

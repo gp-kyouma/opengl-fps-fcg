@@ -4,6 +4,19 @@
 
 #include "matrices.h"
 
+//VEC3 TO/FROM JSON
+namespace glm {
+    void to_json(json& j, const vec3& v){
+        j = json{v.x, v.y, v.z};
+    }
+
+    void from_json(const json& j, vec3& v){
+        j.at(0).get_to(v.x);
+        j.at(1).get_to(v.y);
+        j.at(2).get_to(v.z);
+    }
+} // namespace glm
+
 // Funções que transformam vec3s em pontos ou vetores para renderização (vec4s)
 glm::vec4 Ponto(glm::vec3 v)
 {
