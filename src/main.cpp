@@ -50,98 +50,75 @@
 #include "input.h"
 #include "game.h"
 
+#define ASSET_PATH "../../assets"
+
 void LoadAllTextures()
 {
+    std::string path = ASSET_PATH;
+    path += "/textures";
+
+    //texture/name list should probably be stored in an external json as well
+
     // Carregamos imagem para ser utilizada como textura
-    LoadTextureImage("../../data/obstacles/stone_floor.jpg",         "floor");
-    LoadTextureImage("../../data/obstacles/japanese_stone_wall.jpg", "wall");
-    LoadTextureImage("../../data/obstacles/square_floor.jpg",        "platform");
-    LoadTextureImage("../../data/obstacles/medieval_blocks.jpg",     "wall_obstacle");
-    LoadTextureImage("../../data/obstacles/box.jpg",                 "box");
+    LoadTextureImage(path + "/obstacles/stone_floor.jpg",         "floor");
+    LoadTextureImage(path + "/obstacles/japanese_stone_wall.jpg", "wall");
+    LoadTextureImage(path + "/obstacles/square_floor.jpg",        "platform");
+    LoadTextureImage(path + "/obstacles/medieval_blocks.jpg",     "wall_obstacle");
+    LoadTextureImage(path + "/obstacles/box.jpg",                 "box");
 
-    LoadTextureImage("../../data/obstacles/dice.png", "dice");
-    LoadTextureImage("../../data/obstacles/cubetex_template.png", "cubetex_template");
+    LoadTextureImage(path + "/obstacles/dice.png", "dice");
+    LoadTextureImage(path + "/obstacles/cubetex_template.png", "cubetex_template");
 
-    LoadTextureImage("../../data/obstacles/japanese_stone_wall_spec_manual.jpg", "wall_spec");
-    LoadTextureImage("../../data/obstacles/square_floor_spec_manual.jpg",        "platform_spec");
-    LoadTextureImage("../../data/obstacles/medieval_blocks_spec.jpg",            "wall_obstacle_spec");
+    LoadTextureImage(path + "/obstacles/japanese_stone_wall_spec_manual.jpg", "wall_spec");
+    LoadTextureImage(path + "/obstacles/square_floor_spec_manual.jpg",        "platform_spec");
+    LoadTextureImage(path + "/obstacles/medieval_blocks_spec.jpg",            "wall_obstacle_spec");
 
-    /*
-    LoadTextureImage("../../data/full_white.jpg",  "white");
-    LoadTextureImage("../../data/full_grey.jpg",   "grey");
-    LoadTextureImage("../../data/full_black.jpg",  "black");
-    LoadTextureImage("../../data/full_green.jpg",  "green");
-    LoadTextureImage("../../data/full_yellow.jpg", "yellow");
-    LoadTextureImage("../../data/full_red.jpg",    "red");
-    LoadTextureImage("../../data/full_blue.jpg",   "blue");
-    */
+    LoadTextureImage(path + "/misc/silver_texture.jpg", "silver");
 
-    LoadTextureImage("../../data/silver_texture.jpg", "silver");
+    LoadTextureImage(path + "/banners/you_are_dead.png", "player_dead");
+    LoadTextureImage(path + "/banners/level_clear.png",  "level_clear");
+    LoadTextureImage(path + "/banners/you_won.png",      "game_clear");
 
-    LoadTextureImage("../../data/you_are_dead.png", "player_dead");
-    LoadTextureImage("../../data/level_clear.png",  "level_clear");
-    LoadTextureImage("../../data/you_won.png",      "game_clear");
+    LoadTextureImage(path + "/weapons/pistol.png",       "pistol");
+    LoadTextureImage(path + "/weapons/sniper.png",       "sniper");
+    LoadTextureImage(path + "/weapons/sniper_spec.png",  "sniper_spec");
+    LoadTextureImage(path + "/weapons/minigun.png",      "minigun");
+    LoadTextureImage(path + "/weapons/minigun_spec.png", "minigun_spec");
+    LoadTextureImage(path + "/weapons/sword.png",        "sword");
+    LoadTextureImage(path + "/weapons/sword_spec.png",   "sword_spec");
+    LoadTextureImage(path + "/weapons/shotgun.png",      "shotgun");
 
-    LoadTextureImage("../../data/weapons/pistol.png",       "pistol");
-    LoadTextureImage("../../data/weapons/sniper.png",       "sniper");
-    LoadTextureImage("../../data/weapons/sniper_spec.png",  "sniper_spec");
-    LoadTextureImage("../../data/weapons/minigun.png",      "minigun");
-    LoadTextureImage("../../data/weapons/minigun_spec.png", "minigun_spec");
-    LoadTextureImage("../../data/weapons/sword.png",        "sword");
-    LoadTextureImage("../../data/weapons/sword_spec.png",   "sword_spec");
-    LoadTextureImage("../../data/weapons/shotgun.png",      "shotgun");
-
-    LoadTextureImage("../../data/enemies/Minotaur_diffuse.jpg", "minotaur");
-    LoadTextureImage("../../data/enemies/Pants_diffuse.jpg", "pants");
-    LoadTextureImage("../../data/enemies/Minotaur_specular.png", "minotaur_spec");
-    LoadTextureImage("../../data/enemies/Pants_specular.png", "pants_spec");
+    LoadTextureImage(path + "/enemies/Minotaur_diffuse.jpg", "minotaur");
+    LoadTextureImage(path + "/enemies/Pants_diffuse.jpg", "pants");
+    LoadTextureImage(path + "/enemies/Minotaur_specular.png", "minotaur_spec");
+    LoadTextureImage(path + "/enemies/Pants_specular.png", "pants_spec");
 }
 
 void LoadAllModels()
 {
-    ObjModel planemodel("../../data/obstacles/plane.obj");
-    ComputeNormals(&planemodel);
-    BuildTrianglesAndAddToVirtualScene(&planemodel);
+    std::string path = ASSET_PATH;
+    path += "/models";
 
-    ObjModel cubemodel("../../data/obstacles/cube.obj");
-    ComputeNormals(&cubemodel);
-    BuildTrianglesAndAddToVirtualScene(&cubemodel);
+    //this should probably be stored in an external json as well
+    std::vector<std::string> modelnames;
+    modelnames.push_back("/obstacles/plane.obj");
+    modelnames.push_back("/obstacles/cube.obj");
+    modelnames.push_back("/obstacles/cube-tex.obj");
+    modelnames.push_back("/weapons/pistol.obj");
+    modelnames.push_back("/weapons/sniper.obj");
+    modelnames.push_back("/weapons/minigun.obj");
+    modelnames.push_back("/weapons/sword.obj");
+    modelnames.push_back("/weapons/shotgun.obj");
+    modelnames.push_back("/misc/sphere.obj");
+    modelnames.push_back("/enemies/Minotaur.obj");
+    modelnames.push_back("/enemies/skeleton.obj");
 
-    ObjModel cubetexmodel("../../data/obstacles/cube-tex.obj");
-    ComputeNormals(&cubetexmodel);
-    BuildTrianglesAndAddToVirtualScene(&cubetexmodel);
-
-    ObjModel pistol("../../data/weapons/pistol.obj");
-    ComputeNormals(&pistol);
-    BuildTrianglesAndAddToVirtualScene(&pistol);
-
-    ObjModel sniper("../../data/weapons/sniper.obj");
-    ComputeNormals(&sniper);
-    BuildTrianglesAndAddToVirtualScene(&sniper);
-
-    ObjModel minigun("../../data/weapons/minigun.obj");
-    ComputeNormals(&minigun);
-    BuildTrianglesAndAddToVirtualScene(&minigun);
-
-    ObjModel sword("../../data/weapons/sword.obj");
-    ComputeNormals(&sword);
-    BuildTrianglesAndAddToVirtualScene(&sword);
-
-    ObjModel shotgun("../../data/weapons/shotgun.obj");
-    ComputeNormals(&shotgun);
-    BuildTrianglesAndAddToVirtualScene(&shotgun);
-
-    ObjModel sphere("../../data/weapons/sphere.obj");
-    ComputeNormals(&sphere);
-    BuildTrianglesAndAddToVirtualScene(&sphere);
-
-    ObjModel mino("../../data/enemies/Minotaur.obj");
-    ComputeNormals(&mino);
-    BuildTrianglesAndAddToVirtualScene(&mino);
-
-    ObjModel skeleton("../../data/enemies/skeleton.obj");
-    ComputeNormals(&skeleton);
-    BuildTrianglesAndAddToVirtualScene(&skeleton);
+    for (const auto& name : modelnames) {
+        std::string fullpath = path + name;
+        ObjModel model(fullpath.c_str());
+        ComputeNormals(&model);
+        BuildTrianglesAndAddToVirtualScene(&model);
+    }
 
     //hardcoded
     BuildCubeEdgesAndAddToVirtualScene();

@@ -137,6 +137,12 @@ void LoadTextureImage(const char* filename, std::string name)
     g_NumLoadedTextures += 1;
 }
 
+// OVERLOAD
+void LoadTextureImage(std::string filename, std::string name)
+{
+    LoadTextureImage(filename.c_str(), name);
+}
+
 // Função que desenha um objeto armazenado em g_VirtualScene. Veja definição
 // dos objetos na função BuildTrianglesAndAddToVirtualScene().
 void DrawVirtualObject(const char* object_name)

@@ -68,6 +68,7 @@ void BuildTrianglesAndAddToVirtualScene(ObjModel*); // Constrói representação de
 void ComputeNormals(ObjModel* model); // Computa normais de um ObjModel, caso não existam.
 void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, criando um programa de GPU
 void LoadTextureImage(const char* filename, std::string name); // Função que carrega imagens de textura e guarda ID no dicionário
+void LoadTextureImage(std::string filename, std::string name); // OVERLOAD
 void DrawVirtualObject(const char* object_name); // Desenha um objeto armazenado em g_VirtualScene
 GLuint LoadShader_Vertex(const char* filename);   // Carrega um vertex shader
 GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader

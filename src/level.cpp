@@ -93,6 +93,8 @@ void Level::setLevelWalls()
 
 void Level::createTestLevel()
 {
+    level_name = "level_test";
+
     obstacles.clear();
     enemies.clear();
 
@@ -150,6 +152,8 @@ void Level::createTestLevel()
 
 void Level::createLevel1()
 {
+    level_name = "level_1";
+
     obstacles.clear();
     enemies.clear();
 
@@ -244,6 +248,8 @@ void Level::createLevel1()
 
 void Level::createLevel2()
 {
+    level_name = "level_2";
+
     obstacles.clear();
     enemies.clear();
 
@@ -315,6 +321,8 @@ void Level::createLevel2()
 
 void Level::createLevel3()
 {
+    level_name = "level_3";
+
     obstacles.clear();
     enemies.clear();
 
@@ -367,6 +375,8 @@ void Level::createLevel3()
 
 void Level::createBossLevel()
 {
+    level_name = "level_boss";
+
     obstacles.clear();
     enemies.clear();
 
@@ -433,5 +443,5 @@ void Level::createBossLevel()
 void exportLevelToFile(Level level)
 {
     json j = level;
-    std::cout << j.dump(1) << std::endl << std::endl;
+    std::cout << j.dump() << std::endl << std::endl;
 }
