@@ -50,13 +50,6 @@ struct Level
 
     AABB getAABB();
     void setLevelWalls();
-
-    // funções que geram cada fase
-    void createTestLevel();
-    void createLevel1();
-    void createLevel2();
-    void createLevel3();
-    void createBossLevel();
 };
 
 //for export reasons

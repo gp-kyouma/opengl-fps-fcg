@@ -2,6 +2,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <iostream>
 
 #include "matrices.h"
 
@@ -18,23 +19,43 @@ void entityWithinLevel(Entity &entity, Level level);
 void Game::Init()
 {
     // LEVELS
-    Level level;
+    // LOAD LEVEL LIST FROM FILE
+    std::ifstream f_level_list("../../gamedata/level_list.json");
 
-    level.createLevel1();
+    if ( f_level_list.fail() )
+    {
+        std::cout << "level_list.json failed to open" << std::endl;
+        std::cout << "Error: " << strerror(errno) << std::endl;
+        exit(1);
+    }
 
-    level_queue.push(level);
+    json j_level_list = json::parse(f_level_list);
+    auto level_list = j_level_list.get<std::vector<std::string>>();
 
-    level.createLevel2();
+    for (const auto& level_name : level_list) {
+        // LOAD LEVEL DATA FROM FILE
+        std::string filepath = "../../gamedata/levels/" + level_name + ".json";
+        std::ifstream f_level(filepath);
 
-    level_queue.push(level);
+        std::cout << "Loading level " << level_name << ".json..." << std::endl;
 
-    level.createLevel3();
+        if ( f_level.fail() )
+        {
+            std::cout << level_name << ".json failed to open" << std::endl;
+            std::cout << "Error: " << strerror(errno) << std::endl;
+            exit(1);
+        }
 
-    level_queue.push(level);
+        json j_level = json::parse(f_level);
+        Level level = j_level.get<Level>();
 
-    level.createBossLevel();
+        level.setLevelWalls();
+        level_queue.push(level);
 
-    level_queue.push(level);
+        f_level.close();
+    }
+
+    f_level_list.close();
 
     loadTopLevel();
 
@@ -929,6 +950,4 @@ void Game::loadTopLevel()
     levelTime = 0.0f;
 
     noUpdate = false;
-
-    exportLevelToFile(level_queue.front());
 }
