@@ -379,6 +379,7 @@
 		<Unit filename="include/input.h" />
 		<Unit filename="include/level.h" />
 		<Unit filename="include/matrices.h" />
+		<Unit filename="include/nlohmann/json.hpp" />
 		<Unit filename="include/obstacle.h" />
 		<Unit filename="include/player.h" />
 		<Unit filename="include/projectile.h" />
