@@ -8,7 +8,7 @@
 
 //JSON
 #include <nlohmann/json.hpp>
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 
 //VEC3 TO/FROM JSON
 namespace glm {
