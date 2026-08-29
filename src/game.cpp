@@ -577,14 +577,37 @@ void Game::Draw(GLFWwindow* window)
     drawWall(level_queue.front(), EAST);
     drawWall(level_queue.front(), WEST);
 
-    for (unsigned int i = 0; i < obstacles.size(); i++)
-        obstacles[i].draw();
+    //draws all entities (obstacles, projectiles, enemies)
+    //transparent entities are drawn after opaque entities,
+    //sorted by distance from camera (works well enough...)
+    std::multimap<float,std::shared_ptr<Entity>> trans_entities;
+    std::multimap<float,std::shared_ptr<Entity>>::reverse_iterator it;
 
-    for (unsigned int i = 0; i < projectiles.size(); i++)
-        projectiles[i].draw();
-
-    for (unsigned int i = 0; i < enemies.size(); i++)
-        enemies[i].draw();
+    for (const auto& item : obstacles)
+    {
+        //TODO
+        //IF item.drawdata has transparency, add to trans_entities[distance] to be drawn later, else draw now
+        float distance = glm::length(toVec3(camera_pos) - item.pos);
+        trans_entities.insert({distance, std::make_shared<Obstacle>(item)});
+    }
+    for (const auto& item : projectiles)
+    {
+        //TODO
+        //IF item.drawdata has transparency, add to trans_entities[distance] to be drawn later, else draw now
+        float distance = glm::length(toVec3(camera_pos) - item.pos);
+        trans_entities.insert({distance, std::make_shared<Projectile>(item)});
+    }
+    for (const auto& item : enemies)
+    {
+        //TODO
+        //IF item.drawdata has transparency, add to trans_entities[distance] to be drawn later, else draw now
+        float distance = glm::length(toVec3(camera_pos) - item.pos);
+        trans_entities.insert({distance, std::make_shared<Enemy>(item)});
+    }
+    for (it = trans_entities.rbegin(); it != trans_entities.rend(); ++it)
+    {
+        it->second->draw();
+    }
 
     // se g_ShowInfo = true, mostra as AABBs na tela
     if (g_ShowInfo)
@@ -682,7 +705,7 @@ void Game::Draw(GLFWwindow* window)
         {
             if (player.wpnState == WPNSTATE_COOLDOWN)
                 drawBarNDC(player.wpnCooldown, player.getCurrentWeapon().cooldown, g_ScreenRatio, COLOR_WHITE, 1);
-            else
+            else if (player.wpnState == WPNSTATE_DRAW)
                 drawBarNDC(player.wpnCooldown, player.getCurrentWeapon().drw_speed, g_ScreenRatio, COLOR_WHITE, 1);
         }
 
