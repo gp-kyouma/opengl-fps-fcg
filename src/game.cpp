@@ -583,25 +583,28 @@ void Game::Draw(GLFWwindow* window)
     std::multimap<float,std::shared_ptr<Entity>> trans_entities;
     std::multimap<float,std::shared_ptr<Entity>>::reverse_iterator it;
 
-    for (const auto& item : obstacles)
+    for (auto& item : obstacles)
     {
         //TODO
         //IF item.drawdata has transparency, add to trans_entities[distance] to be drawn later, else draw now
-        float distance = glm::length(toVec3(camera_pos) - item.pos);
+        glm::vec3 closest_point = ClosestPoint(toVec3(camera_pos), item.getHitbox());
+        float distance = glm::length(toVec3(camera_pos) - closest_point);
         trans_entities.insert({distance, std::make_shared<Obstacle>(item)});
     }
-    for (const auto& item : projectiles)
+    for (auto& item : projectiles)
     {
         //TODO
         //IF item.drawdata has transparency, add to trans_entities[distance] to be drawn later, else draw now
-        float distance = glm::length(toVec3(camera_pos) - item.pos);
+        glm::vec3 closest_point = ClosestPoint(toVec3(camera_pos), item.getHitbox());
+        float distance = glm::length(toVec3(camera_pos) - closest_point);
         trans_entities.insert({distance, std::make_shared<Projectile>(item)});
     }
-    for (const auto& item : enemies)
+    for (auto& item : enemies)
     {
         //TODO
         //IF item.drawdata has transparency, add to trans_entities[distance] to be drawn later, else draw now
-        float distance = glm::length(toVec3(camera_pos) - item.pos);
+        glm::vec3 closest_point = ClosestPoint(toVec3(camera_pos), item.getHitbox());
+        float distance = glm::length(toVec3(camera_pos) - closest_point);
         trans_entities.insert({distance, std::make_shared<Enemy>(item)});
     }
     for (it = trans_entities.rbegin(); it != trans_entities.rend(); ++it)

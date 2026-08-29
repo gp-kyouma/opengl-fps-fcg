@@ -195,3 +195,15 @@ bool Collide(glm::vec3 point, AABB aabb)
 	       aabb.aabb_min.y <= point.y && point.y <= aabb.aabb_max.y &&
 	       aabb.aabb_min.z <= point.z && point.z <= aabb.aabb_max.z;
 }
+
+// Closest point in AABB to (point)
+// FONTE:
+// https://github.com/juj/MathGeoLib/blob/master/src/Geometry/AABB.cpp
+glm::vec3 ClosestPoint(glm::vec3 point, AABB aabb)
+{
+    glm::vec3 result;
+    result.x = glm::clamp(point.x, aabb.aabb_min.x, aabb.aabb_max.x);
+    result.y = glm::clamp(point.y, aabb.aabb_min.y, aabb.aabb_max.y);
+    result.z = glm::clamp(point.z, aabb.aabb_min.z, aabb.aabb_max.z);
+    return result;
+}

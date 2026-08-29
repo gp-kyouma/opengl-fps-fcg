@@ -86,4 +86,7 @@ bool Collide(Ray ray, AABB aabb, float max_range, float &min_dist);
 // Point x AABB
 bool Collide(glm::vec3 point, AABB aabb);
 
+// Closest point in AABB to (point)
+glm::vec3 ClosestPoint(glm::vec3 point, AABB aabb);
+
 #endif // FCG_COLLISIONS
