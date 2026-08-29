@@ -32,6 +32,7 @@
 #include <limits>
 #include <fstream>
 #include <sstream>
+#include <iostream>
 #include <stdexcept>
 #include <algorithm>
 
@@ -49,6 +50,7 @@
 #include "renderer.h"
 #include "input.h"
 #include "game.h"
+#include "draw_data.h"
 
 #define ASSET_PATH "../../assets"
 
@@ -56,75 +58,70 @@ void LoadAllTextures()
 {
     std::string path = ASSET_PATH;
     path += "/textures";
+    std::string listpath = path + "/texture_list.json";
 
-    //texture/name list should probably be stored in an external json as well
+    // LOAD TEXTURE LIST FROM FILE
+    std::ifstream f_tex_list(listpath);
 
-    // Carregamos imagem para ser utilizada como textura
-    LoadTextureImage(path + "/obstacles/stone_floor.jpg",         "floor");
-    LoadTextureImage(path + "/obstacles/japanese_stone_wall.jpg", "wall");
-    LoadTextureImage(path + "/obstacles/square_floor.jpg",        "platform");
-    LoadTextureImage(path + "/obstacles/medieval_blocks.jpg",     "wall_obstacle");
-    LoadTextureImage(path + "/obstacles/box.jpg",                 "box");
+    if ( f_tex_list.fail() )
+    {
+        std::cout << "texture_list.json failed to open" << std::endl;
+        std::cout << "Error: " << strerror(errno) << std::endl;
+        exit(1);
+    }
 
-    LoadTextureImage(path + "/obstacles/dice.png", "dice");
-    LoadTextureImage(path + "/obstacles/cubetex_template.png", "cubetex_template");
+    json j_tex_list = json::parse(f_tex_list);
+    auto tex_list = j_tex_list.get<std::map<std::string,std::string>>();
 
-    LoadTextureImage(path + "/obstacles/japanese_stone_wall_spec_manual.jpg", "wall_spec");
-    LoadTextureImage(path + "/obstacles/square_floor_spec_manual.jpg",        "platform_spec");
-    LoadTextureImage(path + "/obstacles/medieval_blocks_spec.jpg",            "wall_obstacle_spec");
+    for (const auto& tex : tex_list) {
+        // LOAD TEXTURE FROM FILE
+        std::string key = tex.first;
+        std::string filepath = tex.second;
+        LoadTextureImage(path + filepath, key);
+    }
 
-    LoadTextureImage(path + "/misc/silver_texture.jpg", "silver");
-
-    LoadTextureImage(path + "/banners/you_are_dead.png", "player_dead");
-    LoadTextureImage(path + "/banners/level_clear.png",  "level_clear");
-    LoadTextureImage(path + "/banners/you_won.png",      "game_clear");
-
-    LoadTextureImage(path + "/weapons/pistol.png",       "pistol");
-    LoadTextureImage(path + "/weapons/sniper.png",       "sniper");
-    LoadTextureImage(path + "/weapons/sniper_spec.png",  "sniper_spec");
-    LoadTextureImage(path + "/weapons/minigun.png",      "minigun");
-    LoadTextureImage(path + "/weapons/minigun_spec.png", "minigun_spec");
-    LoadTextureImage(path + "/weapons/sword.png",        "sword");
-    LoadTextureImage(path + "/weapons/sword_spec.png",   "sword_spec");
-    LoadTextureImage(path + "/weapons/shotgun.png",      "shotgun");
-
-    LoadTextureImage(path + "/enemies/Minotaur_diffuse.jpg", "minotaur");
-    LoadTextureImage(path + "/enemies/Pants_diffuse.jpg", "pants");
-    LoadTextureImage(path + "/enemies/Minotaur_specular.png", "minotaur_spec");
-    LoadTextureImage(path + "/enemies/Pants_specular.png", "pants_spec");
+    f_tex_list.close();
 }
 
 void LoadAllModels()
 {
     std::string path = ASSET_PATH;
     path += "/models";
+    std::string listpath = path + "/model_list.json";
 
-    //this should probably be stored in an external json as well
-    std::vector<std::string> modelnames;
-    modelnames.push_back("/obstacles/plane.obj");
-    modelnames.push_back("/obstacles/cube.obj");
-    modelnames.push_back("/obstacles/cube-tex.obj");
-    modelnames.push_back("/weapons/pistol.obj");
-    modelnames.push_back("/weapons/sniper.obj");
-    modelnames.push_back("/weapons/minigun.obj");
-    modelnames.push_back("/weapons/sword.obj");
-    modelnames.push_back("/weapons/shotgun.obj");
-    modelnames.push_back("/misc/sphere.obj");
-    modelnames.push_back("/enemies/Minotaur.obj");
-    modelnames.push_back("/enemies/skeleton.obj");
+    // LOAD MODEL LIST FROM FILE
+    std::ifstream f_model_list(listpath);
 
-    for (const auto& name : modelnames) {
-        std::string fullpath = path + name;
+    if ( f_model_list.fail() )
+    {
+        std::cout << "model_list.json failed to open" << std::endl;
+        std::cout << "Error: " << strerror(errno) << std::endl;
+        exit(1);
+    }
+
+    json j_model_list = json::parse(f_model_list);
+    auto model_list = j_model_list.get<std::vector<std::string>>();
+
+    for (const auto& modelname : model_list) {
+        // LOAD MODEL FROM FILE
+        std::string fullpath = path + modelname;
         ObjModel model(fullpath.c_str());
         ComputeNormals(&model);
         BuildTrianglesAndAddToVirtualScene(&model);
     }
+
+    f_model_list.close();
 
     //hardcoded
     BuildCubeEdgesAndAddToVirtualScene();
     BuildCrosshairAndAddToVirtualScene();
     BuildLineAndAddToVirtualScene();
     BuildSquareAndAddToVirtualScene();
+}
+
+void LoadAllDrawData()
+{
+    //todo
 }
 
 int main(int argc, char* argv[])
@@ -215,6 +212,7 @@ int main(int argc, char* argv[])
 
     LoadAllTextures();
     LoadAllModels();
+    //LoadAllDrawData();//?
 
     // Inicializamos o código para renderização de texto.
     TextRendering_Init();

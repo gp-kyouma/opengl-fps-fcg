@@ -110,6 +110,7 @@
 		<Unit filename="include/collisions.h" />
 		<Unit filename="include/dejavufont.h" />
 		<Unit filename="include/draw.h" />
+		<Unit filename="include/draw_data.h" />
 		<Unit filename="include/enemy.h" />
 		<Unit filename="include/entity.h" />
 		<Unit filename="include/game.h" />
@@ -394,6 +395,7 @@
 		<Unit filename="src/bezier.cpp" />
 		<Unit filename="src/collisions.cpp" />
 		<Unit filename="src/draw.cpp" />
+		<Unit filename="src/draw_data.cpp" />
 		<Unit filename="src/enemy.cpp" />
 		<Unit filename="src/game.cpp" />
 		<Unit filename="src/glad.c">

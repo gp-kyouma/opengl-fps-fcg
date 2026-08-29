@@ -17,6 +17,7 @@
 #include "weapon.h"
 #include "projectile.h"
 #include "enemy.h"
+#include "draw_data.h"
 
 /*
 CONSTANTES GLOBAIS

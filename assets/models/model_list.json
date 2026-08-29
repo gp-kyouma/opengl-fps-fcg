@@ -1,0 +1,13 @@
+[
+	"/obstacles/plane.obj",
+    "/obstacles/cube.obj",
+    "/obstacles/cube-tex.obj",
+    "/weapons/pistol.obj",
+    "/weapons/sniper.obj",
+    "/weapons/minigun.obj",
+    "/weapons/sword.obj",
+    "/weapons/shotgun.obj",
+    "/misc/sphere.obj",
+    "/enemies/Minotaur.obj",
+    "/enemies/skeleton.obj"
+]

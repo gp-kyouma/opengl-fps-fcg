@@ -1,0 +1,34 @@
+{
+	"floor": "/obstacles/stone_floor.jpg",
+    "wall": "/obstacles/japanese_stone_wall.jpg",
+    "platform": "/obstacles/square_floor.jpg",
+    "wall_obstacle": "/obstacles/medieval_blocks.jpg",
+    "box": "/obstacles/box.jpg",
+
+    "dice": "/obstacles/dice.png",
+    "cubetex_template": "/obstacles/cubetex_template.png",
+
+    "wall_spec": "/obstacles/japanese_stone_wall_spec_manual.jpg",
+    "platform_spec": "/obstacles/square_floor_spec_manual.jpg",
+    "wall_obstacle_spec": "/obstacles/medieval_blocks_spec.jpg",
+
+    "silver": "/misc/silver_texture.jpg",
+
+    "player_dead": "/banners/you_are_dead.png",
+    "level_clear": "/banners/level_clear.png",
+    "game_clear": "/banners/you_won.png",
+
+    "pistol": "/weapons/pistol.png",
+    "sniper": "/weapons/sniper.png",
+    "sniper_spec": "/weapons/sniper_spec.png",
+    "minigun": "/weapons/minigun.png",
+    "minigun_spec": "/weapons/minigun_spec.png",
+    "sword": "/weapons/sword.png",
+    "sword_spec": "/weapons/sword_spec.png",
+    "shotgun": "/weapons/shotgun.png",
+
+    "minotaur": "/enemies/Minotaur_diffuse.jpg",
+    "pants": "/enemies/Pants_diffuse.jpg",
+    "minotaur_spec": "/enemies/Minotaur_specular.png",
+    "pants_spec": "/enemies/Pants_specular.png"
+}
