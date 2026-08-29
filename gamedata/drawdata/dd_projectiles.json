@@ -1,0 +1,33 @@
+{
+    "P_HITSCAN_BULLET": {
+        "key": "P_HITSCAN_BULLET",
+        "proj_anim": {
+            "moving_proj": true,
+            "wall_embed": 0.125,
+            "length": 1.0
+        },
+        "main_obj": {
+            "obj_name": "line",
+            "diffuse": {"use_flat_color": true, "flat_color": [0.0, 0.0, 1.0]},
+            "specular": {"use_flat_color": true, "flat_color": [1.0, 1.0, 1.0]}
+        },
+        "line_width": 4.0
+    },
+    "P_INVIS_MELEE": {
+        "key": "P_INVIS_MELEE",
+        "no_draw": true
+    },
+    "P_SILVER_BULLET": {
+        "key": "P_SILVER_BULLET",
+        "proj_anim": {
+            "spin_over_time": true,
+            "spin": [0.0, 0.0, 10.0]
+        },
+        "main_obj": {
+            "obj_name": "the_sphere",
+            "diffuse": {"tex_name": "silver"},
+            "specular": {"tex_name": "silver"}
+        },
+        "use_spherical_uv": true
+    }
+}

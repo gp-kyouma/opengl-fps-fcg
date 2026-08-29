@@ -53,6 +53,7 @@
 #include "draw_data.h"
 
 #define ASSET_PATH "../../assets"
+#define GAMEDATA_PATH "../../gamedata"
 
 void LoadAllTextures()
 {
@@ -71,6 +72,8 @@ void LoadAllTextures()
     }
 
     json j_tex_list = json::parse(f_tex_list);
+    f_tex_list.close();
+
     auto tex_list = j_tex_list.get<std::map<std::string,std::string>>();
 
     for (const auto& tex : tex_list) {
@@ -79,8 +82,6 @@ void LoadAllTextures()
         std::string filepath = tex.second;
         LoadTextureImage(path + filepath, key);
     }
-
-    f_tex_list.close();
 }
 
 void LoadAllModels()
@@ -100,6 +101,8 @@ void LoadAllModels()
     }
 
     json j_model_list = json::parse(f_model_list);
+    f_model_list.close();
+
     auto model_list = j_model_list.get<std::vector<std::string>>();
 
     for (const auto& modelname : model_list) {
@@ -110,8 +113,6 @@ void LoadAllModels()
         BuildTrianglesAndAddToVirtualScene(&model);
     }
 
-    f_model_list.close();
-
     //hardcoded
     BuildCubeEdgesAndAddToVirtualScene();
     BuildCrosshairAndAddToVirtualScene();
@@ -121,7 +122,47 @@ void LoadAllModels()
 
 void LoadAllDrawData()
 {
-    //todo
+    std::string path = GAMEDATA_PATH;
+    std::string listpath = path + "/drawdata_list.json";
+
+    // LOAD DRAWDATA LIST FROM FILE
+    std::ifstream f_dd_list(listpath);
+
+    if ( f_dd_list.fail() )
+    {
+        std::cout << "drawdata_list.json failed to open" << std::endl;
+        std::cout << "Error: " << strerror(errno) << std::endl;
+        exit(1);
+    }
+
+    json j_dd_list = json::parse(f_dd_list);
+    f_dd_list.close();
+
+    auto dd_list = j_dd_list.get<std::vector<std::string>>();
+
+    for (const auto& dd_name : dd_list) {
+        // LOAD DRAWDATA FROM FILE
+        std::string filepath = path + "/drawdata/" + dd_name + ".json";
+        std::ifstream f_dd(filepath);
+
+        std::cout << "Loading drawdata " << dd_name << ".json..." << std::endl;
+
+        if ( f_dd.fail() )
+        {
+            std::cout << dd_name << ".json failed to open" << std::endl;
+            std::cout << "Error: " << strerror(errno) << std::endl;
+            exit(1);
+        }
+
+        json j_dd = json::parse(f_dd);
+        f_dd.close();
+
+        // MERGE INTO GLOBAL DRAWDATA MAP
+        // (for some reason merge() doesn't exist even though it should
+        // so use insert() instead)
+        std::map<std::string,DrawData> dd = j_dd.get<std::map<std::string,DrawData>>();
+        g_DrawDataMap.insert(dd.begin(), dd.end());
+    }
 }
 
 int main(int argc, char* argv[])
@@ -212,7 +253,7 @@ int main(int argc, char* argv[])
 
     LoadAllTextures();
     LoadAllModels();
-    //LoadAllDrawData();//?
+    LoadAllDrawData();
 
     // Inicializamos o código para renderização de texto.
     TextRendering_Init();

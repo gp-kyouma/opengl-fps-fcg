@@ -30,6 +30,8 @@ void Game::Init()
     }
 
     json j_level_list = json::parse(f_level_list);
+    f_level_list.close();
+
     auto level_list = j_level_list.get<std::vector<std::string>>();
 
     for (const auto& level_name : level_list) {
@@ -47,15 +49,12 @@ void Game::Init()
         }
 
         json j_level = json::parse(f_level);
-        Level level = j_level.get<Level>();
+        f_level.close();
 
+        Level level = j_level.get<Level>();
         level.setLevelWalls();
         level_queue.push(level);
-
-        f_level.close();
     }
-
-    f_level_list.close();
 
     loadTopLevel();
 

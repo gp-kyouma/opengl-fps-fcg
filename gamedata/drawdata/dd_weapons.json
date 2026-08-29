@@ -1,0 +1,58 @@
+{
+    "W_MINIGUN": {
+        "key": "W_MINIGUN",
+        "scale": [0.5, 0.5, 0.5],
+        "translation": [0.3, 0.13, 0.4],
+        "wpn_anim": {
+            "forcedAim": true
+        },
+        "main_obj": {
+            "obj_name": "minigun",
+            "diffuse": {"tex_name": "minigun"},
+            "specular": {"tex_name": "minigun_spec"}
+        }
+    },
+    "W_PISTOL": {
+        "key": "W_PISTOL",
+        "scale": [0.02, 0.02, 0.02],
+        "translation": [0.3, 0.15, 0.4],
+        "main_obj": {
+            "obj_name": "pistol",
+            "diffuse": {"tex_name": "pistol"},
+            "specular": {"use_flat_color": true, "flat_color": [0.0, 0.0, 0.0]}
+        }
+    },
+    "W_SHOTGUN": {
+        "key": "W_SHOTGUN",
+        "scale": [0.01, 0.01, 0.01],
+        "translation": [0.3, 0.15, 0.65],
+        "main_obj": {
+            "obj_name": "shotgun",
+            "diffuse": {"tex_name": "shotgun"},
+            "specular": {"use_flat_color": true, "flat_color": [0.0, 0.0, 0.0]}
+        }
+    },
+    "W_SNIPER": {
+        "key": "W_SNIPER",
+        "scale": [0.02, 0.02, 0.02],
+        "translation": [0.3, 0.2, 0.54],
+        "main_obj": {
+            "obj_name": "sniper",
+            "diffuse": {"tex_name": "sniper"},
+            "specular": {"tex_name": "sniper_spec"}
+        }
+    },
+    "W_SWORD": {
+        "key": "W_SWORD",
+        "scale": [0.02, 0.02, 0.02],
+        "translation": [0.3, 0.15, 0.5],
+        "wpn_anim": {
+            "melee": true
+        },
+        "main_obj": {
+            "obj_name": "sword",
+            "diffuse": {"tex_name": "sword"},
+            "specular": {"tex_name": "sword_spec"}
+        }
+    }
+}

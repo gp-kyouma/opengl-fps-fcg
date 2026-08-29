@@ -1,0 +1,40 @@
+{
+    "O_BOX": {
+        "key": "O_BOX",
+        "main_obj": {
+            "obj_name": "cube",
+            "diffuse": {"tex_name": "box"},
+            "specular": {"use_flat_color": true, "flat_color": [0.0, 0.0, 0.0]}
+        }
+    },
+    "O_DICE": {
+        "key": "O_DICE",
+        "main_obj": {
+            "obj_name": "cube_tex",
+            "diffuse": {"tex_name": "dice"},
+            "specular": {"use_flat_color": true, "flat_color": [0.0, 0.0, 0.0]}
+        }
+    },
+    "O_INVIS_WALL": {
+        "key": "O_INVISWALL",
+        "no_draw": true
+    },
+    "O_PLATFORM": {
+        "key": "O_PLATFORM",
+        "main_obj": {
+            "obj_name": "cube",
+            "diffuse": {"tex_name": "platform"},
+            "specular": {"tex_name": "platform_spec"},
+            "tex_repeat": "top"
+        }
+    },
+    "O_WALL": {
+        "key": "O_WALL",
+        "main_obj": {
+            "obj_name": "cube",
+            "diffuse": {"tex_name": "wall_obstacle"},
+            "specular": {"tex_name": "wall_obstacle_spec"},
+            "tex_repeat": "larger_side"
+        }
+    }
+}

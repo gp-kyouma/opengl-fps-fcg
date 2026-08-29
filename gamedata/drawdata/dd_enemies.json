@@ -1,0 +1,40 @@
+{
+    "E_BIG_SKELETON": {
+        "key": "E_BIG_SKELETON",
+        "scale": [1.5, 3.0, 1.5],
+        "original_scale": [3.2, 7.2, 3.2],
+        "main_obj": {
+            "obj_name": "skeleton",
+            "diffuse": {"use_flat_color": true, "flat_color": [0.0, 0.0, 0.0]},
+            "specular": {"use_flat_color": true, "flat_color": [0.05, 0.05, 0.05]}
+        },
+        "use_gouraud": true
+    },
+    "E_MINOTAUR": {
+        "key": "E_MINOTAUR",
+        "scale": [2.5, 5.0, 1.5],
+        "original_scale": [1.0, 1.9, 0.6],
+        "main_obj": {
+            "obj_name": "minotaur",
+            "diffuse": {"tex_name": "minotaur"},
+            "specular": {"tex_name": "minotaur_spec"}
+        },
+        "sub_objs": [{
+            "obj_name": "pants",
+            "diffuse": {"tex_name": "pants"},
+            "specular": {"tex_name": "pants_spec"}
+        }],
+        "use_gouraud": true
+    },
+    "E_SKELETON": {
+        "key": "E_SKELETON",
+        "scale": [1.0, 2.0, 1.0],
+        "original_scale": [3.2, 7.2, 3.2],
+        "main_obj": {
+            "obj_name": "skeleton",
+            "diffuse": {"use_flat_color": true, "flat_color": [0.05, 0.05, 0.05]},
+            "specular": {"use_flat_color": true, "flat_color": [1.0, 1.0, 1.0]}
+        },
+        "use_gouraud": true
+    }
+}
