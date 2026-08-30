@@ -21,7 +21,7 @@ std::vector<Projectile> Weapon::fire(glm::vec3 pos, glm::vec3 dir)
 
     result.push_back(new_proj);
 
-    if (effect == SCATTER || spread > 0)
+    if (has_effect(SCATTER) || spread > 0)
     {
         // cria novos projéteis/faz alterações
         // baseadas no projétil que acabou de ser atirado:
@@ -32,7 +32,7 @@ std::vector<Projectile> Weapon::fire(glm::vec3 pos, glm::vec3 dir)
 
         const float pi24 = 3.141592f / 24.0f;
 
-        if (effect == SCATTER)
+        if (has_effect(SCATTER))
         {
             Projectile spread1 = new_proj;
             Projectile spread2 = new_proj;
@@ -68,6 +68,8 @@ std::vector<Projectile> Weapon::fire(glm::vec3 pos, glm::vec3 dir)
 
             result.push_back(spread5);
             result.push_back(spread6);
+
+            //todo dynamic spread using rotate?
         }
 
         if (spread > 0)
@@ -78,4 +80,12 @@ std::vector<Projectile> Weapon::fire(glm::vec3 pos, glm::vec3 dir)
     }
 
     return result;
+}
+
+bool Weapon::has_effect(WeaponEffect ef)
+{
+    if (std::find(effects.begin(), effects.end(), ef) != effects.end())
+        return true;
+
+    return false;
 }
