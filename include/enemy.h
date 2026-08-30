@@ -13,18 +13,9 @@
 STRUCTS/CLASSES
 */
 
-enum EnemyType//TODO turn this into a stringkey
-{
-    ENEMY_SKELETON,
-    ENEMY_BIG_SKELETON,
-    ENEMY_MINOTAUR,
-};
-
 struct Enemy : Actor
 {
     //Entity + Actor attributes omitted
-
-    EnemyType type;
 
     glm::vec3 move_dir; // direction of movement, converges to view
 
@@ -33,7 +24,7 @@ struct Enemy : Actor
     bool seesPlayer;
     float followRange;
 
-    void setEnemyData(EnemyType type);
+    void setEnemyData(std::string type);
 
     AABB getHitbox();
 

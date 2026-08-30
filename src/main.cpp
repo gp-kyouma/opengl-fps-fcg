@@ -51,6 +51,7 @@
 #include "input.h"
 #include "game.h"
 #include "draw_data.h"
+#include "gamedata.h"
 
 #define ASSET_PATH "../../assets"
 #define GAMEDATA_PATH "../../gamedata"
@@ -161,8 +162,87 @@ void LoadAllDrawData()
         // (for some reason merge() doesn't exist even though it should
         // so use insert() instead)
         std::map<std::string,DrawData> dd = j_dd.get<std::map<std::string,DrawData>>();
-        g_DrawDataMap.insert(dd.begin(), dd.end());
+        g_GameData_DrawData.insert(dd.begin(), dd.end());
     }
+}
+
+void LoadAllGameData()
+{
+    std::string path = GAMEDATA_PATH;
+    path += "/gameplay";
+
+    // LOAD each FROM FILE
+    // enemies.json
+    std::ifstream f_enemy_map(path + "/enemies.json");
+
+    std::cout << "Loading enemies.json..." << std::endl;
+
+    if ( f_enemy_map.fail() )
+    {
+        std::cout << "enemies.json failed to open" << std::endl;
+        std::cout << "Error: " << strerror(errno) << std::endl;
+        exit(1);
+    }
+
+    json j_enemy_map = json::parse(f_enemy_map);
+    f_enemy_map.close();
+
+    auto enemy_map = j_enemy_map.get<std::map<std::string,Enemy>>();
+    g_GameData_Enemies.insert(enemy_map.begin(), enemy_map.end());
+
+    // obstacles.json
+    std::ifstream f_obstacle_map(path + "/obstacles.json");
+
+    std::cout << "Loading obstacles.json..." << std::endl;
+
+    if ( f_obstacle_map.fail() )
+    {
+        std::cout << "obstacles.json failed to open" << std::endl;
+        std::cout << "Error: " << strerror(errno) << std::endl;
+        exit(1);
+    }
+
+    json j_obstacle_map = json::parse(f_obstacle_map);
+    f_obstacle_map.close();
+
+    auto obstacle_map = j_obstacle_map.get<std::map<std::string,Obstacle>>();
+    g_GameData_Obstacles.insert(obstacle_map.begin(), obstacle_map.end());
+
+    // projectiles.json
+    std::ifstream f_projectile_map(path + "/projectiles.json");
+
+    std::cout << "Loading projectiles.json..." << std::endl;
+
+    if ( f_projectile_map.fail() )
+    {
+        std::cout << "projectiles.json failed to open" << std::endl;
+        std::cout << "Error: " << strerror(errno) << std::endl;
+        exit(1);
+    }
+
+    json j_projectile_map = json::parse(f_projectile_map);
+    f_projectile_map.close();
+
+    auto projectile_map = j_projectile_map.get<std::map<std::string,Projectile>>();
+    g_GameData_Projectiles.insert(projectile_map.begin(), projectile_map.end());
+
+    // weapons.json
+    std::ifstream f_weapon_map(path + "/weapons.json");
+
+    std::cout << "Loading weapons.json..." << std::endl;
+
+    if ( f_weapon_map.fail() )
+    {
+        std::cout << "weapons.json failed to open" << std::endl;
+        std::cout << "Error: " << strerror(errno) << std::endl;
+        exit(1);
+    }
+
+    json j_weapon_map = json::parse(f_weapon_map);
+    f_weapon_map.close();
+
+    auto weapon_map = j_weapon_map.get<std::map<std::string,Weapon>>();
+    g_GameData_Weapons.insert(weapon_map.begin(), weapon_map.end());
 }
 
 int main(int argc, char* argv[])
@@ -253,7 +333,12 @@ int main(int argc, char* argv[])
 
     LoadAllTextures();
     LoadAllModels();
+
+    /*
+    carregamento de todos os dados referentes ao jogo
+    */
     LoadAllDrawData();
+    LoadAllGameData();
 
     // Inicializamos o código para renderização de texto.
     TextRendering_Init();

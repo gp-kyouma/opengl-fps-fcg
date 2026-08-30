@@ -1,8 +1,8 @@
-[//TODO TURN EFFECT INTO A MAP OF STRING:STRING? AND ALSO PROJ_TYPE
-    {
-        "type": "SWORD",
+{
+    "W_SWORD": {
+        "type": "W_SWORD",
         "dd_key": "W_SWORD",
-        "proj_type": 2,
+        "proj_type": "P_INVIS_MELEE",
         "damage": 25,
         "cooldown": 0.5,
         "spread": 0,
@@ -11,10 +11,10 @@
         "drw_speed": 0.375,
         "effect": 0
     },
-    {
-        "type": "PISTOL",
+    "W_PISTOL": {
+        "type": "W_PISTOL",
         "dd_key": "W_PISTOL",
-        "proj_type": 0,
+        "proj_type": "P_HITSCAN_BULLET",
         "damage": 15,
         "cooldown": 0.625,
         "spread": 5,
@@ -23,10 +23,10 @@
         "drw_speed": 0.25,
         "effect": 0
     },
-    {
-        "type": "SHOTGUN",
+    "W_SHOTGUN": {
+        "type": "W_SHOTGUN",
         "dd_key": "W_SHOTGUN",
-        "proj_type": 0,
+        "proj_type": "P_HITSCAN_BULLET",
         "damage": 12,
         "cooldown": 0.875,
         "spread": 10,
@@ -35,10 +35,10 @@
         "drw_speed": 0.5,
         "effect": 1
     },
-    {
-        "type": "MINIGUN",
+    "W_MINIGUN": {
+        "type": "W_MINIGUN",
         "dd_key": "W_MINIGUN",
-        "proj_type": 0,
+        "proj_type": "P_HITSCAN_BULLET",
         "damage": 8,
         "cooldown": 0.1,
         "spread": 35,
@@ -48,10 +48,10 @@
         "drw_speed": 1.0,
         "effect": 2
     },
-    {
-        "type": "SNIPER",
+    "W_SNIPER": {
+        "type": "W_SNIPER",
         "dd_key": "W_SNIPER",
-        "proj_type": 1,
+        "proj_type": "P_SILVER_BULLET",
         "damage": 50,
         "cooldown": 1.125,
         "spread": 0,
@@ -60,4 +60,4 @@
         "drw_speed": 1.0,
         "effect": 2
     }
-]
+}

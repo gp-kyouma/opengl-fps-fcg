@@ -141,6 +141,6 @@ DECLARAÇÃO DE VARIÁVEIS GLOBAIS
 */
 
 // mapa de todos os drawdata, onde cada objeto acessa usando sua key
-extern std::map<std::string, DrawData> g_DrawDataMap;
+extern std::map<std::string, DrawData> g_GameData_DrawData;
 
 #endif // FCG_DRAWDATA

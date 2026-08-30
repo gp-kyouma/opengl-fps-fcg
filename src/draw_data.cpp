@@ -2,7 +2,7 @@
 #include "renderer.h"
 
 // mapa de todos os drawdata, onde cada objeto acessa usando sua key
-std::map<std::string, DrawData> g_DrawDataMap;
+std::map<std::string, DrawData> g_GameData_DrawData;
 
 void SubObjectData::set_diffuse()
 {

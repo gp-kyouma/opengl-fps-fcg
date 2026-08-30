@@ -371,7 +371,7 @@ void drawWall(Level level, CardinalDirection direction)
 
 void drawObstacle(Obstacle obstacle)
 {
-    DrawData dd = g_DrawDataMap[obstacle.dd_key];
+    DrawData dd = g_GameData_DrawData[obstacle.dd_key];
 
     if (dd.no_draw)
         return;
@@ -402,7 +402,7 @@ void drawObstacle(Obstacle obstacle)
 
 void drawWeapon(Player player, float theta, float phi)
 {
-    DrawData dd = g_DrawDataMap[player.getCurrentWeapon().dd_key];
+    DrawData dd = g_GameData_DrawData[player.getCurrentWeapon().dd_key];
 
     if (dd.no_draw)
         return;
@@ -490,7 +490,7 @@ void drawWeapon(Player player, float theta, float phi)
 
 void drawProjectile(Projectile proj)
 {
-    DrawData dd = g_DrawDataMap[proj.dd_key];
+    DrawData dd = g_GameData_DrawData[proj.dd_key];
 
     if (dd.no_draw)
         return;
@@ -524,7 +524,7 @@ void drawProjectile(Projectile proj)
     if (dd.proj_anim.moving_proj)
     {
         // simulate bullet moving
-        float move_speed = 50.0f;//TODO reference from global map
+        float move_speed = 50.0f;//g_GameData_Projectiles[proj.type].e_size.z;
         float wall_embed = dd.proj_anim.wall_embed;
         float move_factor = (proj.base_lifespan - proj.lifespan) * move_speed;
 
@@ -572,7 +572,7 @@ void drawProjectile(Projectile proj)
 
 void drawEnemy(Enemy enemy)
 {
-    DrawData dd = g_DrawDataMap[enemy.dd_key];
+    DrawData dd = g_GameData_DrawData[enemy.dd_key];
 
     if (dd.no_draw)
         return;

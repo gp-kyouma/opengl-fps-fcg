@@ -5,38 +5,11 @@
 #include "matrices.h"
 #include "vec_aux.h"
 #include "timer_aux.h"
+#include "gamedata.h"
 
-void Projectile::setProjectileData(ProjectileType type)
+void Projectile::setProjectileData(std::string type)
 {
-    this->type = type;
-
-    const float max_range = 50.0f;
-
-    switch (type)
-    {
-        case PROJ_HITSCAN:
-            hit_type = RAY;
-            e_size = glm::vec3(1.0f,1.0f,max_range);
-            speed = 0;
-            base_lifespan = 0.15f;
-            dd_key = "P_HITSCAN_BULLET";
-            break;
-        case PROJ_BULLET:
-            hit_type = SPHERE;
-            e_size = glm::vec3(0.05f,0.05f,0.05f);
-            speed = 15;
-            base_lifespan = 4.0f;
-            dd_key = "P_SILVER_BULLET";
-            break;
-        case PROJ_MELEE_INVISIBLE:
-            hit_type = BOX;
-            e_size = glm::vec3(1.5f,1.5f,1.5f);
-            speed = 0.5f;
-            base_lifespan = 0.15f;
-            dd_key = "P_INVIS_MELEE";
-            break;
-    }
-    //TODO tinker with kb values
+    *this = g_GameData_Projectiles[type];
     lifespan = base_lifespan;
 }
 

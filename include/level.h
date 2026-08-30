@@ -23,7 +23,7 @@ STRUCTS/CLASSES
 struct EnemyData
 {
     glm::vec3 pos;
-    EnemyType type;
+    std::string type;
 
     Enemy buildEnemy();
 };
@@ -32,7 +32,7 @@ struct ObstacleData
 {
     glm::vec3 pos;
     glm::vec3 e_size;
-    ObstacleType type;
+    std::string type;
 
     Obstacle buildObstacle();
 };

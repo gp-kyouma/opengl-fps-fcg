@@ -114,6 +114,7 @@
 		<Unit filename="include/enemy.h" />
 		<Unit filename="include/entity.h" />
 		<Unit filename="include/game.h" />
+		<Unit filename="include/gamedata.h" />
 		<Unit filename="include/glad/glad.h" />
 		<Unit filename="include/glm/CMakeLists.txt" />
 		<Unit filename="include/glm/common.hpp" />
@@ -398,6 +399,7 @@
 		<Unit filename="src/draw_data.cpp" />
 		<Unit filename="src/enemy.cpp" />
 		<Unit filename="src/game.cpp" />
+		<Unit filename="src/gamedata.cpp" />
 		<Unit filename="src/glad.c">
 			<Option compilerVar="CC" />
 		</Unit>

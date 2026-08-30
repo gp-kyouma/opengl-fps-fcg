@@ -34,7 +34,7 @@ struct Weapon
     std::string type;
     std::string dd_key;// draw data key
 
-    ProjectileType proj_type;
+    std::string proj_type;
 
     int damage;
     float cooldown;

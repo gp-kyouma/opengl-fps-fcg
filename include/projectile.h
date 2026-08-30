@@ -13,18 +13,10 @@
 STRUCTS/CLASSES
 */
 
-enum ProjectileType//TODO turn this into a stringkey
-{
-    PROJ_HITSCAN,
-    PROJ_BULLET,
-    PROJ_MELEE_INVISIBLE,
-};
-
 struct Projectile : Entity
 {
     //Entity attributes omitted
 
-    ProjectileType type;
     HitboxType hit_type;
 
     float lifespan;
@@ -32,7 +24,7 @@ struct Projectile : Entity
 
     int damage;
 
-    void setProjectileData(ProjectileType type);
+    void setProjectileData(std::string type);
     void doRandomSpread(int maxOffset, glm::vec4 u, glm::vec4 v);
 
     AABB   getHitbox();
@@ -57,6 +49,6 @@ NLOHMANN_JSON_SERIALIZE_ENUM( HitboxType, {
     {POINT_3D, "point"},
 });
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Projectile, type, dd_key, hit_type, e_size, speed, lifespan, damage, kb_power);
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Projectile, type, dd_key, hit_type, e_size, speed, base_lifespan, damage, kb_power);
 
 #endif // FCG_PROJECTILE

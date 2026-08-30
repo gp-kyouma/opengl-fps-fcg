@@ -1,17 +1,22 @@
-[//TODO MAKE THIS ONE NOT COMPLETELY EMPTY
-    {
-        "type": 0
+{
+    "O_WALL": {
+        "type": "O_WALL",
+        "dd_key": "O_WALL"
     },
-    {
-        "type": 2
+    "O_PLATFORM": {
+        "type": "O_PLATFORM",
+        "dd_key": "O_PLATFORM"
     },
-    {
-        "type": 1
+    "O_BOX": {
+        "type": "O_BOX",
+        "dd_key": "O_BOX"
     },
-    {
-        "type": 3
+    "O_DICE": {
+        "type": "O_DICE",
+        "dd_key": "O_DICE"
     },
-    {
-        "type": 4
+    "O_INVIS_WALL": {
+        "type": "O_INVIS_WALL",
+        "dd_key": "O_INVIS_WALL"
     }
-]
+}

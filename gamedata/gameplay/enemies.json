@@ -1,6 +1,6 @@
-[//TODO TURN "TYPE" INTO A STRING KEY
-    {
-        "type": 0,
+{
+    "E_SKELETON": {
+        "type": "E_SKELETON",
         "dd_key": "E_SKELETON",
         "e_size": [1.0, 2.0, 1.0],
         "speed": 1.5,
@@ -9,8 +9,8 @@
         "followRange": 20.0,
         "kb_power": 5.0
     },
-    {
-        "type": 1,
+    "E_BIG_SKELETON": {
+        "type": "E_BIG_SKELETON",
         "dd_key": "E_BIG_SKELETON",
         "e_size": [1.5, 3.0, 1.5],
         "speed": 1.0,
@@ -20,8 +20,8 @@
         "kb_power": 7.5,
         "kb_resist": 0.25
     },
-    {
-        "type": 2,
+    "E_MINOTAUR": {
+        "type": "E_MINOTAUR",
         "dd_key": "E_MINOTAUR",
         "e_size": [2.0, 5.0, 2.0],
         "speed": 0.75,
@@ -31,4 +31,4 @@
         "kb_power": 9.0,
         "kb_resist": 0.5
     }
-]
+}

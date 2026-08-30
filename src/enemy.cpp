@@ -3,45 +3,13 @@
 #include "timer_aux.h"
 #include "vec_aux.h"
 #include "matrices.h"
+#include "gamedata.h"
 
-void Enemy::setEnemyData(EnemyType type)
+void Enemy::setEnemyData(std::string type)
 {
-    this->type = type;
-
-    switch (type)
-    {
-        case ENEMY_SKELETON:
-            e_size      = glm::vec3(1.0f,2.0f,1.0f);
-            speed       = 1.5f;
-            maxHealth   = 50;
-            damage      = 10;
-            followRange = 20.0f;
-            kb_power    = 5.0f;
-            kb_resist   = 0.0f;
-            dd_key      = "E_SKELETON";
-            break;
-        case ENEMY_BIG_SKELETON:
-            e_size      = glm::vec3(1.5f,3.0f,1.5f);
-            speed       = 1.0f;
-            maxHealth   = 250;
-            damage      = 20;
-            followRange = 30.0f;
-            kb_power    = 7.5f;
-            kb_resist   = 0.25f;
-            dd_key      = "E_BIG_SKELETON";
-            break;
-        case ENEMY_MINOTAUR:
-            e_size      = glm::vec3(2.0f,5.0f,2.0f);
-            speed       = 0.75f;
-            maxHealth   = 600;
-            damage      = 35;
-            followRange = 40.0f;
-            kb_power    = 9.0f;
-            kb_resist   = 0.5f;
-            dd_key      = "E_MINOTAUR";
-            break;
-    }
+    *this = g_GameData_Enemies[type];
     health = maxHealth;
+    //set default view?
 }
 
 AABB Enemy::getHitbox()

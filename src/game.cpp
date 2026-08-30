@@ -12,6 +12,7 @@
 #include "vec_aux.h"
 #include "timer_aux.h"
 #include "bezier.h"
+#include "gamedata.h"
 
 // protótipos de funções auxiliares
 void entityWithinLevel(Entity &entity, Level level);
@@ -64,69 +65,11 @@ void Game::Init()
     player.init();
 
     // WEAPONS
-    Weapon sword;
-    Weapon pistol;
-    Weapon shotgun;
-    Weapon minigun;
-    Weapon sniper;
-
-    sword.type      = "SWORD";
-    sword.dd_key    = "W_SWORD";
-    sword.proj_type = PROJ_MELEE_INVISIBLE;
-    sword.cooldown  = 0.5f;
-    sword.drw_speed = 0.375f;
-    sword.damage    = 25;
-    sword.spread    = 0;
-    sword.aim_speed = 4.0f;//0.25s
-    sword.effect    = NO_EFFECT;
-
-    pistol.type      = "PISTOL";
-    pistol.dd_key    = "W_PISTOL";
-    pistol.proj_type = PROJ_HITSCAN;
-    pistol.cooldown  = 0.625f;
-    pistol.drw_speed = 0.25f;
-    pistol.damage    = 15;
-    pistol.spread    = 5;
-    pistol.aim_speed = 4.0f;//0.25s
-    pistol.effect    = NO_EFFECT;
-
-    shotgun.type      = "SHOTGUN";
-    shotgun.dd_key    = "W_SHOTGUN";
-    shotgun.proj_type = PROJ_HITSCAN;
-    shotgun.cooldown  = 0.875f;
-    shotgun.drw_speed = 0.5f;
-    shotgun.damage    = 12;
-    shotgun.spread    = 10;
-    shotgun.aim_speed = 3.0f;//0.33s
-    shotgun.effect    = SCATTER;
-
-    minigun.type       = "MINIGUN";
-    minigun.dd_key     = "W_MINIGUN";
-    minigun.proj_type  = PROJ_HITSCAN;
-    minigun.cooldown   = 0.10f;
-    minigun.drw_speed  = 1.0f;
-    minigun.damage     = 8;
-    minigun.spread     = 35; // upgraded from 20
-    minigun.aim_speed  = 1.0f;//1.0s
-    minigun.effect     = AIM_SLOWDOWN;
-    minigun.forced_aim = true;
-
-    sniper.type      = "SNIPER";
-    sniper.dd_key    = "W_SNIPER";
-    sniper.proj_type = PROJ_BULLET;
-    sniper.cooldown  = 1.125f;
-    sniper.drw_speed = 1.0f;
-    sniper.damage    = 50;
-    sniper.spread    = 0;
-    sniper.aim_speed = 2.0f;//0.5s
-    sniper.effect    = AIM_SLOWDOWN;
-
-    // these look a little off because of fov differences in first person
-    sword.aim_displace   = glm::vec3(0.0f, 0.1f, 0.75f);    //lines up with blade...? also no horizontal displace
-    pistol.aim_displace  = glm::vec3(0.3f, 0.125f, 0.45f);  //acceptable
-    shotgun.aim_displace = glm::vec3(0.3f, 0.15f, 0.8f);    //actually good
-    minigun.aim_displace = glm::vec3(0.3f, 0.125f, 0.4f);   //middling
-    sniper.aim_displace  = glm::vec3(0.3f, 0.125f, 0.55f);  //decent
+    Weapon sword    = g_GameData_Weapons["W_SWORD"];
+    Weapon pistol   = g_GameData_Weapons["W_PISTOL"];
+    Weapon shotgun  = g_GameData_Weapons["W_SHOTGUN"];
+    Weapon minigun  = g_GameData_Weapons["W_MINIGUN"];
+    Weapon sniper   = g_GameData_Weapons["W_SNIPER"];
 
     player.weapons.push_back(sword);
     player.weapons.push_back(pistol);
@@ -448,6 +391,7 @@ void Game::Update()
             player.pos     += -resolve/2.0f;
 
             //KNOCKBACK APPLY
+            //maybe use closestpoint here
             glm::vec3 kb_dir = player.pos - enemies[i].pos;
             kb_dir.y = 1.0f;
             kb_dir = glm::normalize(kb_dir);
@@ -590,7 +534,7 @@ void Game::Draw(GLFWwindow* window)
     for (auto& item : obstacles)
     {
         //IF item.drawdata can have transparency, add to trans_entities[distance] to be drawn later, else draw now
-        if (g_DrawDataMap[item.dd_key].may_use_alpha)
+        if (g_GameData_DrawData[item.dd_key].may_use_alpha)
         {
             glm::vec3 closest_point = ClosestPoint(toVec3(camera_pos), item.getHitbox());
             float distance = glm::length(toVec3(camera_pos) - closest_point);
@@ -602,7 +546,7 @@ void Game::Draw(GLFWwindow* window)
     for (auto& item : projectiles)
     {
         //IF item.drawdata can have transparency, add to trans_entities[distance] to be drawn later, else draw now
-        if (g_DrawDataMap[item.dd_key].may_use_alpha)
+        if (g_GameData_DrawData[item.dd_key].may_use_alpha)
         {
             glm::vec3 closest_point = ClosestPoint(toVec3(camera_pos), item.getHitbox());
             float distance = glm::length(toVec3(camera_pos) - closest_point);
@@ -614,7 +558,7 @@ void Game::Draw(GLFWwindow* window)
     for (auto& item : enemies)
     {
         //IF item.drawdata can have transparency, add to trans_entities[distance] to be drawn later, else draw now
-        if (g_DrawDataMap[item.dd_key].may_use_alpha)
+        if (g_GameData_DrawData[item.dd_key].may_use_alpha)
         {
             glm::vec3 closest_point = ClosestPoint(toVec3(camera_pos), item.getHitbox());
             float distance = glm::length(toVec3(camera_pos) - closest_point);
@@ -665,7 +609,7 @@ void Game::Draw(GLFWwindow* window)
 
         // bullet for checking spherical uv
         Projectile fakebullet;
-        fakebullet.setProjectileData(PROJ_BULLET);
+        fakebullet.setProjectileData("P_SILVER_BULLET");
         fakebullet.pos = glm::vec3(0.0f,2.0f,-13.5f);
         fakebullet.view = glm::vec3(0.0f,0.0f,1.0f);
         drawAxes(fakebullet.pos,glm::vec4(1.0f,0.0f,0.0f,0.0f),glm::vec4(0.0f,1.0f,0.0f,0.0f),glm::vec4(0.0f,0.0f,1.0f,0.0f));
@@ -768,7 +712,7 @@ void Game::initCutscene()
 
     EnemyData cutscene_minotaur;
     cutscene_minotaur.pos  = glm::vec3(0.0f, 3.5f, 0.0f);
-    cutscene_minotaur.type = ENEMY_MINOTAUR;
+    cutscene_minotaur.type = "E_MINOTAUR";
 
     enemies.push_back(cutscene_minotaur.buildEnemy());
 }
