@@ -51,7 +51,7 @@ AABB Obstacle::getHitbox()
 
 void Obstacle::update(float deltaTime){}//unimplemented... for now.
 void Obstacle::apply_kb(float power, glm::vec3 direction){}//unimplemented... for now.
-
+/* for future reference
 Obstacle AABBtoObstacle(AABB aabb, ObstacleType type)
 {
     Obstacle result;
@@ -60,3 +60,4 @@ Obstacle AABBtoObstacle(AABB aabb, ObstacleType type)
     result.type = type;
     return result;
 }
+*/

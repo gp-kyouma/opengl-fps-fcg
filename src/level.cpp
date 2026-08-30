@@ -44,6 +44,18 @@ Enemy EnemyData::buildEnemy()
     return enemy;
 }
 
+Obstacle ObstacleData::buildObstacle()
+{
+    Obstacle ob;
+
+    ob.setObstacleData(type);
+
+    ob.pos    = pos;
+    ob.e_size = e_size;
+
+    return ob;
+}
+
 AABB Level::getAABB()
 {
     AABB result;

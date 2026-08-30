@@ -964,17 +964,14 @@ void Game::loadTopLevel()
     enemies.clear();
     projectiles.clear();
 
-    obstacles = level_queue.front().obstacles;
-
-    //PLACEHOLDER AS FUCK LOL until i make a proper obstacledata
-    for (Obstacle& ob : obstacles)
+    for (ObstacleData& ob : level_queue.front().obstacles)
     {
-        ob.setObstacleData(ob.type);
+        obstacles.push_back(ob.buildObstacle());
     }
 
-    for (unsigned int i = 0; i < level_queue.front().enemies.size(); i++)
+    for (EnemyData& enemy : level_queue.front().enemies)
     {
-        enemies.push_back(level_queue.front().enemies[i].buildEnemy());
+        enemies.push_back(enemy.buildEnemy());
     }
 
     // carrega/reseta dados do jogador

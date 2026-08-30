@@ -38,8 +38,6 @@ struct Obstacle : Entity
     void draw(); //Defined in draw.cpp
 };
 
-Obstacle AABBtoObstacle(AABB aabb, ObstacleType type);
-
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Obstacle, pos, e_size, type, dd_key);//TODO make this real
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Obstacle, type, dd_key);
 
 #endif // FCG_OBSTACLE
