@@ -1,6 +1,8 @@
 #ifndef FCG_ENTITY
 #define FCG_ENTITY
 
+#include <string>
+
 #include <glm/vec4.hpp>
 
 #include "collisions.h"
@@ -36,6 +38,9 @@ struct Entity // All game objects with position and collision, may or may not mo
     float kb_resist = 0.0f; //percentage
     static constexpr float air_resist = 3.0f;
     static constexpr float friction = 10.0f;
+
+    // draw data key
+    std::string dd_key;
 
     virtual void apply_kb(float power, glm::vec3 direction) = 0;
 

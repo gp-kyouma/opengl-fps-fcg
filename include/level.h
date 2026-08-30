@@ -28,6 +28,8 @@ struct EnemyData
     Enemy buildEnemy();
 };
 
+//TODO OBSTACLEDATA BUT GOOD
+
 struct Level
 {
     std::string level_name;

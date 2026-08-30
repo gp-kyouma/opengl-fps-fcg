@@ -18,22 +18,26 @@ void Projectile::setProjectileData(ProjectileType type)
             hit_type = RAY;
             e_size = glm::vec3(1.0f,1.0f,max_range);
             speed = 0;
-            lifespan = 0.15f;
+            base_lifespan = 0.15f;
+            dd_key = "P_HITSCAN_BULLET";
             break;
         case PROJ_BULLET:
             hit_type = SPHERE;
             e_size = glm::vec3(0.05f,0.05f,0.05f);
             speed = 15;
-            lifespan = 4.0f;
+            base_lifespan = 4.0f;
+            dd_key = "P_SILVER_BULLET";
             break;
         case PROJ_MELEE_INVISIBLE:
             hit_type = BOX;
             e_size = glm::vec3(1.5f,1.5f,1.5f);
             speed = 0.5f;
-            lifespan = 0.15f;
+            base_lifespan = 0.15f;
+            dd_key = "P_INVIS_MELEE";
             break;
     }
     //TODO tinker with kb values
+    lifespan = base_lifespan;
 }
 
 void Projectile::doRandomSpread(int maxOffset, glm::vec4 u, glm::vec4 v)

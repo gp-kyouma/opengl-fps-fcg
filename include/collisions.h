@@ -27,6 +27,7 @@ enum HitboxType
     RAY,
     POINT_3D // no i'm not making a struct that's just one vec3
 };
+//TODO JSON THIS!!!
 
 // Estrutura base para elementos de colisão
 struct Collider

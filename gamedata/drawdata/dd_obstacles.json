@@ -16,7 +16,7 @@
         }
     },
     "O_INVIS_WALL": {
-        "key": "O_INVISWALL",
+        "key": "O_INVIS_WALL",
         "no_draw": true
     },
     "O_PLATFORM": {

@@ -18,6 +18,7 @@ void Enemy::setEnemyData(EnemyType type)
             followRange = 20.0f;
             kb_power    = 5.0f;
             kb_resist   = 0.0f;
+            dd_key      = "E_SKELETON";
             break;
         case ENEMY_BIG_SKELETON:
             e_size      = glm::vec3(1.5f,3.0f,1.5f);
@@ -27,6 +28,7 @@ void Enemy::setEnemyData(EnemyType type)
             followRange = 30.0f;
             kb_power    = 7.5f;
             kb_resist   = 0.25f;
+            dd_key      = "E_BIG_SKELETON";
             break;
         case ENEMY_MINOTAUR:
             e_size      = glm::vec3(2.0f,5.0f,2.0f);
@@ -36,6 +38,7 @@ void Enemy::setEnemyData(EnemyType type)
             followRange = 40.0f;
             kb_power    = 9.0f;
             kb_resist   = 0.5f;
+            dd_key      = "E_MINOTAUR";
             break;
     }
     health = maxHealth;

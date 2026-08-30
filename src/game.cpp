@@ -70,7 +70,8 @@ void Game::Init()
     Weapon minigun;
     Weapon sniper;
 
-    sword.wpn_type  = WPN_SWORD;
+    sword.key       = "SWORD";
+    sword.dd_key    = "W_SWORD";
     sword.proj_type = PROJ_MELEE_INVISIBLE;
     sword.cooldown  = 0.5f;
     sword.drw_speed = 0.375f;
@@ -79,7 +80,8 @@ void Game::Init()
     sword.aim_speed = 4.0f;//0.25s
     sword.effect    = NO_EFFECT;
 
-    pistol.wpn_type  = WPN_PISTOL;
+    pistol.key       = "PISTOL";
+    pistol.dd_key    = "W_PISTOL";
     pistol.proj_type = PROJ_HITSCAN;
     pistol.cooldown  = 0.625f;
     pistol.drw_speed = 0.25f;
@@ -88,7 +90,8 @@ void Game::Init()
     pistol.aim_speed = 4.0f;//0.25s
     pistol.effect    = NO_EFFECT;
 
-    shotgun.wpn_type  = WPN_SHOTGUN;
+    shotgun.key       = "SHOTGUN";
+    shotgun.dd_key    = "W_SHOTGUN";
     shotgun.proj_type = PROJ_HITSCAN;
     shotgun.cooldown  = 0.875f;
     shotgun.drw_speed = 0.5f;
@@ -97,7 +100,8 @@ void Game::Init()
     shotgun.aim_speed = 3.0f;//0.33s
     shotgun.effect    = SCATTER;
 
-    minigun.wpn_type   = WPN_MINIGUN;
+    minigun.key       = "MINIGUN";
+    minigun.dd_key    = "W_MINIGUN";
     minigun.proj_type  = PROJ_HITSCAN;
     minigun.cooldown   = 0.10f;
     minigun.drw_speed  = 1.0f;
@@ -107,7 +111,8 @@ void Game::Init()
     minigun.effect     = AIM_SLOWDOWN;
     minigun.forced_aim = true;
 
-    sniper.wpn_type  = WPN_SNIPER;
+    sniper.key       = "SNIPER";
+    sniper.dd_key    = "W_SNIPER";
     sniper.proj_type = PROJ_BULLET;
     sniper.cooldown  = 1.125f;
     sniper.drw_speed = 1.0f;
@@ -584,27 +589,39 @@ void Game::Draw(GLFWwindow* window)
 
     for (auto& item : obstacles)
     {
-        //TODO
-        //IF item.drawdata has transparency, add to trans_entities[distance] to be drawn later, else draw now
-        glm::vec3 closest_point = ClosestPoint(toVec3(camera_pos), item.getHitbox());
-        float distance = glm::length(toVec3(camera_pos) - closest_point);
-        trans_entities.insert({distance, std::make_shared<Obstacle>(item)});
+        //IF item.drawdata can have transparency, add to trans_entities[distance] to be drawn later, else draw now
+        if (g_DrawDataMap[item.dd_key].may_use_alpha)
+        {
+            glm::vec3 closest_point = ClosestPoint(toVec3(camera_pos), item.getHitbox());
+            float distance = glm::length(toVec3(camera_pos) - closest_point);
+            trans_entities.insert({distance, std::make_shared<Obstacle>(item)});
+        }
+        else
+            item.draw();
     }
     for (auto& item : projectiles)
     {
-        //TODO
-        //IF item.drawdata has transparency, add to trans_entities[distance] to be drawn later, else draw now
-        glm::vec3 closest_point = ClosestPoint(toVec3(camera_pos), item.getHitbox());
-        float distance = glm::length(toVec3(camera_pos) - closest_point);
-        trans_entities.insert({distance, std::make_shared<Projectile>(item)});
+        //IF item.drawdata can have transparency, add to trans_entities[distance] to be drawn later, else draw now
+        if (g_DrawDataMap[item.dd_key].may_use_alpha)
+        {
+            glm::vec3 closest_point = ClosestPoint(toVec3(camera_pos), item.getHitbox());
+            float distance = glm::length(toVec3(camera_pos) - closest_point);
+            trans_entities.insert({distance, std::make_shared<Projectile>(item)});
+        }
+        else
+            item.draw();
     }
     for (auto& item : enemies)
     {
-        //TODO
-        //IF item.drawdata has transparency, add to trans_entities[distance] to be drawn later, else draw now
-        glm::vec3 closest_point = ClosestPoint(toVec3(camera_pos), item.getHitbox());
-        float distance = glm::length(toVec3(camera_pos) - closest_point);
-        trans_entities.insert({distance, std::make_shared<Enemy>(item)});
+        //IF item.drawdata can have transparency, add to trans_entities[distance] to be drawn later, else draw now
+        if (g_DrawDataMap[item.dd_key].may_use_alpha)
+        {
+            glm::vec3 closest_point = ClosestPoint(toVec3(camera_pos), item.getHitbox());
+            float distance = glm::length(toVec3(camera_pos) - closest_point);
+            trans_entities.insert({distance, std::make_shared<Enemy>(item)});
+        }
+        else
+            item.draw();
     }
     for (it = trans_entities.rbegin(); it != trans_entities.rend(); ++it)
     {
@@ -642,7 +659,7 @@ void Game::Draw(GLFWwindow* window)
             fakeplayer[i].weapons = {player.weapons[i]};
             fakeplayer[i].currentWeapon = 0;
 
-            drawWeapon(fakeplayer[i],fakeplayer[i].getCurrentWeapon().wpn_type,getTheta(fakeplayer[i].view),getPhi(fakeplayer[i].view));
+            drawWeapon(fakeplayer[i],getTheta(fakeplayer[i].view),getPhi(fakeplayer[i].view));
             drawPoint(fakeplayer[i].calculateWeaponPos());
         }
 
@@ -667,7 +684,7 @@ void Game::Draw(GLFWwindow* window)
         projection = Matrix_Perspective(weapon_fov, g_ScreenRatio, nearplane, farplane);
         setProjectionMatrix(projection);
 
-        drawWeapon(player, player.getCurrentWeapon().wpn_type, g_CameraTheta, g_CameraPhi);
+        drawWeapon(player, g_CameraTheta, g_CameraPhi);
     }
 
     // Os objetos a seguir sempre serão desenhados na frente; desativa o z-buffer
@@ -948,6 +965,12 @@ void Game::loadTopLevel()
     projectiles.clear();
 
     obstacles = level_queue.front().obstacles;
+
+    //PLACEHOLDER AS FUCK LOL until i make a proper obstacledata
+    for (Obstacle& ob : obstacles)
+    {
+        ob.setObstacleData(ob.type);
+    }
 
     for (unsigned int i = 0; i < level_queue.front().enemies.size(); i++)
     {

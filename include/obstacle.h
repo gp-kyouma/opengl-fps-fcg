@@ -13,7 +13,7 @@
 STRUCTS/CLASSES
 */
 
-enum ObstacleType
+enum ObstacleType//TODO turn this into a stringkey//will have to MANUALLY replace enum ids with strings in the level jsons once that's implemented. fun.
 {
     OBSTACLE_PLATFORM,
     OBSTACLE_BOX,
@@ -27,6 +27,8 @@ struct Obstacle : Entity
     //Entity attributes omitted
 
     ObstacleType type;// tipo do obstáculo
+
+    void setObstacleData(ObstacleType type);
 
     AABB getHitbox();
     void update(float deltaTime);//unimplemented... for now.

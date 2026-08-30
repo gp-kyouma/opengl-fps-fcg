@@ -371,6 +371,11 @@ void drawWall(Level level, CardinalDirection direction)
 
 void drawObstacle(Obstacle obstacle)
 {
+    DrawData dd = g_DrawDataMap[obstacle.dd_key];
+
+    if (dd.no_draw)
+        return;
+
     float width  = (obstacle.e_size.x);
     float length = (obstacle.e_size.z);
     float height = (obstacle.e_size.y);
@@ -381,81 +386,34 @@ void drawObstacle(Obstacle obstacle)
 
     setModelMatrix(model);
 
-    bool useSixSideTexture = false;
-    switch (obstacle.type)
-    {
-        case OBSTACLE_PLATFORM:
-            if (width > length)
-                setTextureRepeat(width/length,1);
-            else
-                setTextureRepeat(1,length/width);
-            setDiffuseTexture("platform");
-            setSpecularTexture("platform_spec");
-            break;
-        case OBSTACLE_WALL:
-            if (width > length)
-                setTextureRepeat(width,height);
-            else
-                setTextureRepeat(length,height);
-            setDiffuseTexture("wall_obstacle");
-            setSpecularTexture("wall_obstacle_spec");
-            break;
-        case OBSTACLE_BOX:
-            setDiffuseTexture("box");
-            setSpecularColor(COLOR_BLACK);
-            break;
-        case OBSTACLE_DICE:
-            useSixSideTexture = true;
-            setDiffuseTexture("dice");
-            setSpecularColor(COLOR_BLACK);
-            break;
-        case OBSTACLE_INVISIBLE_WALL:
-            return;//PLACEHOLDER
-        default: break;
-    }
+    dd.set_drawdata_flags();
 
-    if (useSixSideTexture)
-        DrawVirtualObject("cube_tex");
-    else
-        DrawVirtualObject("cube");
+    dd.main_obj.set_alpha();
+    dd.main_obj.set_alpha_mask();
+    dd.main_obj.set_diffuse();
+    dd.main_obj.set_specular();
 
-    resetTextureRepeat();
+    dd.main_obj.set_tex_repeat(obstacle.e_size);
+
+    DrawVirtualObject(dd.main_obj.obj_name.c_str());
+
+    dd.reset_drawdata_flags();
 }
 
-void drawWeapon(Player player, WeaponType type, float theta, float phi)
+void drawWeapon(Player player, float theta, float phi)
 {
+    DrawData dd = g_DrawDataMap[player.getCurrentWeapon().dd_key];
+
+    if (dd.no_draw)
+        return;
+
     const float pi2 = 1.57079632679;
 
     glm::vec4 u,v,w;
     calculate_uvw(player.view,u,v,w);
 
-    glm::vec3 displace = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 scale    = glm::vec3(0.0f, 0.0f, 0.0f);
-
-    switch (type)
-    {
-        case WPN_SWORD:
-            displace = glm::vec3(0.3f,  0.15f, 0.5f);
-            scale    = glm::vec3(0.02f, 0.02f, 0.02f);
-            break;
-        case WPN_PISTOL:
-            displace = glm::vec3(0.3f,  0.15f, 0.4f);
-            scale    = glm::vec3(0.02f, 0.02f, 0.02f);
-            break;
-        case WPN_SHOTGUN:
-            displace = glm::vec3(0.3f,  0.15f, 0.65f);
-            scale    = glm::vec3(0.01f, 0.01f, 0.01f);
-            break;
-        case WPN_MINIGUN:
-            displace = glm::vec3(0.3f,  0.13f, 0.4f);
-            scale    = glm::vec3(0.50f, 0.50f, 0.50f);
-            break;
-        case WPN_SNIPER:
-            displace = glm::vec3(0.3f,  0.20f, 0.54f);
-            scale    = glm::vec3(0.02f, 0.02f, 0.02f);
-            break;
-        default: break;
-    }
+    glm::vec3 displace = dd.translation;
+    glm::vec3 scale    = dd.scale;
 
     glm::vec4 vertical_displace   = -v*displace.y;
     glm::vec4 horizontal_displace =  u*displace.x;
@@ -464,30 +422,18 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
     glm::mat4 model = Matrix_Identity();
 
     // forced aim, held up while not aiming
-    if (type == WPN_MINIGUN)
+    if (dd.wpn_anim.forcedAim)
         model = Matrix_Rotate_Z(-pi2 + player.wpnAnimation * pi2);
 
     // arma melee tem uma animação extra
     // (v3: now with ACTUAL swings!)
-
-    if (type == WPN_SWORD)
+    if (dd.wpn_anim.melee)
     {
         float melee_rotate; // 1 is pointed forward, 0 is pointed up
         float cooldown_percent = (player.wpnState == WPNSTATE_COOLDOWN) ? (player.wpnCooldown / player.getCurrentWeapon().cooldown) : 0.0f;
 
-        float wide_rotate = player.wpnAnimation;//aim...
+        float wide_rotate = player.wpnAnimation;
 
-        //NONE OF THIS WILL MAKE SENSE IF I REPURPOSE WPNANIMATION FOR AIM
-        //SO WATCH OUT FOR THAT
-        /*
-        if (player.wpnAnimation < 1.0f)
-            melee_rotate = player.wpnAnimation;
-        else
-            melee_rotate = fabs((cooldown_percent * 2.0f) - 1.0f); //1-0-1
-        */
-
-        //proper swing (might be too slow)
-        //sword needs noAim(?)
         melee_rotate = fabs((cooldown_percent * 2.0f) - 1.0f); //1-0-1
         melee_rotate = -melee_rotate + 1.0f; //0-1-0
 
@@ -514,48 +460,44 @@ void drawWeapon(Player player, WeaponType type, float theta, float phi)
 
     setModelMatrix(model);
 
+    dd.set_drawdata_flags();
+
+    dd.main_obj.set_alpha();
+    dd.main_obj.set_alpha_mask();
+    dd.main_obj.set_diffuse();
+    dd.main_obj.set_specular();
+
     if (player.wpnState == WPNSTATE_DRAW)
         setAlphaValue(0.5f);
 
-    switch (type)
+    DrawVirtualObject(dd.main_obj.obj_name.c_str());
+
+    for (SubObjectData &sod : dd.sub_objs)
     {
-        case WPN_SWORD:
-            setDiffuseTexture("sword");
-            setSpecularTexture("sword_spec");
-            DrawVirtualObject("sword");
-            break;
-        case WPN_PISTOL:
-            setDiffuseTexture("pistol");
-            setSpecularColor(COLOR_BLACK);
-            DrawVirtualObject("pistol");
-            break;
-        case WPN_SHOTGUN:
-            setDiffuseTexture("shotgun");
-            setSpecularColor(COLOR_BLACK);
-            DrawVirtualObject("shotgun");
-            break;
-        case WPN_MINIGUN:
-            setDiffuseTexture("minigun");
-            setSpecularTexture("minigun_spec");
-            DrawVirtualObject("minigun");
-            break;
-        case WPN_SNIPER:
-            setDiffuseTexture("sniper");
-            setSpecularTexture("sniper_spec");
-            DrawVirtualObject("sniper");
-            break;
-        default: break;
+        sod.set_alpha();
+        sod.set_alpha_mask();
+        sod.set_diffuse();
+        sod.set_specular();
+
+        if (player.wpnState == WPNSTATE_DRAW)
+            setAlphaValue(0.5f);
+
+        DrawVirtualObject(sod.obj_name.c_str());
     }
 
-    resetAlphaValue();
+    dd.reset_drawdata_flags();
 }
 
 void drawProjectile(Projectile proj)
 {
-    if (proj.type == PROJ_MELEE_INVISIBLE)
+    DrawData dd = g_DrawDataMap[proj.dd_key];
+
+    if (dd.no_draw)
         return;
 
     const float pi2 = 1.57079632679;
+
+    bool override_alpha = false;//on for explosions
 
     float width  = (proj.e_size.x);
     float length = (proj.e_size.z);
@@ -565,25 +507,33 @@ void drawProjectile(Projectile proj)
 
     glm::vec3 proj_pos = proj.pos;
 
-    if (proj.type == PROJ_BULLET)
+    if (dd.proj_anim.spin_over_time)
     {
-        float spin_factor = proj.lifespan * 10.0f;
-        model = Matrix_Rotate_Z(spin_factor * pi2);
+        glm::vec3 spin_factor = dd.proj_anim.spin;
+
+        if (spin_factor.x != 0.0f)
+            model = Matrix_Rotate_X(proj.lifespan * spin_factor.x * pi2) * model;
+
+        if (spin_factor.y != 0.0f)
+            model = Matrix_Rotate_Y(proj.lifespan * spin_factor.y * pi2) * model;
+
+        if (spin_factor.z != 0.0f)
+            model = Matrix_Rotate_Z(proj.lifespan * spin_factor.z * pi2) * model;
     }
 
-    if (proj.type == PROJ_HITSCAN)
+    if (dd.proj_anim.moving_proj)
     {
         // simulate bullet moving
-        float move_speed = 50.0f;//should be the same as max length
-        float wall_embed = 0.125f;
-        float move_factor = (0.15f - proj.lifespan) * move_speed;
+        float move_speed = 50.0f;//TODO reference from global map
+        float wall_embed = dd.proj_anim.wall_embed;
+        float move_factor = (proj.base_lifespan - proj.lifespan) * move_speed;
 
         if (move_factor > length-wall_embed)
         {
             move_factor = length-wall_embed;
             length  = wall_embed+wall_embed; // bullet embedded into whatever it hit
         }
-        else length = 1.0f; // bullet "length"
+        else length = dd.proj_anim.length; // bullet "length"
 
         proj_pos = proj.pos + proj.view * move_factor;
     }
@@ -596,47 +546,41 @@ void drawProjectile(Projectile proj)
 
     setModelMatrix(model);
 
-    switch (proj.type)
+    dd.set_drawdata_flags();
+
+    if (!override_alpha)
+        dd.main_obj.set_alpha();
+    dd.main_obj.set_alpha_mask();
+    dd.main_obj.set_diffuse();
+    dd.main_obj.set_specular();
+
+    DrawVirtualObject(dd.main_obj.obj_name.c_str());
+
+    for (SubObjectData &sod : dd.sub_objs)
     {
-        case PROJ_HITSCAN:
-            setDiffuseColor(COLOR_BLUE);
-            setSpecularColor(COLOR_WHITE);
-            glLineWidth(4.0f);
-            DrawVirtualObject("line");
-            break;
-        case PROJ_BULLET:
-            setUseSphericalUV(true);
-            setDiffuseTexture("silver");
-            setSpecularTexture("silver");
-            DrawVirtualObject("the_sphere");
-            setUseSphericalUV(false);
-            break;
-        default: break;
+        if (!override_alpha)
+            sod.set_alpha();
+        sod.set_alpha_mask();
+        sod.set_diffuse();
+        sod.set_specular();
+
+        DrawVirtualObject(sod.obj_name.c_str());
     }
+
+    dd.reset_drawdata_flags();
 }
 
 void drawEnemy(Enemy enemy)
 {
+    DrawData dd = g_DrawDataMap[enemy.dd_key];
+
+    if (dd.no_draw)
+        return;
+
     const float pi2 = 1.57079632679;
 
-    glm::vec3 og_size;
-    glm::vec3 model_size;
-    switch (enemy.type)
-    {
-        case ENEMY_SKELETON:
-            og_size = glm::vec3(3.2f,7.2f,3.2f);
-            model_size = glm::vec3(1.0f,2.0f,1.0f);
-            break;
-        case ENEMY_BIG_SKELETON:
-            og_size = glm::vec3(3.2f,7.2f,3.2f);
-            model_size = glm::vec3(1.5f,3.0f,1.5f);
-            break;
-        case ENEMY_MINOTAUR:
-            og_size = glm::vec3(1.0f,1.9f,0.6f);
-            model_size = glm::vec3(2.5f,5.0f,1.5f);
-            break;
-        default: break;
-    }
+    glm::vec3 og_size    = dd.original_scale;
+    glm::vec3 model_size = dd.scale;
 
     glm::mat4 model = Matrix_Translate(enemy.pos.x, enemy.pos.y, enemy.pos.z) *
                       Matrix_Rotate_Y(getTheta(enemy.view) + pi2)             *
@@ -646,52 +590,32 @@ void drawEnemy(Enemy enemy)
 
     bool isInCooldown = enemy.dmgCooldown > 0.0f;
 
-    // inimigos são desenhados usando GOURAUD
-    setUseGouraud(true);
+    dd.set_drawdata_flags();
 
-    switch (enemy.type)
+    dd.main_obj.set_alpha();
+    dd.main_obj.set_alpha_mask();
+    dd.main_obj.set_diffuse();
+
+    if (isInCooldown)
+        setSpecularColor(COLOR_RED);
+    else
+        dd.main_obj.set_specular();
+
+    DrawVirtualObject(dd.main_obj.obj_name.c_str());
+
+    for (SubObjectData &sod : dd.sub_objs)
     {
-        case ENEMY_SKELETON:
-            setDiffuseColor(COLOR_GREY);
+        sod.set_alpha();
+        sod.set_alpha_mask();
+        sod.set_diffuse();
 
-            if (isInCooldown)
-                setSpecularColor(COLOR_RED);
-            else
-                setSpecularColor(COLOR_WHITE);
+        if (!isInCooldown)
+            sod.set_specular();
 
-            DrawVirtualObject("skeleton");
-            break;
-        case ENEMY_BIG_SKELETON:
-            setDiffuseColor(COLOR_BLACK);
-
-            if (isInCooldown)
-                setSpecularColor(COLOR_RED);
-            else
-                setSpecularColor(COLOR_GREY);
-
-            DrawVirtualObject("skeleton");
-            break;
-        case ENEMY_MINOTAUR:
-            setDiffuseTexture("minotaur");
-
-            if (isInCooldown)
-                setSpecularColor(COLOR_RED);
-            else
-                setSpecularTexture("minotaur_spec");
-
-            DrawVirtualObject("minotaur");
-
-            setDiffuseTexture("pants");
-
-            if (!isInCooldown)
-                setSpecularTexture("pants_spec");
-
-            DrawVirtualObject("pants");
-            break;
-        default: break;
+        DrawVirtualObject(sod.obj_name.c_str());
     }
 
-    setUseGouraud(false);
+    dd.reset_drawdata_flags();
 }
 
 // Escrevemos na tela um tempo (em segundos).

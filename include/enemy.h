@@ -13,7 +13,7 @@
 STRUCTS/CLASSES
 */
 
-enum EnemyType
+enum EnemyType//TODO turn this into a stringkey
 {
     ENEMY_SKELETON,
     ENEMY_BIG_SKELETON,

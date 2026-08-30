@@ -13,7 +13,7 @@
 STRUCTS/CLASSES
 */
 
-enum ProjectileType
+enum ProjectileType//TODO turn this into a stringkey
 {
     PROJ_HITSCAN,
     PROJ_BULLET,
@@ -28,6 +28,7 @@ struct Projectile : Entity
     HitboxType hit_type;
 
     float lifespan;
+    float base_lifespan;//does not need to exist once global map exists
 
     int damage;
 

@@ -14,16 +14,7 @@
 STRUCTS/CLASSES
 */
 
-enum WeaponType
-{
-    WPN_SWORD,
-    WPN_PISTOL,
-    WPN_SHOTGUN,
-    WPN_MINIGUN,
-    WPN_SNIPER,
-};
-
-enum WeaponEffect
+enum WeaponEffect//TODO turn this into a stringkey
 {
     NO_EFFECT,
     SCATTER,
@@ -40,7 +31,9 @@ enum WeaponState
 
 struct Weapon
 {
-    WeaponType wpn_type; // define o modelo e animação
+    std::string key;
+    std::string dd_key;// draw data key
+
     ProjectileType proj_type;
 
     int damage;
@@ -53,7 +46,7 @@ struct Weapon
     float aim_speed;
     float drw_speed;
 
-    WeaponEffect effect; // efeito extra causado pela arma
+    WeaponEffect effect; // efeito extra causado pela arma//This should be a map of strings and...strings?
 
     std::vector<Projectile> fire(glm::vec3 pos, glm::vec3 dir);
 };

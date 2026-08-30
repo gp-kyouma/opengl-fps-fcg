@@ -14,6 +14,30 @@
 #include <stdexcept>
 #include <algorithm>
 
+void Obstacle::setObstacleData(ObstacleType type)
+{
+    this->type = type;
+
+    switch (type)
+    {
+        case OBSTACLE_PLATFORM:
+            dd_key = "O_PLATFORM";
+            break;
+        case OBSTACLE_BOX:
+            dd_key = "O_BOX";
+            break;
+        case OBSTACLE_WALL:
+            dd_key = "O_WALL";
+            break;
+        case OBSTACLE_DICE:
+            dd_key = "O_DICE";
+            break;
+        case OBSTACLE_INVISIBLE_WALL:
+            dd_key = "O_INVIS_WALL";
+            break;
+    }
+}
+
 AABB Obstacle::getHitbox()
 {
     AABB result;

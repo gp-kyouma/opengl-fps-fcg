@@ -56,7 +56,7 @@ void drawTextureFade(std::string tex, float alpha);
 void drawFloor(Level level);
 void drawWall(Level level, CardinalDirection direction);
 void drawObstacle(Obstacle obstacle);
-void drawWeapon(Player player, WeaponType type, float theta, float phi);
+void drawWeapon(Player player, float theta, float phi);
 void drawProjectile(Projectile proj);
 void drawEnemy(Enemy enemy);
 
