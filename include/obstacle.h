@@ -40,4 +40,6 @@ struct Obstacle : Entity
 
 Obstacle AABBtoObstacle(AABB aabb, ObstacleType type);
 
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Obstacle, pos, e_size, type, dd_key);//TODO make this real
+
 #endif // FCG_OBSTACLE

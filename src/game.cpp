@@ -70,7 +70,7 @@ void Game::Init()
     Weapon minigun;
     Weapon sniper;
 
-    sword.key       = "SWORD";
+    sword.type      = "SWORD";
     sword.dd_key    = "W_SWORD";
     sword.proj_type = PROJ_MELEE_INVISIBLE;
     sword.cooldown  = 0.5f;
@@ -80,7 +80,7 @@ void Game::Init()
     sword.aim_speed = 4.0f;//0.25s
     sword.effect    = NO_EFFECT;
 
-    pistol.key       = "PISTOL";
+    pistol.type      = "PISTOL";
     pistol.dd_key    = "W_PISTOL";
     pistol.proj_type = PROJ_HITSCAN;
     pistol.cooldown  = 0.625f;
@@ -90,7 +90,7 @@ void Game::Init()
     pistol.aim_speed = 4.0f;//0.25s
     pistol.effect    = NO_EFFECT;
 
-    shotgun.key       = "SHOTGUN";
+    shotgun.type      = "SHOTGUN";
     shotgun.dd_key    = "W_SHOTGUN";
     shotgun.proj_type = PROJ_HITSCAN;
     shotgun.cooldown  = 0.875f;
@@ -100,8 +100,8 @@ void Game::Init()
     shotgun.aim_speed = 3.0f;//0.33s
     shotgun.effect    = SCATTER;
 
-    minigun.key       = "MINIGUN";
-    minigun.dd_key    = "W_MINIGUN";
+    minigun.type       = "MINIGUN";
+    minigun.dd_key     = "W_MINIGUN";
     minigun.proj_type  = PROJ_HITSCAN;
     minigun.cooldown   = 0.10f;
     minigun.drw_speed  = 1.0f;
@@ -111,7 +111,7 @@ void Game::Init()
     minigun.effect     = AIM_SLOWDOWN;
     minigun.forced_aim = true;
 
-    sniper.key       = "SNIPER";
+    sniper.type      = "SNIPER";
     sniper.dd_key    = "W_SNIPER";
     sniper.proj_type = PROJ_BULLET;
     sniper.cooldown  = 1.125f;

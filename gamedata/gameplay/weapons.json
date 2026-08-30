@@ -1,0 +1,63 @@
+[//TODO TURN EFFECT INTO A MAP OF STRING:STRING? AND ALSO PROJ_TYPE
+    {
+        "type": "SWORD",
+        "dd_key": "W_SWORD",
+        "proj_type": 2,
+        "damage": 25,
+        "cooldown": 0.5,
+        "spread": 0,
+        "aim_displace": [0.0, 0.1, 0.75],
+        "aim_speed": 4.0,
+        "drw_speed": 0.375,
+        "effect": 0
+    },
+    {
+        "type": "PISTOL",
+        "dd_key": "W_PISTOL",
+        "proj_type": 0,
+        "damage": 15,
+        "cooldown": 0.625,
+        "spread": 5,
+        "aim_displace": [0.3, 0.125, 0.45],
+        "aim_speed": 4.0,
+        "drw_speed": 0.25,
+        "effect": 0
+    },
+    {
+        "type": "SHOTGUN",
+        "dd_key": "W_SHOTGUN",
+        "proj_type": 0,
+        "damage": 12,
+        "cooldown": 0.875,
+        "spread": 10,
+        "aim_displace": [0.3, 0.15, 0.8],
+        "aim_speed": 3.0,
+        "drw_speed": 0.5,
+        "effect": 1
+    },
+    {
+        "type": "MINIGUN",
+        "dd_key": "W_MINIGUN",
+        "proj_type": 0,
+        "damage": 8,
+        "cooldown": 0.1,
+        "spread": 35,
+        "aim_displace": [0.3, 0.125, 0.4],
+        "forced_aim": true,
+        "aim_speed": 1.0,
+        "drw_speed": 1.0,
+        "effect": 2
+    },
+    {
+        "type": "SNIPER",
+        "dd_key": "W_SNIPER",
+        "proj_type": 1,
+        "damage": 50,
+        "cooldown": 1.125,
+        "spread": 0,
+        "aim_displace": [0.3, 0.125, 0.55],
+        "aim_speed": 2.0,
+        "drw_speed": 1.0,
+        "effect": 2
+    }
+]

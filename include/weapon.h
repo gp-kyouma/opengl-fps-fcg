@@ -31,7 +31,7 @@ enum WeaponState
 
 struct Weapon
 {
-    std::string key;
+    std::string type;
     std::string dd_key;// draw data key
 
     ProjectileType proj_type;
@@ -50,5 +50,7 @@ struct Weapon
 
     std::vector<Projectile> fire(glm::vec3 pos, glm::vec3 dir);
 };
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Weapon, type, dd_key, proj_type, damage, cooldown, spread, aim_displace, forced_aim, aim_speed, drw_speed, effect);
 
 #endif // FCG_WEAPON

@@ -7,12 +7,10 @@
 
 #include "collisions.h"
 
-/* not yet
 //JSON
 #include "vec_aux.h"//for vec3 json
 #include <nlohmann/json.hpp>
-using json = nlohmann::json;
-*/
+using json = nlohmann::ordered_json;
 
 /*
 STRUCTS/CLASSES

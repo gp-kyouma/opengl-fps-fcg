@@ -50,4 +50,6 @@ struct Enemy : Actor
     void draw(); //Defined in draw.cpp
 };
 
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Enemy, type, dd_key, e_size, speed, maxHealth, damage, followRange, kb_power, kb_resist);
+
 #endif // FCG_ENEMY

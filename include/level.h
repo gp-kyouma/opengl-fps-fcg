@@ -58,7 +58,7 @@ struct Level
 void exportLevelToFile(Level level);
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(EnemyData, pos, type);
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Obstacle, pos, e_size, type);//Yes this should be its own obstacledata struct. Don't worry about it
+//NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Obstacle, pos, e_size, type);//Yes this should be its own obstacledata struct. Don't worry about it
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Level, level_name, player_pos, player_view, levelWidth, levelLength, levelFloor, levelCeiling, obstacles, enemies);
 
 #endif // FCG_LEVEL

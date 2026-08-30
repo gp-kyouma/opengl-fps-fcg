@@ -50,4 +50,13 @@ struct Projectile : Entity
     void draw(); //Defined in draw.cpp
 };
 
+NLOHMANN_JSON_SERIALIZE_ENUM( HitboxType, {
+    {BOX, "box"},
+    {SPHERE, "sphere"},
+    {RAY, "ray"},
+    {POINT_3D, "point"},
+});
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Projectile, type, dd_key, hit_type, e_size, speed, lifespan, damage, kb_power);
+
 #endif // FCG_PROJECTILE
