@@ -9,7 +9,7 @@
         "aim_displace": [0.0, 0.1, 0.75],
         "aim_speed": 4.0,
         "drw_speed": 0.375,
-        "effect": 0
+        "effect": "none"
     },
     "W_PISTOL": {
         "type": "W_PISTOL",
@@ -21,7 +21,7 @@
         "aim_displace": [0.3, 0.125, 0.45],
         "aim_speed": 4.0,
         "drw_speed": 0.25,
-        "effect": 0
+        "effect": "none"
     },
     "W_SHOTGUN": {
         "type": "W_SHOTGUN",
@@ -33,7 +33,7 @@
         "aim_displace": [0.3, 0.15, 0.8],
         "aim_speed": 3.0,
         "drw_speed": 0.5,
-        "effect": 1
+        "effect": "scatter"
     },
     "W_MINIGUN": {
         "type": "W_MINIGUN",
@@ -46,7 +46,7 @@
         "forced_aim": true,
         "aim_speed": 1.0,
         "drw_speed": 1.0,
-        "effect": 2
+        "effect": "aim_slow"
     },
     "W_SNIPER": {
         "type": "W_SNIPER",
@@ -58,6 +58,6 @@
         "aim_displace": [0.3, 0.125, 0.55],
         "aim_speed": 2.0,
         "drw_speed": 1.0,
-        "effect": 2
+        "effect": "aim_slow"
     }
 }

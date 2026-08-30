@@ -14,7 +14,7 @@
 STRUCTS/CLASSES
 */
 
-enum WeaponEffect//TODO turn this into a stringkey
+enum WeaponEffect
 {
     NO_EFFECT,
     SCATTER,
@@ -46,10 +46,16 @@ struct Weapon
     float aim_speed;
     float drw_speed;
 
-    WeaponEffect effect; // efeito extra causado pela arma//This should be a map of strings and...strings?
+    WeaponEffect effect; // efeito extra causado pela arma//This should be a map of enums and ...strings?
 
     std::vector<Projectile> fire(glm::vec3 pos, glm::vec3 dir);
 };
+
+NLOHMANN_JSON_SERIALIZE_ENUM( WeaponEffect, {
+    {NO_EFFECT, "none"},
+    {SCATTER, "scatter"},
+    {AIM_SLOWDOWN, "aim_slow"},
+});
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Weapon, type, dd_key, proj_type, damage, cooldown, spread, aim_displace, forced_aim, aim_speed, drw_speed, effect);
 

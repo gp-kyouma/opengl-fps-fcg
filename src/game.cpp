@@ -391,8 +391,7 @@ void Game::Update()
             player.pos     += -resolve/2.0f;
 
             //KNOCKBACK APPLY
-            //maybe use closestpoint here
-            glm::vec3 kb_dir = player.pos - enemies[i].pos;
+            glm::vec3 kb_dir = enemies[i].view;
             kb_dir.y = 1.0f;
             kb_dir = glm::normalize(kb_dir);
             player.apply_kb(enemies[i].kb_power, kb_dir);
