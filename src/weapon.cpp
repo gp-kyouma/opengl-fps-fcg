@@ -30,10 +30,13 @@ std::vector<Projectile> Weapon::fire(glm::vec3 pos, glm::vec3 dir)
         glm::vec4 u,v,w;
         calculate_uvw(dir,u,v,w);
 
-        const float pi24 = 3.141592f / 24.0f;
-
         if (has_effect(SCATTER))
         {
+            const float pi = 3.141592f;
+
+            // old (manual spread)
+            /*
+            const float pi24 = pi / 24.0f;
             Projectile spread1 = new_proj;
             Projectile spread2 = new_proj;
             Projectile spread3 = new_proj;
@@ -41,18 +44,6 @@ std::vector<Projectile> Weapon::fire(glm::vec3 pos, glm::vec3 dir)
 
             Projectile spread5 = new_proj;
             Projectile spread6 = new_proj;
-
-            // rotaciona
-
-            // old (radial spread)
-            /*
-            spread1.dir = toVec3(Matrix_Rotate( pi24*2, v) * Vetor(spread1.dir));
-            spread2.dir = toVec3(Matrix_Rotate( pi24,   v) * Vetor(spread2.dir));
-            spread3.dir = toVec3(Matrix_Rotate(-pi24,   v) * Vetor(spread3.dir));
-            spread4.dir = toVec3(Matrix_Rotate(-pi24*2, v) * Vetor(spread4.dir));
-            */
-
-            // new (x-spread)
             spread1.view = toVec3(Matrix_Rotate( pi24, v) * Matrix_Rotate( pi24/2, u) * Vetor(spread1.view));
             spread2.view = toVec3(Matrix_Rotate( pi24, v) * Matrix_Rotate(-pi24/2, u) * Vetor(spread2.view));
             spread3.view = toVec3(Matrix_Rotate(-pi24, v) * Matrix_Rotate( pi24/2, u) * Vetor(spread3.view));
@@ -68,8 +59,21 @@ std::vector<Projectile> Weapon::fire(glm::vec3 pos, glm::vec3 dir)
 
             result.push_back(spread5);
             result.push_back(spread6);
+            */
 
-            //todo dynamic spread using rotate?
+            // new (dynamic rotation around main proj)
+            float angle = pi / 24.0f;
+            int spread_count = 6;
+            float rotation = (pi*2) / (float)spread_count;
+
+            glm::vec4 revolve = Matrix_Rotate(angle, (spread_count % 2) ? u : v) * Vetor(new_proj.view);
+
+            for (int i = 0; i < spread_count; i++)
+            {
+                Projectile spread = new_proj;
+                spread.view = toVec3(Matrix_Rotate(rotation * i, w) * revolve);
+                result.push_back(spread);
+            }
         }
 
         if (spread > 0)

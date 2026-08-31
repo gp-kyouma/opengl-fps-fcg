@@ -32,6 +32,7 @@ void Player::setView(float theta, float phi)
     view.x = cos(phi)*sin(theta);
     view.y = sin(phi);
     view.z = cos(phi)*cos(theta);
+    view = glm::normalize(view);
 }
 
 AABB Player::getHitbox()

@@ -264,6 +264,7 @@ void Game::Update()
                 //AKA: FOR EXPLOSIONS
                 //LET IT STACK MAYBE?
                 //THIS MIGHT FUCK UP THE BULLET BUT OK
+
                 if (projectiles[i_proj].hit_type == RAY)
                 {
                     if ((min_dist < projectiles[i_proj].e_size.z) && (min_dist < shortest_dist))
@@ -277,6 +278,13 @@ void Game::Update()
                 else
                 {
                     damageTaken[i] += (projectiles[i_proj].damage);
+
+                    //KNOCKBACK APPLY INITIAL
+                    glm::vec3 kb_dir = projectiles[i_proj].view;
+                    kb_dir = glm::normalize(kb_dir);// if this isn't here the program greyscreens. ok???
+                    kb_dir.y = 1.0f;
+                    kb_dir = glm::normalize(kb_dir);
+                    enemies[i].apply_kb(projectiles[i_proj].kb_power, kb_dir);
                 }
             }
         }
@@ -284,6 +292,13 @@ void Game::Update()
         if (closest_enemy != -1)
         {
             damageTaken[closest_enemy] += (projectiles[i_proj].damage);
+
+            //KNOCKBACK APPLY INITIAL
+            glm::vec3 kb_dir = projectiles[i_proj].view;
+            kb_dir = glm::normalize(kb_dir);
+            kb_dir.y = 1.0f;
+            kb_dir = glm::normalize(kb_dir);
+            enemies[closest_enemy].apply_kb(projectiles[i_proj].kb_power, kb_dir);
         }
 
         // testa colisão com fase

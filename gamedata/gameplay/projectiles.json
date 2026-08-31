@@ -7,7 +7,7 @@
         "speed": 0.0,
         "base_lifespan": 0.15,
         "damage": 0,
-        "kb_power": 1.0
+        "kb_power": 3.0
     },
     "P_SILVER_BULLET": {
         "type": "P_SILVER_BULLET",
@@ -17,7 +17,7 @@
         "speed": 15.0,
         "base_lifespan": 4.0,
         "damage": 0,
-        "kb_power": 1.0
+        "kb_power": 7.5
     },
     "P_INVIS_MELEE": {
         "type": "P_INVIS_MELEE",
@@ -27,6 +27,6 @@
         "speed": 0.5,
         "base_lifespan": 0.15,
         "damage": 0,
-        "kb_power": 1.0
+        "kb_power": 6.0
     }
 }

@@ -18,7 +18,7 @@
         "damage": 20,
         "followRange": 30.0,
         "kb_power": 7.5,
-        "kb_resist": 0.25
+        "kb_resist": 0.33
     },
     "E_MINOTAUR": {
         "type": "E_MINOTAUR",
@@ -29,6 +29,6 @@
         "damage": 35,
         "followRange": 40.0,
         "kb_power": 9.0,
-        "kb_resist": 0.5
+        "kb_resist": 0.66
     }
 }

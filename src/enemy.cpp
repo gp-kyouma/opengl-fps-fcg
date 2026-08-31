@@ -9,7 +9,6 @@ void Enemy::setEnemyData(std::string type)
 {
     *this = g_GameData_Enemies[type];
     health = maxHealth;
-    //set default view?
 }
 
 AABB Enemy::getHitbox()
