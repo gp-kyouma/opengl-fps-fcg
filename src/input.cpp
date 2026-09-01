@@ -169,6 +169,8 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 // tecla do teclado. Veja http://www.glfw.org/docs/latest/input_guide.html#input_key
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
 {
+    static bool maximized = false;//keeps track of screen being maximised
+
     // Se o usuário pressionar a tecla ESC, fechamos a janela.
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
@@ -218,46 +220,36 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
             g_EnterKeyPressed = false;
     }
 
-    // Se o usuário apertar uma tecla numérica de 1 a 5, atualiza variável global
-    if (key == GLFW_KEY_1 && action == GLFW_PRESS)
+    if (action == GLFW_PRESS)
     {
-        g_LastNumberPressed = 0;
-    }
-    if (key == GLFW_KEY_2 && action == GLFW_PRESS)
-    {
-        g_LastNumberPressed = 1;
-    }
-    if (key == GLFW_KEY_3 && action == GLFW_PRESS)
-    {
-        g_LastNumberPressed = 2;
-    }
-    if (key == GLFW_KEY_4 && action == GLFW_PRESS)
-    {
-        g_LastNumberPressed = 3;
-    }
-    if (key == GLFW_KEY_5 && action == GLFW_PRESS)
-    {
-        g_LastNumberPressed = 4;
-    }
+        // Se o usuário apertar uma tecla numérica, atualiza variável global
+        // Standard row number keys
+        if (key >= GLFW_KEY_1 && key <= GLFW_KEY_9) {
+            g_LastNumberPressed = key - GLFW_KEY_1;
+        }
+        // Numeric keypad keys
+        else if (key >= GLFW_KEY_KP_1 && key <= GLFW_KEY_KP_9) {
+            g_LastNumberPressed = key - GLFW_KEY_KP_1;
+        }
 
-    // Se o usuário apertar a tecla H, fazemos um "toggle" da informação extra.
-    if (key == GLFW_KEY_H && action == GLFW_PRESS)
-    {
-        g_ShowInfo = !g_ShowInfo;
-    }
+        // Se o usuário apertar a tecla H, fazemos um "toggle" da informação extra.
+        if (key == GLFW_KEY_H)
+        {
+            g_ShowInfo = !g_ShowInfo;
+        }
 
-    // Se o usuário apertar a tecla M, maximiza/restaura a janela.
-    static bool maximized = false;
-    if (key == GLFW_KEY_M && action == GLFW_PRESS)
-    {
-        g_IgnoreMouse = true;
+        // Se o usuário apertar a tecla M, maximiza/restaura a janela.
+        if (key == GLFW_KEY_M)
+        {
+            g_IgnoreMouse = true;
 
-        if (maximized)
-            glfwRestoreWindow(window);
-        else
-            glfwMaximizeWindow(window);
+            if (maximized)
+                glfwRestoreWindow(window);
+            else
+                glfwMaximizeWindow(window);
 
-        maximized = !maximized;
+            maximized = !maximized;
+        }
     }
 }
 
