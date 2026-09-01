@@ -21,6 +21,15 @@ enum WeaponEffect
     AIM_SLOWDOWN,
 };
 
+struct WeaponEffectParams // this is stupid lol. but it works
+{
+    int int_value;
+    float float_value;
+    bool bool_value;
+    std::string string_value;
+    glm::vec3 vec3_value;
+};
+
 enum WeaponState
 {
     WPNSTATE_DRAW,
@@ -46,7 +55,7 @@ struct Weapon
     float aim_speed;
     float drw_speed;
 
-    std::vector<WeaponEffect> effects;// efeito(s) extra(s) causado(s) pela arma
+    std::map<WeaponEffect,WeaponEffectParams> effects;// efeito(s) extra(s) causado(s) pela arma
 
     std::vector<Projectile> fire(glm::vec3 pos, glm::vec3 dir);
     bool has_effect(WeaponEffect ef);
@@ -58,6 +67,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM( WeaponEffect, {
     {AIM_SLOWDOWN, "aim_slow"},
 });
 
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(WeaponEffectParams, int_value, float_value, bool_value, string_value, vec3_value);
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Weapon, type, dd_key, proj_type, damage, cooldown, spread, aim_displace, forced_aim, aim_speed, drw_speed, effects);
 
 #endif // FCG_WEAPON

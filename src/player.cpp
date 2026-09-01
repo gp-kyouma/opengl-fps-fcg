@@ -94,7 +94,7 @@ void Player::doPlayerMovement(float deltaTime)
     // movement speed
     float speedMultiplier = 1.0f;
     if (getCurrentWeapon().has_effect(AIM_SLOWDOWN) && wpnAnimation > 0.0f && grounded)
-        speedMultiplier = 0.5;
+        speedMultiplier = getCurrentWeapon().effects[AIM_SLOWDOWN].float_value;
 
     float trueSpeed = speed * speedMultiplier;
     if (movementInput)

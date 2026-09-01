@@ -32,40 +32,11 @@ std::vector<Projectile> Weapon::fire(glm::vec3 pos, glm::vec3 dir)
 
         if (has_effect(SCATTER))
         {
-            const float pi = 3.141592f;
+            // dynamic rotation around main proj
+            float angle = glm::radians(effects[SCATTER].float_value);
+            int spread_count = effects[SCATTER].int_value;
 
-            // old (manual spread)
-            /*
-            const float pi24 = pi / 24.0f;
-            Projectile spread1 = new_proj;
-            Projectile spread2 = new_proj;
-            Projectile spread3 = new_proj;
-            Projectile spread4 = new_proj;
-
-            Projectile spread5 = new_proj;
-            Projectile spread6 = new_proj;
-            spread1.view = toVec3(Matrix_Rotate( pi24, v) * Matrix_Rotate( pi24/2, u) * Vetor(spread1.view));
-            spread2.view = toVec3(Matrix_Rotate( pi24, v) * Matrix_Rotate(-pi24/2, u) * Vetor(spread2.view));
-            spread3.view = toVec3(Matrix_Rotate(-pi24, v) * Matrix_Rotate( pi24/2, u) * Vetor(spread3.view));
-            spread4.view = toVec3(Matrix_Rotate(-pi24, v) * Matrix_Rotate(-pi24/2, u) * Vetor(spread4.view));
-
-            spread5.view = toVec3(Matrix_Rotate( pi24*2, v) * Vetor(spread5.view));
-            spread6.view = toVec3(Matrix_Rotate(-pi24*2, v) * Vetor(spread6.view));
-
-            result.push_back(spread1);
-            result.push_back(spread2);
-            result.push_back(spread3);
-            result.push_back(spread4);
-
-            result.push_back(spread5);
-            result.push_back(spread6);
-            */
-
-            // new (dynamic rotation around main proj)
-            float angle = pi / 24.0f;
-            int spread_count = 6;
-            float rotation = (pi*2) / (float)spread_count;
-
+            float rotation = glm::radians(360.0f / (float)spread_count);
             glm::vec4 revolve = Matrix_Rotate(angle, (spread_count % 2) ? u : v) * Vetor(new_proj.view);
 
             for (int i = 0; i < spread_count; i++)
@@ -88,8 +59,5 @@ std::vector<Projectile> Weapon::fire(glm::vec3 pos, glm::vec3 dir)
 
 bool Weapon::has_effect(WeaponEffect ef)
 {
-    if (std::find(effects.begin(), effects.end(), ef) != effects.end())
-        return true;
-
-    return false;
+    return (effects.count(ef));
 }

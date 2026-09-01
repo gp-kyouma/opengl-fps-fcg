@@ -31,7 +31,7 @@
         "aim_displace": [0.3, 0.15, 0.8],
         "aim_speed": 3.0,
         "drw_speed": 0.5,
-		"effects": ["scatter"]
+		"effects": [["scatter",{"int_value": 6, "float_value": 7.5}]]
     },
     "W_MINIGUN": {
         "type": "W_MINIGUN",
@@ -44,7 +44,7 @@
         "forced_aim": true,
         "aim_speed": 1.0,
         "drw_speed": 1.0,
-        "effects": ["aim_slow"]
+        "effects": [["aim_slow",{"float_value": 0.5}]]
     },
     "W_SNIPER": {
         "type": "W_SNIPER",
@@ -56,6 +56,6 @@
         "aim_displace": [0.3, 0.125, 0.55],
         "aim_speed": 2.0,
         "drw_speed": 1.0,
-        "effects": ["aim_slow"]
+        "effects": [["aim_slow",{"float_value": 0.5}]]
     }
 }
