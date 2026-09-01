@@ -421,6 +421,14 @@ void drawWeapon(Player player, float theta, float phi)
 
     glm::mat4 model = Matrix_Identity();
 
+    float cooldown_percent = (player.wpnState == WPNSTATE_COOLDOWN) ? (player.wpnCooldown / player.getCurrentWeapon().cooldown) : 0.0f;
+
+    // visual weapon recoil when shooting
+    // obs: weapon model might clip into camera (sniper)
+    // this can be remedied with fade_on_aim
+    if (dd.wpn_anim.recoil > 0.0f)
+        forward_displace += w * (dd.wpn_anim.recoil * cooldown_percent);
+
     // forced aim, held up while not aiming
     if (dd.wpn_anim.forcedAim)
         model = Matrix_Rotate_Z(-pi2 + player.wpnAnimation * pi2);
@@ -430,8 +438,6 @@ void drawWeapon(Player player, float theta, float phi)
     if (dd.wpn_anim.melee)
     {
         float melee_rotate; // 1 is pointed forward, 0 is pointed up
-        float cooldown_percent = (player.wpnState == WPNSTATE_COOLDOWN) ? (player.wpnCooldown / player.getCurrentWeapon().cooldown) : 0.0f;
-
         float wide_rotate = player.wpnAnimation;
 
         melee_rotate = fabs((cooldown_percent * 2.0f) - 1.0f); //1-0-1

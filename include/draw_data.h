@@ -69,12 +69,13 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(SubObjectData, obj_name,
 
 struct WeaponAnimData
 {
+    float recoil;
     bool melee = false;
     bool forcedAim = false;
     bool fadeAim = false;
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(WeaponAnimData,
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(WeaponAnimData, recoil,
                                                 melee, forcedAim, fadeAim);
 
 struct ProjectileAnimData
