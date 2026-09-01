@@ -3,6 +3,7 @@
         "key": "P_HITSCAN_BULLET",
         "proj_anim": {
             "moving_proj": true,
+            "move_speed": 50.0,
             "wall_embed": 0.125,
             "length": 1.0
         },

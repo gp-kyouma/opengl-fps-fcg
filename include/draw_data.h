@@ -83,7 +83,8 @@ struct ProjectileAnimData
     glm::vec3 spin;
 
     bool moving_proj = false;
-    float wall_embed = 0.125f;
+    float move_speed;
+    float wall_embed;
     float length = 1.0f;
 
     bool expanding_proj = false;
@@ -93,7 +94,7 @@ struct ProjectileAnimData
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(ProjectileAnimData,
                                                 spin_over_time, spin,
-                                                moving_proj, wall_embed, length,
+                                                moving_proj, move_speed, wall_embed, length,
                                                 expanding_proj, initial_color, final_color);
 
 struct DrawData

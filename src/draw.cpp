@@ -524,7 +524,7 @@ void drawProjectile(Projectile proj)
     if (dd.proj_anim.moving_proj)
     {
         // simulate bullet moving
-        float move_speed = 50.0f;//g_GameData_Projectiles[proj.type].e_size.z;
+        float move_speed = dd.proj_anim.move_speed;
         float wall_embed = dd.proj_anim.wall_embed;
         float move_factor = (proj.base_lifespan - proj.lifespan) * move_speed;
 
