@@ -65,6 +65,7 @@ void Game::Init()
     player.init();
 
     // WEAPONS
+    //this wpn list should not be hardcoded...
     Weapon sword    = g_GameData_Weapons["W_SWORD"];
     Weapon pistol   = g_GameData_Weapons["W_PISTOL"];
     Weapon shotgun  = g_GameData_Weapons["W_SHOTGUN"];
@@ -194,7 +195,11 @@ void Game::Update()
         if (Collide(player_hb,obstcl_hb,resolve))
         {
             player.pos += resolve;
-            //TODO KNOCKBACK RESOLVE
+            //KNOCKBACK RESOLVE
+            if (resolve.x != 0) // colisão horizontal (eixo X)
+                player.velocity.x = 0.0f;
+            else if (resolve.z != 0) // colisão horizontal (eixo Z)
+                player.velocity.z = 0.0f;
         }
     }
 
@@ -257,14 +262,6 @@ void Game::Update()
             // Pierce Enemy logic goes here
             if (result)
             {
-                //TODO KNOCKBACK APPLY
-                //USING PROJECTILE VIEW AS DIRECTION PROBABLY?
-                //OR VECTOR FROM PROJ CENTER TO ENEMY?
-                //DEPENDS, THIS MIGHT NEED TO BE A PROJ ATTRIBUTE
-                //AKA: FOR EXPLOSIONS
-                //LET IT STACK MAYBE?
-                //THIS MIGHT FUCK UP THE BULLET BUT OK
-
                 if (projectiles[i_proj].hit_type == RAY)
                 {
                     if ((min_dist < projectiles[i_proj].e_size.z) && (min_dist < shortest_dist))
@@ -280,7 +277,7 @@ void Game::Update()
                     damageTaken[i] += (projectiles[i_proj].damage);
 
                     //KNOCKBACK APPLY INITIAL
-                    glm::vec3 kb_dir = projectiles[i_proj].view;
+                    glm::vec3 kb_dir = projectiles[i_proj].view; // todo central knockback
                     kb_dir = glm::normalize(kb_dir);// if this isn't here the program greyscreens. ok???
                     kb_dir.y = 1.0f;
                     kb_dir = glm::normalize(kb_dir);
@@ -294,7 +291,7 @@ void Game::Update()
             damageTaken[closest_enemy] += (projectiles[i_proj].damage);
 
             //KNOCKBACK APPLY INITIAL
-            glm::vec3 kb_dir = projectiles[i_proj].view;
+            glm::vec3 kb_dir = projectiles[i_proj].view; // todo central knockback
             kb_dir = glm::normalize(kb_dir);
             kb_dir.y = 1.0f;
             kb_dir = glm::normalize(kb_dir);
@@ -304,6 +301,7 @@ void Game::Update()
         // testa colisão com fase
         // 1: projéteis atingem as paredes e chão/teto
         AABB* level_walls = level_queue.front().levelWalls;
+        Projectile dummy;
         for (int i = 0; i < 6; i++)
         {
             float min_dist;
@@ -311,16 +309,21 @@ void Game::Update()
             if (result)
                 switch (projectiles[i_proj].hit_type)
                 {
-                    case BOX:   // o único projétil que usa box é o melee então ignora (THIS IS UNSUSTAINABLE, TO FIX)
+                    case BOX:
+                        //recheck using pos
+                        //jank, but it's ok
+                        dummy.pos = projectiles[i_proj].pos;
+                        dummy.hit_type = POINT_3D;
+                        dummy.lifespan = 1.0f;
+                        if (dummy.collideAgainstAABB(level_walls[i],min_dist))
+                            projectiles[i_proj].lifespan = 0.0f;
                         break;
-                    case SPHERE:
+                    case SPHERE://EXCEPT FOR EXPLOSIONS. IGNORELEVELWALLS FLAG
                         projectiles[i_proj].lifespan = 0.0f;
                         break;
                     case RAY:
                         if (min_dist < projectiles[i_proj].e_size.z)
-                        {
                             projectiles[i_proj].e_size.z = min_dist;
-                        }
                         break;
                     default:
                         break;
@@ -394,7 +397,11 @@ void Game::Update()
                     enemies[i].grounded = true;
                     enemies[i].velocity.y = 0.0f;
                 }
-                //TODO KNOCKBACK RESOLVE
+                //KNOCKBACK RESOLVE
+                else if (resolve.x != 0) // colisão horizontal (eixo X)
+                    enemies[i].velocity.x = 0.0f;
+                else if (resolve.z != 0) // colisão horizontal (eixo Z)
+                    enemies[i].velocity.z = 0.0f;
             }
         }
 
@@ -880,23 +887,31 @@ void entityWithinLevel(Entity &entity, Level level)
     if (hitbox.aabb_min.x < -halfWidth)
     {
         entity.pos.x = -halfWidth + halfSize.x;
-            //TODO KNOCKBACK RESOLVE
+        //KNOCKBACK RESOLVE
+        // colisão horizontal (eixo X)
+        entity.velocity.x = 0.0f;
     }
     else if (hitbox.aabb_max.x > halfWidth)
     {
         entity.pos.x =  halfWidth - halfSize.x;
-            //TODO KNOCKBACK RESOLVE
+        //KNOCKBACK RESOLVE
+        // colisão horizontal (eixo X)
+        entity.velocity.x = 0.0f;
     }
 
     if (hitbox.aabb_min.z < -halfLength)
     {
         entity.pos.z = -halfLength + halfSize.z;
-            //TODO KNOCKBACK RESOLVE
+        //KNOCKBACK RESOLVE
+        // colisão horizontal (eixo Z)
+        entity.velocity.z = 0.0f;
     }
     else if (hitbox.aabb_max.z > halfLength)
     {
         entity.pos.z =  halfLength - halfSize.z;
-            //TODO KNOCKBACK RESOLVE
+        //KNOCKBACK RESOLVE
+        // colisão horizontal (eixo Z)
+        entity.velocity.z = 0.0f;
     }
 
     if (hitbox.aabb_min.y <= level.levelFloor) // constant grounded state when on floor, no matter what
