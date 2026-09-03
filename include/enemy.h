@@ -19,6 +19,7 @@ struct Enemy : Actor
 
     glm::vec3 move_dir; // direction of movement, converges to view
 
+    bool contact_damage = true;
     int damage;
 
     bool seesPlayer;
@@ -41,6 +42,6 @@ struct Enemy : Actor
     void draw(); //Defined in draw.cpp
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Enemy, type, dd_key, e_size, speed, maxHealth, damage, followRange, kb_power, kb_resist);
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Enemy, type, dd_key, e_size, speed, maxHealth, contact_damage, damage, followRange, kb_power, kb_resist);
 
 #endif // FCG_ENEMY

@@ -318,7 +318,7 @@ void Game::Update()
                         if (dummy.collideAgainstAABB(level_walls[i],min_dist))
                             projectiles[i_proj].lifespan = 0.0f;
                         break;
-                    case SPHERE://EXCEPT FOR EXPLOSIONS. IGNORELEVELWALLS FLAG
+                    case SPHERE://EXCEPT FOR EXPLOSIONS. IGNORELEVELWALLS FLAG//maybe outright ignore collision flag?
                         projectiles[i_proj].lifespan = 0.0f;
                         break;
                     case RAY:
@@ -412,13 +412,16 @@ void Game::Update()
             enemies[i].pos +=  resolve/2.0f;
             player.pos     += -resolve/2.0f;
 
-            //KNOCKBACK APPLY
-            glm::vec3 kb_dir = enemies[i].view;
-            kb_dir.y = 1.0f;
-            kb_dir = glm::normalize(kb_dir);
-            player.apply_kb(enemies[i].kb_power, kb_dir);
+            if (enemies[i].contact_damage)
+            {
+                //KNOCKBACK APPLY
+                glm::vec3 kb_dir = enemies[i].view;
+                kb_dir.y = 1.0f;
+                kb_dir = glm::normalize(kb_dir);
+                player.apply_kb(enemies[i].kb_power, kb_dir);
 
-            player.takeDamage(enemies[i].damage);
+                player.takeDamage(enemies[i].damage);
+            }
 
             // checa se player está colidindo verticalmente com inimigo
             if (resolve.y < 0) // colisão em cima
