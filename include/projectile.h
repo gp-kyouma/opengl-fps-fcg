@@ -23,6 +23,7 @@ struct Projectile : Entity
     float base_lifespan;//does not need to exist once global map exists
 
     int damage;
+    bool damage_override;// projectile uses weapon's damage value instead of its own
 
     void setProjectileData(std::string type);
     void doRandomSpread(int maxOffset, glm::vec4 u, glm::vec4 v);
@@ -49,6 +50,6 @@ NLOHMANN_JSON_SERIALIZE_ENUM( HitboxType, {
     {POINT_3D, "point"},
 });
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Projectile, type, dd_key, hit_type, e_size, speed, base_lifespan, damage, kb_power);
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Projectile, type, dd_key, hit_type, e_size, speed, base_lifespan, damage, damage_override, kb_power);
 
 #endif // FCG_PROJECTILE

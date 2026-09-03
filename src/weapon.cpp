@@ -15,9 +15,11 @@ std::vector<Projectile> Weapon::fire(glm::vec3 pos, glm::vec3 dir)
 
     new_proj.setProjectileData(proj_type);
 
+    if (new_proj.damage_override)
+        new_proj.damage = damage;
+
     new_proj.pos = pos;
     new_proj.view = dir;
-    new_proj.damage = damage;
 
     result.push_back(new_proj);
 

@@ -3,7 +3,6 @@
         "type": "W_SWORD",
         "dd_key": "W_SWORD",
         "proj_type": "P_INVIS_MELEE",
-        "damage": 25,
         "cooldown": 0.5,
         "spread": 0,
         "aim_displace": [0.0, 0.1, 0.75],
@@ -49,8 +48,7 @@
     "W_SNIPER": {
         "type": "W_SNIPER",
         "dd_key": "W_SNIPER",
-        "proj_type": "P_SILVER_BULLET",
-        "damage": 50,
+        "proj_type": "P_SNIPER_BULLET",
         "cooldown": 1.125,
         "spread": 0,
         "aim_displace": [0.3, 0.125, 0.55],
