@@ -230,7 +230,7 @@ void Game::Update()
             float min_dist;
             bool result = projectiles[i_proj].collideAgainstEntity(obstacles[i],min_dist);
 
-            // Pierce Projectile logic goes here
+            // Pierce Obstacle logic goes here
             if (result)
                 switch (projectiles[i_proj].hit_type)
                 {
@@ -277,10 +277,13 @@ void Game::Update()
                     damageTaken[i] += (projectiles[i_proj].damage);
 
                     //KNOCKBACK APPLY INITIAL
-                    glm::vec3 kb_dir = projectiles[i_proj].view; // todo central knockback
-                    kb_dir = glm::normalize(kb_dir);// if this isn't here the program greyscreens. ok???
+                    glm::vec3 kb_dir =  projectiles[i_proj].centered_kb ?
+                                            (enemies[i].pos - projectiles[i_proj].pos) :
+                                            projectiles[i_proj].view;
+                    if (projectiles[i_proj].reversed_kb)
+                        kb_dir = -kb_dir;
                     kb_dir.y = 1.0f;
-                    kb_dir = glm::normalize(kb_dir);
+                    kb_dir = normalize_vec3(kb_dir);
                     enemies[i].apply_kb(projectiles[i_proj].kb_power, kb_dir);
                 }
             }
@@ -291,10 +294,13 @@ void Game::Update()
             damageTaken[closest_enemy] += (projectiles[i_proj].damage);
 
             //KNOCKBACK APPLY INITIAL
-            glm::vec3 kb_dir = projectiles[i_proj].view; // todo central knockback
-            kb_dir = glm::normalize(kb_dir);
+            glm::vec3 kb_dir =  projectiles[i_proj].centered_kb ?
+                                    (enemies[closest_enemy].pos - projectiles[i_proj].pos) :
+                                    projectiles[i_proj].view;
+            if (projectiles[i_proj].reversed_kb)
+                kb_dir = -kb_dir;
             kb_dir.y = 1.0f;
-            kb_dir = glm::normalize(kb_dir);
+            kb_dir = normalize_vec3(kb_dir);
             enemies[closest_enemy].apply_kb(projectiles[i_proj].kb_power, kb_dir);
         }
 
@@ -345,7 +351,9 @@ void Game::Update()
 
         // deleta projéteis "velhos"
         if (projectiles[i_proj].isDead())
+        {
             projectiles.erase(projectiles.begin()+i_proj);
+        }
         else
             i_proj++;
     }
@@ -417,7 +425,7 @@ void Game::Update()
                 //KNOCKBACK APPLY
                 glm::vec3 kb_dir = enemies[i].view;
                 kb_dir.y = 1.0f;
-                kb_dir = glm::normalize(kb_dir);
+                kb_dir = normalize_vec3(kb_dir);
                 player.apply_kb(enemies[i].kb_power, kb_dir);
 
                 player.takeDamage(enemies[i].damage);

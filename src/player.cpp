@@ -32,7 +32,7 @@ void Player::setView(float theta, float phi)
     view.x = cos(phi)*sin(theta);
     view.y = sin(phi);
     view.z = cos(phi)*cos(theta);
-    view = glm::normalize(view);
+    view = normalize_vec3(view);
 }
 
 AABB Player::getHitbox()
@@ -75,7 +75,7 @@ void Player::doPlayerMovement(float deltaTime)
             movedir += u;
         }
 
-        normalize_vec4(movedir);
+        normalize_vec4_inplace(movedir);
 
         input_velocity = toVec3(movedir);
     }

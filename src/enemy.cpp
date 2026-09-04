@@ -69,7 +69,7 @@ void Enemy::update(float deltaTime)
 void Enemy::updateView(glm::vec3 player_pos)
 {
     glm::vec3 view_vec = (player_pos - pos);
-    view_vec = glm::normalize(view_vec);
+    view_vec = normalize_vec3(view_vec);
     view = view_vec;
 }
 

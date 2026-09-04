@@ -100,7 +100,11 @@ bool Projectile::collideAgainstAABB(AABB aabb, float& min_dist)
 
 void Projectile::update(float deltaTime)
 {
+    if (use_gravity && lifespan < base_lifespan) // no gravity on first frame
+        velocity.y -= (Entity::gravity * deltaTime);
+
     pos += view * speed * deltaTime;
+    pos += velocity * deltaTime;
     decrementTimer(lifespan, deltaTime, 0.0f);
 }
 

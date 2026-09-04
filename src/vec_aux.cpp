@@ -66,25 +66,34 @@ void calculate_uvw(glm::vec3 view, glm::vec4& u, glm::vec4& v, glm::vec4& w, boo
         u.y = 0.0f;
     }
 
-    normalize_vec4(w);
-    normalize_vec4(u);
+    normalize_vec4_inplace(w);
+    normalize_vec4_inplace(u);
 
     v = crossproduct(w,u);
 }
 
 // Função que normaliza um vec4 (não nulo)
-void normalize_vec4(glm::vec4& v)
+void normalize_vec4_inplace(glm::vec4& v)
 {
     float norm_v = norm(v);
     if (norm_v != 0)
         v = v / norm_v;
 }
 
+// Função que normaliza um vec3 (não nulo)
+glm::vec3 normalize_vec3(glm::vec3 v)
+{
+    float norm_v = glm::length(v);
+    if (norm_v != 0)
+        return v / norm_v;
+    return glm::vec3(0.0f);
+}
+
 void vec3_to_attributes(glm::vec3 v, glm::vec3& dir, float& m)
 {
     if (glm::length(v) != 0.0f)
     {
-        dir = glm::normalize(v);
+        dir = normalize_vec3(v);
         m = glm::length(v);
     }
 }
