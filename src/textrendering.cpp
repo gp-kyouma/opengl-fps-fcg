@@ -5,6 +5,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#define GLM_FORCE_CTOR_INIT
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 

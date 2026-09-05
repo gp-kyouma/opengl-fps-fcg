@@ -2,6 +2,7 @@
 #define FCG_PROJECTILE
 
 // Headers da biblioteca GLM: criação de matrizes e vetores.
+#define GLM_FORCE_CTOR_INIT
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -38,6 +39,8 @@ struct Projectile : Entity
 
     bool collideAgainstAABB(AABB aabb, float& min_dist);
     bool collideAgainstEntity(Entity& entity, float& min_dist);
+
+    glm::vec3 getKnockbackDirection(glm::vec3 target_pos);
 
     void update(float deltaTime);
     bool isDead();

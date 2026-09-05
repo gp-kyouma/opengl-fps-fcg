@@ -4,6 +4,7 @@
 #include <vector>
 
 // Headers da biblioteca GLM: criação de matrizes e vetores.
+#define GLM_FORCE_CTOR_INIT
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -44,10 +45,10 @@ struct Level
     glm::vec3 player_pos;    // posição inicial do jogador ao iniciar a fase
     glm::vec3 player_view;   // direção onde o jogador está olhando ao iniciar a fase
 
-    float levelWidth;  // largura da fase no eixo X
-    float levelLength; // comprimento da fase no eixo Z
-    float levelFloor   = 1.0f;    // nível do chão
-    float levelCeiling = 11.0f;   // altura máxima da fase
+    float levelWidth    = 10.0f;    // largura da fase no eixo X
+    float levelLength   = 10.0f;    // comprimento da fase no eixo Z
+    float levelFloor    = 0.0f;     // nível do chão
+    float levelCeiling  = 10.0f;    // altura máxima da fase
 
     AABB levelWalls[6]; // AABBs usadas para colisão com as paredes (pra não ter que implementar planos)//(This will not go on the json)
 

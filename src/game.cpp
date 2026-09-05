@@ -276,14 +276,8 @@ void Game::Update()
                 {
                     damageTaken[i] += (projectiles[i_proj].damage);
 
-                    //KNOCKBACK APPLY INITIAL
-                    glm::vec3 kb_dir =  projectiles[i_proj].centered_kb ?
-                                            (enemies[i].pos - projectiles[i_proj].pos) :
-                                            projectiles[i_proj].view;
-                    if (projectiles[i_proj].reversed_kb)
-                        kb_dir = -kb_dir;
-                    kb_dir.y = 1.0f;
-                    kb_dir = normalize_vec3(kb_dir);
+                    //KNOCKBACK APPLY
+                    glm::vec3 kb_dir = projectiles[i_proj].getKnockbackDirection(enemies[i].pos);
                     enemies[i].apply_kb(projectiles[i_proj].kb_power, kb_dir);
                 }
             }
@@ -293,14 +287,8 @@ void Game::Update()
         {
             damageTaken[closest_enemy] += (projectiles[i_proj].damage);
 
-            //KNOCKBACK APPLY INITIAL
-            glm::vec3 kb_dir =  projectiles[i_proj].centered_kb ?
-                                    (enemies[closest_enemy].pos - projectiles[i_proj].pos) :
-                                    projectiles[i_proj].view;
-            if (projectiles[i_proj].reversed_kb)
-                kb_dir = -kb_dir;
-            kb_dir.y = 1.0f;
-            kb_dir = normalize_vec3(kb_dir);
+            //KNOCKBACK APPLY
+            glm::vec3 kb_dir = projectiles[i_proj].getKnockbackDirection(enemies[closest_enemy].pos);
             enemies[closest_enemy].apply_kb(projectiles[i_proj].kb_power, kb_dir);
         }
 
@@ -420,6 +408,15 @@ void Game::Update()
             enemies[i].pos +=  resolve/2.0f;
             player.pos     += -resolve/2.0f;
 
+            // checa se player está colidindo verticalmente com inimigo
+            if (resolve.y < 0) // colisão em cima
+            {
+                player.grounded = true;
+                if (player.velocity.y < 0)
+                    player.velocity.y = 0.0f;
+            }
+
+            // aplica dano e knockback
             if (enemies[i].contact_damage)
             {
                 //KNOCKBACK APPLY
@@ -429,14 +426,6 @@ void Game::Update()
                 player.apply_kb(enemies[i].kb_power, kb_dir);
 
                 player.takeDamage(enemies[i].damage);
-            }
-
-            // checa se player está colidindo verticalmente com inimigo
-            if (resolve.y < 0) // colisão em cima
-            {
-                player.grounded = true;
-                if (player.velocity.y < 0)
-                    player.velocity.y = 0.0f;
             }
         }
 

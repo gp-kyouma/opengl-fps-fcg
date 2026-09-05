@@ -2060,7 +2060,7 @@
 	<cstdlib>
 	<algorithm>
 
-1788115531 c:\users\caosd\documents\github\opengl-fps-fcg\include\collisions.h
+1788578100 c:\users\caosd\documents\github\opengl-fps-fcg\include\collisions.h
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
@@ -2879,7 +2879,7 @@
 1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\gtc\type_ptr.inl
 	<cstring>
 
-1788306410 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\draw.cpp
+1788578100 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\draw.cpp
 	"draw.h"
 	<cmath>
 	<cstdio>
@@ -2950,7 +2950,7 @@
 	<GL/glext.h>
 	<GL/glu.h>
 
-1787853171 c:\users\caosd\documents\github\opengl-fps-fcg\include\renderer.h
+1788578100 c:\users\caosd\documents\github\opengl-fps-fcg\include\renderer.h
 	<cmath>
 	<cstdio>
 	<cstdlib>
@@ -3002,14 +3002,14 @@
 	<intrin.h>
 	<arm_neon.h>
 
-1680035323 c:\users\caosd\documents\github\opengl-fps-fcg\include\matrices.h
+1788578100 c:\users\caosd\documents\github\opengl-fps-fcg\include\matrices.h
 	<cstdio>
 	<cstdlib>
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/matrix_transform.hpp>
 
-1787531978 c:\users\caosd\documents\github\opengl-fps-fcg\include\player.h
+1788632291 c:\users\caosd\documents\github\opengl-fps-fcg\include\player.h
 	<vector>
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
@@ -3019,7 +3019,7 @@
 	"projectile.h"
 	"entity.h"
 
-1788123180 c:\users\caosd\documents\github\opengl-fps-fcg\include\level.h
+1788632185 c:\users\caosd\documents\github\opengl-fps-fcg\include\level.h
 	<vector>
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
@@ -3029,7 +3029,7 @@
 	"vec_aux.h"
 	<nlohmann/json.hpp>
 
-1788458601 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\game.cpp
+1788632018 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\game.cpp
 	"game.h"
 	<cstdio>
 	<cstdlib>
@@ -3043,7 +3043,7 @@
 	"bezier.h"
 	"gamedata.h"
 
-1784681498 c:\users\caosd\documents\github\opengl-fps-fcg\include\game.h
+1788578100 c:\users\caosd\documents\github\opengl-fps-fcg\include\game.h
 	<queue>
 	<vector>
 	<glad/glad.h>
@@ -3076,7 +3076,7 @@
 1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\utils.h
 	<cstdio>
 
-1788486307 c:\users\caosd\documents\github\opengl-fps-fcg\include\vec_aux.h
+1788578100 c:\users\caosd\documents\github\opengl-fps-fcg\include\vec_aux.h
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
@@ -3093,7 +3093,7 @@
 1788190157 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\input.cpp
 	"input.h"
 
-1788119527 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\level.cpp
+1788632018 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\level.cpp
 	"level.h"
 	<cmath>
 	<cstdio>
@@ -3106,13 +3106,8 @@
 	<iostream>
 	<stdexcept>
 	<algorithm>
-	<glad/glad.h>
-	<GLFW/glfw3.h>
-	<glm/mat4x4.hpp>
-	<glm/vec4.hpp>
-	<glm/gtc/type_ptr.hpp>
 
-1788123757 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\main.cpp
+1788578100 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\main.cpp
 	<cmath>
 	<cstdio>
 	<cstdlib>
@@ -3139,7 +3134,7 @@
 	"draw_data.h"
 	"gamedata.h"
 
-1676998616 c:\users\caosd\documents\github\opengl-fps-fcg\include\scene.h
+1788578100 c:\users\caosd\documents\github\opengl-fps-fcg\include\scene.h
 	<cmath>
 	<cstdio>
 	<cstdlib>
@@ -3154,7 +3149,7 @@
 1679259174 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\matrices.cpp
 	"matrices.h"
 
-1788486307 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\player.cpp
+1788578159 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\player.cpp
 	"player.h"
 	<cstdio>
 	<cstdlib>
@@ -3175,7 +3170,7 @@
 1674246957 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\stb_image.cpp
 	"stb_image.h"
 
-1784681498 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\textrendering.cpp
+1788578100 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\textrendering.cpp
 	<string>
 	<glad/glad.h>
 	<GLFW/glfw3.h>
@@ -3210,7 +3205,7 @@
 	<algorithm>
 	"gamedata.h"
 
-1788123180 c:\users\caosd\documents\github\opengl-fps-fcg\include\obstacle.h
+1788578100 c:\users\caosd\documents\github\opengl-fps-fcg\include\obstacle.h
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
@@ -3225,7 +3220,7 @@
 	"vec_aux.h"
 	"matrices.h"
 
-1788304656 c:\users\caosd\documents\github\opengl-fps-fcg\include\weapon.h
+1788578100 c:\users\caosd\documents\github\opengl-fps-fcg\include\weapon.h
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
@@ -5574,14 +5569,14 @@
 	<algorithm>
 	"timer_aux.h"
 
-1788398048 c:\users\caosd\documents\github\opengl-fps-fcg\include\projectile.h
+1788578100 c:\users\caosd\documents\github\opengl-fps-fcg\include\projectile.h
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
 	"collisions.h"
 	"entity.h"
 
-1788398047 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\projectile.cpp
+1788564128 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\projectile.cpp
 	"projectile.h"
 	<algorithm>
 	"matrices.h"
@@ -5589,7 +5584,7 @@
 	"timer_aux.h"
 	"gamedata.h"
 
-1788396980 c:\users\caosd\documents\github\opengl-fps-fcg\include\enemy.h
+1788578100 c:\users\caosd\documents\github\opengl-fps-fcg\include\enemy.h
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
@@ -5606,7 +5601,7 @@
 1679960858 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\bezier.cpp
 	"bezier.h"
 
-1679960350 c:\users\caosd\documents\github\opengl-fps-fcg\include\bezier.h
+1788578100 c:\users\caosd\documents\github\opengl-fps-fcg\include\bezier.h
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
@@ -6832,7 +6827,7 @@
 1772826499 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\entity.cpp
 	"entity.h"
 
-1788123180 c:\users\caosd\documents\github\opengl-fps-fcg\include\entity.h
+1788578100 c:\users\caosd\documents\github\opengl-fps-fcg\include\entity.h
 	<string>
 	<glm/vec4.hpp>
 	"collisions.h"
@@ -7042,7 +7037,7 @@
 	"draw_data.h"
 	"renderer.h"
 
-1788305659 c:\users\caosd\documents\github\opengl-fps-fcg\include\draw_data.h
+1788578100 c:\users\caosd\documents\github\opengl-fps-fcg\include\draw_data.h
 	<map>
 	<string>
 	<vector>

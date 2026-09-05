@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <cstdlib>
 
+#define GLM_FORCE_CTOR_INIT
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 #include <glm/gtc/matrix_transform.hpp>

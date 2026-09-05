@@ -3,6 +3,7 @@
 
 #include <string>
 
+#define GLM_FORCE_CTOR_INIT
 #include <glm/vec4.hpp>
 
 #include "collisions.h"

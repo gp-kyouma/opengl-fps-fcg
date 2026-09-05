@@ -98,6 +98,15 @@ bool Projectile::collideAgainstAABB(AABB aabb, float& min_dist)
     return result;
 }
 
+glm::vec3 Projectile::getKnockbackDirection(glm::vec3 target_pos)
+{
+    glm::vec3 kb_dir = centered_kb ? (target_pos - pos) : view;
+    if (reversed_kb)
+        kb_dir = -kb_dir;
+    kb_dir.y = 1.0f;
+    return normalize_vec3(kb_dir);
+}
+
 void Projectile::update(float deltaTime)
 {
     if (use_gravity && lifespan < base_lifespan) // no gravity on first frame

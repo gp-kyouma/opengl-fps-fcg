@@ -14,6 +14,7 @@
 #include <GLFW/glfw3.h>  // Criação de janelas do sistema operacional
 
 // Headers da biblioteca GLM: criação de matrizes e vetores.
+#define GLM_FORCE_CTOR_INIT
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 #include <glm/gtc/type_ptr.hpp>
