@@ -596,28 +596,41 @@ void drawEnemy(Enemy enemy)
     setModelMatrix(model);
 
     bool isInCooldown = enemy.dmgCooldown > 0.0f;
+    bool isDead = enemy.isDead();
 
     dd.set_drawdata_flags();
 
-    dd.main_obj.set_alpha();
     dd.main_obj.set_alpha_mask();
-    dd.main_obj.set_diffuse();
 
-    if (isInCooldown)
+    if (isDead)
+    {
+        setAlphaValue(enemy.dmgCooldown * 5.0f);
+        setDiffuseColor(COLOR_RED);
         setSpecularColor(COLOR_RED);
+    }
     else
-        dd.main_obj.set_specular();
+    {
+        dd.main_obj.set_alpha();
+        dd.main_obj.set_diffuse();
+        if (isInCooldown)
+            setSpecularColor(COLOR_RED);
+        else
+            dd.main_obj.set_specular();
+    }
 
     DrawVirtualObject(dd.main_obj.obj_name.c_str());
 
     for (SubObjectData &sod : dd.sub_objs)
     {
-        sod.set_alpha();
         sod.set_alpha_mask();
-        sod.set_diffuse();
 
-        if (!isInCooldown)
-            sod.set_specular();
+        if (!isDead)
+        {
+            sod.set_alpha();
+            sod.set_diffuse();
+            if (!isInCooldown)
+                sod.set_specular();
+        }
 
         DrawVirtualObject(sod.obj_name.c_str());
     }

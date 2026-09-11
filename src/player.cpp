@@ -380,7 +380,7 @@ void Player::takeDamage(int dmg)
         if (health < 0)
             health = 0;
 
-        dmgCooldown = 0.5f;
+        dmgCooldown = Player::baseDmgCooldown;
     }
 }
 

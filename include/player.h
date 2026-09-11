@@ -26,6 +26,8 @@ struct Player : Actor
 
     float neck;       // offset no eixo y em relação a pos que define onde a câmera vai ser posicionada
 
+    static constexpr float baseDmgCooldown = 0.5f;
+
     float wpnCooldown;    // tempo em segundos até que o jogador possa atirar de novo
     float wpnAnimation;   // valor entre 0.0f e 1.0f, define a animação da arma quando está pressionado o botão esquerdo do mouse
     WeaponState wpnState; // estado atual da arma

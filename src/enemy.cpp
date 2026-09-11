@@ -25,7 +25,7 @@ AABB Enemy::getHitbox()
 void Enemy::update(float deltaTime)
 {
     //doEnemyMovement
-    if (seesPlayer)
+    if (seesPlayer && !isDead())
     {
         move_dir += view; // movement does not *SNAP* to view, it *converges* to it instead: this could definitely be improved upon
         move_dir.y = 0;
@@ -91,7 +91,7 @@ void Enemy::takeDamage(int dmg)
         if (health < 0)
             health = 0;
 
-        dmgCooldown = 0.155f;
+        dmgCooldown = Enemy::baseDmgCooldown;
     }
 }
 

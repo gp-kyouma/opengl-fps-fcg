@@ -243,6 +243,9 @@ void Game::Update()
 
         for (unsigned int i = 0; i < enemies.size(); i++)
         {
+            if (enemies[i].isDead())
+                continue;
+
             float min_dist;
             bool result = projectiles[i_proj].collideAgainstEntity(enemies[i],min_dist);
 
@@ -338,14 +341,14 @@ void Game::Update()
 
     // dá o dano contabilizado na fase dos projéteis
     for (unsigned int i = 0; i < enemies.size(); i++)
-        if (damageTaken[i] > 0)
+        if (damageTaken[i] > 0 && !enemies[i].isDead())
             enemies[i].takeDamage(damageTaken[i]);
 
     // deleta inimigos cuja vida foi reduzida a 0
     unsigned int i_enemy = 0;
     while (i_enemy < enemies.size())
     {
-        if (enemies[i_enemy].isDead())
+        if (enemies[i_enemy].isDead() && enemies[i_enemy].dmgCooldown == 0.0f)
             enemies.erase(enemies.begin()+i_enemy);
         else
             i_enemy++;
@@ -353,6 +356,13 @@ void Game::Update()
 
     for (unsigned int i = 0; i < enemies.size(); i++)
     {
+        //if dead enemy, skip most stuff
+        if (enemies[i].isDead())
+        {
+            enemies[i].update(deltaTime);
+            continue;
+        }
+
         // checa se inimigo vê jogador
         enemies[i].seesPlayer = enemies[i].isWithinRange(player.pos);
 
@@ -567,7 +577,8 @@ void Game::Draw(GLFWwindow* window)
     for (auto& item : enemies)
     {
         //IF item.drawdata can have transparency, add to trans_entities[distance] to be drawn later, else draw now
-        if (g_GameData_DrawData[item.dd_key].may_use_alpha)
+        //dead enemies also use transparency
+        if (item.isDead() || g_GameData_DrawData[item.dd_key].may_use_alpha)
         {
             glm::vec3 closest_point = ClosestPoint(toVec3(camera_pos), item.getHitbox());
             float distance = glm::length(toVec3(camera_pos) - closest_point);
@@ -738,9 +749,6 @@ void Game::drawCutscene(GLFWwindow* window)
                                      glm::vec3(-5.5f, 3.5f, 5.0f),
                                      glm::vec3( 0.0f, 3.5f, 5.0f)};
 
-    // Fade out no minotauro ao invés de shrink
-    float minotaur_alpha = 1.0f;
-
     // Variáveis da câmera virtual
     // A posição será obtida por curva de bézier, e o view vector será obtido através de look-at
     glm::vec4 camera_pos;
@@ -766,8 +774,8 @@ void Game::drawCutscene(GLFWwindow* window)
     // Encolhe o tamanho do minotauro a partir do segundo 5
     if (cutsceneStep > 5.0f && cutsceneStep <= 6.0f) // entre segundos 5 e 6
     {
-        enemies[0].dmgCooldown = 1.0f;  // pra ele brilhar vermelho
-        minotaur_alpha = 6.0f - cutsceneStep;
+        enemies[0].health = 0;
+        enemies[0].dmgCooldown = (6.0f - cutsceneStep) * Enemy::baseDmgCooldown;
     }
 
     // Define o view vector
@@ -817,9 +825,7 @@ void Game::drawCutscene(GLFWwindow* window)
     drawWall(level_queue.front(), WEST);
 
     // Desenha o minotauro
-    setAlphaValue(minotaur_alpha);
     drawEnemy(enemies[0]);
-    resetAlphaValue();
 
     // Os objetos a seguir sempre serão desenhados na frente; desativa o z-buffer
     glDisable(GL_DEPTH_TEST);

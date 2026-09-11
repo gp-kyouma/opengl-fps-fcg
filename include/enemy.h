@@ -26,6 +26,8 @@ struct Enemy : Actor
     bool seesPlayer;
     float followRange;
 
+    static constexpr float baseDmgCooldown = 0.155f;
+
     void setEnemyData(std::string type);
 
     AABB getHitbox();
