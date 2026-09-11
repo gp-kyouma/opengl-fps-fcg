@@ -2,6 +2,7 @@
     "W_SWORD": {
         "type": "W_SWORD",
         "dd_key": "W_SWORD",
+        "key_slot": 1,
         "proj_type": "P_INVIS_MELEE",
         "cooldown": 0.5,
         "spread": 0,
@@ -12,6 +13,7 @@
     "W_PISTOL": {
         "type": "W_PISTOL",
         "dd_key": "W_PISTOL",
+        "key_slot": 2,
         "proj_type": "P_HITSCAN_BULLET",
         "damage": 15,
         "cooldown": 0.625,
@@ -23,6 +25,7 @@
     "W_SHOTGUN": {
         "type": "W_SHOTGUN",
         "dd_key": "W_SHOTGUN",
+        "key_slot": 3,
         "proj_type": "P_HITSCAN_BULLET",
         "damage": 12,
         "cooldown": 0.875,
@@ -35,6 +38,7 @@
     "W_MINIGUN": {
         "type": "W_MINIGUN",
         "dd_key": "W_MINIGUN",
+        "key_slot": 4,
         "proj_type": "P_HITSCAN_BULLET",
         "damage": 8,
         "cooldown": 0.1,
@@ -48,6 +52,7 @@
     "W_SNIPER": {
         "type": "W_SNIPER",
         "dd_key": "W_SNIPER",
+        "key_slot": 4,
         "proj_type": "P_SNIPER_BULLET",
         "cooldown": 1.125,
         "spread": 0,

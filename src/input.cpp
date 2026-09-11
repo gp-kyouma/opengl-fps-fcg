@@ -9,18 +9,18 @@ bool g_LeftMouseButtonPressed = false;
 bool g_RightMouseButtonPressed = false; // Análogo para botão direito do mouse
 bool g_MiddleMouseButtonPressed = false; // Análogo para botão do meio do mouse
 
-// "g_WKeyPressed = true" se o usuário está com a tecla W
+// "g_KeyPressed[key] = true" se o usuário está com a tecla [key]
 // pressionada no momento atual
-// Análogo para as outras teclas
-bool g_WKeyPressed        = false;
-bool g_AKeyPressed        = false;
-bool g_SKeyPressed        = false;
-bool g_DKeyPressed        = false;
-bool g_SpaceBarKeyPressed = false;
-bool g_EnterKeyPressed    = false;
+std::map<int, bool> g_KeyPressed;
 
-// Variável que segura qual tecla numérica o usuário pressionou por último, -1
-int g_LastNumberPressed = 0;
+// tecla numérica pressionada nesse frame
+bool g_NumberKeyPressed = false;
+
+// Variável que segura qual tecla numérica o usuário pressionou por último
+int g_LastNumberPressed = 1;
+
+// Variável que segura a última direção de movimento da rodinha do mouse
+int g_LastScrollDirection = 0;
 
 // Variáveis que definem a câmera em coordenadas esféricas, controladas pelo
 // usuário através do mouse (veja função CursorPosCallback()).
@@ -149,20 +149,16 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 // Função callback chamada sempre que o usuário movimenta a "rodinha" do mouse.
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    /* unused
-    // Atualizamos a distância da câmera para a origem utilizando a
-    // movimentação da "rodinha", simulando um ZOOM.
-    g_CameraDistance -= 0.1f*yoffset;
-
-    // Uma câmera look-at nunca pode estar exatamente "em cima" do ponto para
-    // onde ela está olhando, pois isto gera problemas de divisão por zero na
-    // definição do sistema de coordenadas da câmera. Isto é, a variável abaixo
-    // nunca pode ser zero. Versões anteriores deste código possuíam este bug,
-    // o qual foi detectado pelo aluno Vinicius Fraga (2017/2).
-    const float verysmallnumber = std::numeric_limits<float>::epsilon();
-    if (g_CameraDistance < verysmallnumber)
-        g_CameraDistance = verysmallnumber;
-    */
+    if (yoffset > 0)
+    {
+        // Handle scroll up (e.g., zoom in)
+        g_LastScrollDirection = 1;
+    }
+    else if (yoffset < 0)
+    {
+        // Handle scroll down (e.g., zoom out)
+        g_LastScrollDirection = -1;
+    }
 }
 
 // Definição da função que será chamada sempre que o usuário pressionar alguma
@@ -175,61 +171,25 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
 
-    // Se apertar/soltar teclas WASD/space então atualiza variável global correspondente
+    // Se apertar/soltar teclas então atualiza variável global correspondente
+    if (action == GLFW_PRESS)
+        g_KeyPressed[key] = true;
+    else if (action == GLFW_RELEASE)
+        g_KeyPressed[key] = false;
 
-    if (key == GLFW_KEY_W)
-    {
-        if (action == GLFW_PRESS)
-            g_WKeyPressed = true;
-        if (action == GLFW_RELEASE)
-            g_WKeyPressed = false;
-    }
-    if (key == GLFW_KEY_A)
-    {
-        if (action == GLFW_PRESS)
-            g_AKeyPressed = true;
-        if (action == GLFW_RELEASE)
-            g_AKeyPressed = false;
-    }
-    if (key == GLFW_KEY_S)
-    {
-        if (action == GLFW_PRESS)
-            g_SKeyPressed = true;
-        if (action == GLFW_RELEASE)
-            g_SKeyPressed = false;
-    }
-    if (key == GLFW_KEY_D)
-    {
-        if (action == GLFW_PRESS)
-            g_DKeyPressed = true;
-        if (action == GLFW_RELEASE)
-            g_DKeyPressed = false;
-    }
-    if (key == GLFW_KEY_SPACE)
-    {
-        if (action == GLFW_PRESS)
-            g_SpaceBarKeyPressed = true;
-        if (action == GLFW_RELEASE)
-            g_SpaceBarKeyPressed = false;
-    }
-    if (key == GLFW_KEY_ENTER)
-    {
-        if (action == GLFW_PRESS)
-            g_EnterKeyPressed = true;
-        if (action == GLFW_RELEASE)
-            g_EnterKeyPressed = false;
-    }
-
+    // special cases
     if (action == GLFW_PRESS)
     {
         // Se o usuário apertar uma tecla numérica, atualiza variável global
         // Standard row number keys
-        if (key >= GLFW_KEY_1 && key <= GLFW_KEY_9) {
-            g_LastNumberPressed = key - GLFW_KEY_1;
+        if (key >= GLFW_KEY_0 && key <= GLFW_KEY_9) {
+            g_LastNumberPressed = key - GLFW_KEY_0;
+            g_NumberKeyPressed = true;
         }
         // Numeric keypad keys
-        else if (key >= GLFW_KEY_KP_1 && key <= GLFW_KEY_KP_9) {
-            g_LastNumberPressed = key - GLFW_KEY_KP_1;
+        else if (key >= GLFW_KEY_KP_0 && key <= GLFW_KEY_KP_9) {
+            g_LastNumberPressed = key - GLFW_KEY_KP_0;
+            g_NumberKeyPressed = true;
         }
 
         // Se o usuário apertar a tecla H, fazemos um "toggle" da informação extra.

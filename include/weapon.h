@@ -44,6 +44,8 @@ struct Weapon
     std::string type;
     std::string dd_key;// draw data key
 
+    int key_slot; //keyboard num key used to access this weapon, clamped to [0,9]
+
     std::string proj_type;
 
     int damage;
@@ -69,6 +71,6 @@ NLOHMANN_JSON_SERIALIZE_ENUM( WeaponEffect, {
 });
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(WeaponEffectParams, int_value, float_value, bool_value, string_value, vec3_value);
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Weapon, type, dd_key, proj_type, damage, cooldown, spread, aim_displace, forced_aim, aim_speed, drw_speed, effects);
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(Weapon, type, dd_key, key_slot, proj_type, damage, cooldown, spread, aim_displace, forced_aim, aim_speed, drw_speed, effects);
 
 #endif // FCG_WEAPON

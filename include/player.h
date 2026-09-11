@@ -1,6 +1,7 @@
 #ifndef FCG_PLAYER
 #define FCG_PLAYER
 
+#include <map>
 #include <vector>
 
 // Headers da biblioteca GLM: criação de matrizes e vetores.
@@ -25,12 +26,13 @@ struct Player : Actor
 
     float neck;       // offset no eixo y em relação a pos que define onde a câmera vai ser posicionada
 
-    int currentWeapon;    // índice no vetor de armas que determina a arma equipada
     float wpnCooldown;    // tempo em segundos até que o jogador possa atirar de novo
     float wpnAnimation;   // valor entre 0.0f e 1.0f, define a animação da arma quando está pressionado o botão esquerdo do mouse
     WeaponState wpnState; // estado atual da arma
 
-    std::vector<Weapon> weapons;    // armas disponíveis ao jogador
+    std::map<int,std::vector<Weapon>> weapons;  // armas disponíveis ao jogador
+    std::pair<int,int> currentWeapon;           // índices no mapa e vetor de armas que determinam a arma equipada
+    std::pair<int,int> previousWeapon;          // índices no mapa e vetor de armas que determinam a arma equipada *anteriormente*
 
     glm::vec3 input_velocity;   // velocidade associada ao movimento pelo input do teclado
 
@@ -42,6 +44,8 @@ struct Player : Actor
 
     void update(float deltaTime);
     void doWeaponSwitch();
+
+    void addWeapon(std::string wpn_key);
 
     Weapon getCurrentWeapon();
 

@@ -10,6 +10,7 @@
 
 #include "matrices.h"
 #include "timer_aux.h"
+#include "gamedata.h"
 
 void Player::init()
 {
@@ -21,10 +22,18 @@ void Player::init()
 
     kb_resist = 0.125;
 
-    currentWeapon =  0; // melee
+    // (this assumes the existence of an initial weapon on key 1)
+    currentWeapon = {1, 0};
+    previousWeapon = {1, 0};
+
     wpnState = WPNSTATE_READY;
 
     weapons.clear();
+
+    //this wpn list should not be hardcoded...
+    std::vector<std::string> wpn_list = {"W_SWORD", "W_PISTOL", "W_SHOTGUN", "W_MINIGUN", "W_SNIPER"};
+    for (auto key : wpn_list)
+        addWeapon(key);
 }
 
 void Player::setView(float theta, float phi)
@@ -54,23 +63,26 @@ void Player::doPlayerMovement(float deltaTime)
 
     glm::vec4 movedir = glm::vec4(0.0f,0.0f,0.0f,0.0f);
 
-    bool movementInput = g_WKeyPressed || g_AKeyPressed || g_SKeyPressed || g_DKeyPressed;
+    bool movementInput = g_KeyPressed[GLFW_KEY_W] ||
+                         g_KeyPressed[GLFW_KEY_A] ||
+                         g_KeyPressed[GLFW_KEY_S] ||
+                         g_KeyPressed[GLFW_KEY_D];
 
     if (movementInput)
     {
-        if (g_WKeyPressed)
+        if (g_KeyPressed[GLFW_KEY_W])
         {
             movedir -= w;
         }
-        if (g_SKeyPressed)
+        if (g_KeyPressed[GLFW_KEY_S])
         {
             movedir += w;
         }
-        if (g_AKeyPressed)
+        if (g_KeyPressed[GLFW_KEY_A])
         {
             movedir -= u;
         }
-        if (g_DKeyPressed)
+        if (g_KeyPressed[GLFW_KEY_D])
         {
             movedir += u;
         }
@@ -84,7 +96,7 @@ void Player::doPlayerMovement(float deltaTime)
     const float jump_force = 4.5f; // ~1.0 unit jump height
 
     bool jumpFrame = false;
-    if (g_SpaceBarKeyPressed && grounded)
+    if (g_KeyPressed[GLFW_KEY_SPACE] && grounded)
     {
         grounded = false;
         velocity.y = jump_force;
@@ -160,13 +172,143 @@ void Player::doDamageCooldown(float deltaTime)
 
 void Player::doWeaponSwitch()
 {
-    if (g_LastNumberPressed != currentWeapon && g_LastNumberPressed < (int)weapons.size())
+    bool switched = g_NumberKeyPressed || g_KeyPressed[GLFW_KEY_Q] || g_LastScrollDirection != 0;
+    if (!switched)
+        return;
+
+    int num_keys = weapons.size();
+
+    //early exit if player has 0 weapons
+    if (num_keys == 0)
+        return;
+
+    //early exit if player only has 1 weapon total
+    if (num_keys == 1) {
+        auto it = weapons.begin();
+        if (it->second.size() == 1)
+            return;
+    }
+
+    int map_index = currentWeapon.first;
+    int vec_index = currentWeapon.second;
+    std::vector<int> avaliable_keys;
+
+    //get used keys
+    avaliable_keys.reserve(num_keys);
+    for (const auto& p : weapons) {
+        //this should always be properly sorted
+        avaliable_keys.push_back(p.first);
+    }
+
+    // number key press
+    if (g_NumberKeyPressed)
     {
-        currentWeapon = g_LastNumberPressed;
+        g_NumberKeyPressed = false;//once per key press
+
+        //if key exists
+        if (std::binary_search(avaliable_keys.begin(), avaliable_keys.end(), g_LastNumberPressed))
+        {
+            if (g_LastNumberPressed != map_index)//pressed different key from current
+            {
+                previousWeapon = currentWeapon;
+                //change map index, set vec index to 0
+                currentWeapon.first = g_LastNumberPressed;
+                currentWeapon.second = 0;
+            }
+            else//pressed same key as current
+            {
+                int wpns_on_key = weapons[map_index].size();
+
+                //if more than one wpn on key
+                if (wpns_on_key > 1)
+                {
+                    previousWeapon = currentWeapon;
+                    //loop around current key vec
+                    currentWeapon.second = (vec_index + 1) % wpns_on_key;
+                }
+                else
+                    return;
+            }
+        }
+        else
+            return;
+    }
+
+    // weapon quickswap press
+    else if (g_KeyPressed[GLFW_KEY_Q])
+    {
+        g_KeyPressed[GLFW_KEY_Q] = false;//once per key press
+
+        if (currentWeapon != previousWeapon)
+            std::swap(currentWeapon, previousWeapon);
+        else
+            return;
+    }
+
+    // mouse wheel scroll
+    else if (g_LastScrollDirection != 0)
+    {
+        int wpns_on_key = weapons[map_index].size();
+
+        previousWeapon = currentWeapon;
+
+        //cases
+        //1: scroll down, vec is at first
+        //2: scroll up, vec is at max
+        //3: else
+
+        if (g_LastScrollDirection < 0 && vec_index == 0)
+        {
+            // get index of current key
+            int index = std::distance(avaliable_keys.begin(), std::find(avaliable_keys.begin(), avaliable_keys.end(), map_index));
+            // -1 to key (cycle), set vec to max
+            index = (index + g_LastScrollDirection + num_keys) % num_keys;
+            currentWeapon.first  = avaliable_keys[index];
+            currentWeapon.second = weapons[currentWeapon.first].size() - 1;
+        }
+        else if (g_LastScrollDirection > 0 && vec_index == (wpns_on_key - 1))
+        {
+            // get index of current key
+            int index = std::distance(avaliable_keys.begin(), std::find(avaliable_keys.begin(), avaliable_keys.end(), map_index));
+            // +1 to key (cycle), set vec to 0
+            index = (index + g_LastScrollDirection + num_keys) % num_keys;
+            currentWeapon.first  = avaliable_keys[index];
+            currentWeapon.second = 0;
+        }
+        else
+        {
+            // +scroll to vec
+            currentWeapon.second = vec_index + g_LastScrollDirection;
+        }
+
+        g_LastScrollDirection = 0;//once per scroll
+    }
+
+    if (currentWeapon != previousWeapon)
+    {
+        //set wpn state
         wpnCooldown = getCurrentWeapon().drw_speed;
         wpnState = WPNSTATE_DRAW;
         wpnAnimation = 0.0f;
     }
+}
+
+void Player::addWeapon(std::string wpn_key)
+{
+    //todo:
+    //if already has the weapon, add ammo (todo) for it instead
+    //always add the ammo*
+
+    Weapon wpn = g_GameData_Weapons[wpn_key];
+
+    //clamp key slot
+    if (wpn.key_slot < 0)
+        wpn.key_slot = 0;
+    else
+    if (wpn.key_slot > 9)
+        wpn.key_slot = 9;
+
+    weapons[wpn.key_slot].push_back(wpn);
 }
 
 void Player::doWeaponCooldown(float deltaTime)
@@ -187,7 +329,7 @@ void Player::update(float deltaTime)
 
 Weapon Player::getCurrentWeapon()
 {
-    return weapons[currentWeapon];
+    return (weapons[currentWeapon.first])[currentWeapon.second];
 }
 
 glm::vec3 Player::calculateWeaponPos()

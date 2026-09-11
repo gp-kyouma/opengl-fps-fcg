@@ -14,6 +14,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <algorithm>
+#include <map>
 
 // Headers das bibliotecas OpenGL
 #include <glad/glad.h>   // Criação de contexto OpenGL 3.3
@@ -48,18 +49,18 @@ extern bool g_LeftMouseButtonPressed;
 extern bool g_RightMouseButtonPressed; // Análogo para botão direito do mouse
 extern bool g_MiddleMouseButtonPressed; // Análogo para botão do meio do mouse
 
-// "g_WKeyPressed = true" se o usuário está com a tecla W
+// "g_KeyPressed[key] = true" se o usuário está com a tecla [key]
 // pressionada no momento atual
-// Análogo para as outras teclas
-extern bool g_WKeyPressed;
-extern bool g_AKeyPressed;
-extern bool g_SKeyPressed;
-extern bool g_DKeyPressed;
-extern bool g_SpaceBarKeyPressed;
-extern bool g_EnterKeyPressed;
+extern std::map<int, bool> g_KeyPressed;
 
-// Variável que segura qual tecla numérica o usuário pressionou por último, -1
+// tecla numérica pressionada nesse frame
+extern bool g_NumberKeyPressed;
+
+// Variável que segura qual tecla numérica o usuário pressionou por último
 extern int g_LastNumberPressed;
+
+// Variável que segura a última direção de movimento da rodinha do mouse
+extern int g_LastScrollDirection;
 
 // Variáveis que definem a câmera em coordenadas esféricas, controladas pelo
 // usuário através do mouse (veja função CursorPosCallback()).

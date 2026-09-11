@@ -64,20 +64,6 @@ void Game::Init()
     // PLAYER
     player.init();
 
-    // WEAPONS
-    //this wpn list should not be hardcoded...
-    Weapon sword    = g_GameData_Weapons["W_SWORD"];
-    Weapon pistol   = g_GameData_Weapons["W_PISTOL"];
-    Weapon shotgun  = g_GameData_Weapons["W_SHOTGUN"];
-    Weapon minigun  = g_GameData_Weapons["W_MINIGUN"];
-    Weapon sniper   = g_GameData_Weapons["W_SNIPER"];
-
-    player.weapons.push_back(sword);
-    player.weapons.push_back(pistol);
-    player.weapons.push_back(shotgun);
-    player.weapons.push_back(minigun);
-    player.weapons.push_back(sniper);
-
     // TEMPO
     prevTime = (float)glfwGetTime();
     totalTime = 0.0f;
@@ -219,6 +205,7 @@ void Game::Update()
     // vetor utilizado para contabilizar o dano levado por cada inimigo nesse frame
     std::vector<int> damageTaken(enemies.size(),0);
 
+    //this here loop is fucked up (and evil)
     unsigned int i_proj = 0;
     while (i_proj < projectiles.size())
     {
@@ -251,7 +238,7 @@ void Game::Update()
         }
 
         // testa colisão com inimigos
-        float shortest_dist = 100.0f;
+        float shortest_dist = 100.0f;//arbitrary
         int closest_enemy   = -1;
 
         for (unsigned int i = 0; i < enemies.size(); i++)
@@ -306,6 +293,7 @@ void Game::Update()
                     case BOX:
                         //recheck using pos
                         //jank, but it's ok
+                        //this is buns actually just use the normal collision and make melee ignore it
                         dummy.pos = projectiles[i_proj].pos;
                         dummy.hit_type = POINT_3D;
                         dummy.lifespan = 1.0f;
@@ -446,7 +434,7 @@ void Game::Update()
 
 void Game::checkLevelEnd()
 {
-    if (player.isDead() && g_EnterKeyPressed)
+    if (player.isDead() && g_KeyPressed[GLFW_KEY_ENTER])
     {
         loadTopLevel();
     }
@@ -457,7 +445,7 @@ void Game::checkLevelEnd()
             totalTime += levelTime;
             initCutscene();
         }
-        else if (g_EnterKeyPressed)
+        else if (g_KeyPressed[GLFW_KEY_ENTER])
         {
             level_queue.pop();
             totalTime += levelTime;
@@ -621,8 +609,8 @@ void Game::Draw(GLFWwindow* window)
             fakeplayer[i].wpnAnimation = 0.0f;
             fakeplayer[i].wpnCooldown  = 0.0f;
             fakeplayer[i].wpnState = WPNSTATE_READY;
-            fakeplayer[i].weapons = {player.weapons[i]};
-            fakeplayer[i].currentWeapon = 0;
+            fakeplayer[i].weapons[0] = {player.weapons[i]};
+            fakeplayer[i].currentWeapon = {0,0};
 
             drawWeapon(fakeplayer[i],getTheta(fakeplayer[i].view),getPhi(fakeplayer[i].view));
             drawPoint(fakeplayer[i].calculateWeaponPos());
@@ -630,7 +618,7 @@ void Game::Draw(GLFWwindow* window)
 
         // bullet for checking spherical uv
         Projectile fakebullet;
-        fakebullet.setProjectileData("P_SILVER_BULLET");
+        fakebullet.setProjectileData("P_SNIPER_BULLET");
         fakebullet.pos = glm::vec3(0.0f,2.0f,-13.5f);
         fakebullet.view = glm::vec3(0.0f,0.0f,1.0f);
         drawAxes(fakebullet.pos,glm::vec4(1.0f,0.0f,0.0f,0.0f),glm::vec4(0.0f,1.0f,0.0f,0.0f),glm::vec4(0.0f,0.0f,1.0f,0.0f));
