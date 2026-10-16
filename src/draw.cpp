@@ -243,7 +243,6 @@ void drawWeaponList(GLFWwindow* window, Player player, float aspect)
     if (num_keys == 0) return;
 
     auto current = player.currentWeapon;
-    int currentsize = player.weapons[current.first].size();
 
     //get used keys
     std::vector<int> avaliable_keys;
@@ -255,48 +254,46 @@ void drawWeaponList(GLFWwindow* window, Player player, float aspect)
     glm::mat4 outer_model;
     glm::mat4 inner_model;
 
-    float start_x = -blip_x_aspect * (num_keys - 1);
-
-    float ypos = -1.0f + blip_size;
+    float start_x = -1.0f + blip_x_aspect;
+    float start_y = blip_size * (num_keys - 1);
 
     setIgnoreLighting(true);
     setSpecularColor(COLOR_BLACK);
 
     for (int i = 0; i < num_keys; i++) {
         int key_value = avaliable_keys[i];
+        int wpns_on_key = player.weapons[key_value].size();
 
-        float xpos = start_x+(2*i*blip_x_aspect);
+        float ypos = start_y-(2*i*blip_size);
 
-        outer_model = Matrix_Translate(xpos, ypos, 0.0f) * Matrix_Scale(blip_x_aspect, blip_size, 1.0f);
-        inner_model = Matrix_Translate(xpos, ypos, 0.0f) * Matrix_Scale(blip_inner / aspect, blip_inner, 1.0f);
+        for (int j = 0; j < wpns_on_key; j++){
+            float xpos = start_x+(2*j*blip_x_aspect);
 
-        glm::vec3 outer_color = COLOR_GREY;
-        glm::vec3 inner_color = COLOR_WHITE;
-        if (current.first == key_value)
-        {
-            if (currentsize > 1)
-            {
-                float linterp = (float)current.second / (currentsize - 1.0f);
-                outer_color = COLOR_GREEN * (1.0f - linterp) + COLOR_CYAN * linterp;
+            outer_model = Matrix_Translate(xpos, ypos, 0.0f) * Matrix_Scale(blip_x_aspect, blip_size, 1.0f);
+            inner_model = Matrix_Translate(xpos, ypos, 0.0f) * Matrix_Scale(blip_inner / aspect, blip_inner, 1.0f);
+
+            glm::vec3 outer_color = COLOR_GREY;
+            glm::vec3 inner_color = COLOR_WHITE;
+            if (current.first == key_value && current.second == j){
+                //rip linterp
+                inner_color = COLOR_GREEN;
             }
-            else
-                outer_color = COLOR_GREEN;
+
+            setModelMatrix(outer_model);
+            setDiffuseColor(outer_color);
+            DrawVirtualObject("square");
+
+            setModelMatrix(inner_model);
+            setDiffuseColor(inner_color);
+            DrawVirtualObject("square");
+
+            //draw numbers
+            float textoffset = 0.015f;
+            char buffer[2] = "?";
+            if (key_value > 0 && key_value < 10)
+                snprintf(buffer, 2, "%d", key_value);
+            DrawString(window, buffer, xpos+(textoffset/aspect), ypos+textoffset, TEXTPOS_CENTER, TEXTPOS_CENTER, (1.5f * aspect), false, COLOR_BLACK);
         }
-
-        setModelMatrix(outer_model);
-        setDiffuseColor(outer_color);
-        DrawVirtualObject("square");
-
-        setModelMatrix(inner_model);
-        setDiffuseColor(inner_color);
-        DrawVirtualObject("square");
-
-        //draw numbers
-        float textoffset = 0.015f;
-        char buffer[2] = "?";
-        if (key_value > 0 && key_value < 10)
-            snprintf(buffer, 2, "%d", key_value);
-        DrawString(window, buffer, xpos+(textoffset/aspect), ypos+textoffset, TEXTPOS_CENTER, TEXTPOS_CENTER, (1.5f * aspect), false, COLOR_BLACK);
     }
 
     setIgnoreLighting(false);
