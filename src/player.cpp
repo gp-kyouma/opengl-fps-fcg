@@ -252,6 +252,9 @@ void Player::doWeaponSwitch()
 
         previousWeapon = currentWeapon;
 
+        //invert
+        g_LastScrollDirection = -g_LastScrollDirection;
+
         //cases
         //1: scroll down, vec is at first
         //2: scroll up, vec is at max
