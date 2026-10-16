@@ -60,8 +60,10 @@ void drawWeapon(Player player, float theta, float phi);
 void drawProjectile(Projectile proj);
 void drawEnemy(Enemy enemy);
 
-void drawTimer(GLFWwindow* window, float timer, bool hud);
-void drawHealth(GLFWwindow* window, Actor& actor);
-void drawPosition(GLFWwindow* window, Entity& entity);
+void drawWeaponList(GLFWwindow* window, Player player, float aspect);
+
+void drawTimer(GLFWwindow* window, float timer, bool hud, float aspect);
+void drawHealth(GLFWwindow* window, Actor& actor, float aspect);
+void drawPosition(GLFWwindow* window, Entity& entity, float aspect);
 
 #endif // FCG_DRAW

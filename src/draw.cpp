@@ -230,6 +230,78 @@ void drawBarBillboard(glm::mat4 view, glm::vec3 pos, float value, float maxValue
     drawBarBillboard(view, pos, value, maxValue, oneColor);
 }
 
+
+void drawWeaponList(GLFWwindow* window, Player player, float aspect)
+{
+    const float blip_size = 0.04f;
+    const float blip_edge = 0.01f;
+    const float blip_inner = blip_size - blip_edge;
+
+    const float blip_x_aspect = blip_size / aspect;
+
+    int num_keys = player.weapons.size();
+    if (num_keys == 0) return;
+
+    auto current = player.currentWeapon;
+    int currentsize = player.weapons[current.first].size();
+
+    //get used keys
+    std::vector<int> avaliable_keys;
+    avaliable_keys.reserve(num_keys);
+    for (const auto& p : player.weapons) {
+        avaliable_keys.push_back(p.first);
+    }
+
+    glm::mat4 outer_model;
+    glm::mat4 inner_model;
+
+    float start_x = -blip_x_aspect * (num_keys - 1);
+
+    float ypos = -1.0f + blip_size;
+
+    setIgnoreLighting(true);
+    setSpecularColor(COLOR_BLACK);
+
+    for (int i = 0; i < num_keys; i++) {
+        int key_value = avaliable_keys[i];
+
+        float xpos = start_x+(2*i*blip_x_aspect);
+
+        outer_model = Matrix_Translate(xpos, ypos, 0.0f) * Matrix_Scale(blip_x_aspect, blip_size, 1.0f);
+        inner_model = Matrix_Translate(xpos, ypos, 0.0f) * Matrix_Scale(blip_inner / aspect, blip_inner, 1.0f);
+
+        glm::vec3 outer_color = COLOR_GREY;
+        glm::vec3 inner_color = COLOR_WHITE;
+        if (current.first == key_value)
+        {
+            if (currentsize > 1)
+            {
+                float linterp = (float)current.second / (currentsize - 1.0f);
+                outer_color = COLOR_GREEN * (1.0f - linterp) + COLOR_CYAN * linterp;
+            }
+            else
+                outer_color = COLOR_GREEN;
+        }
+
+        setModelMatrix(outer_model);
+        setDiffuseColor(outer_color);
+        DrawVirtualObject("square");
+
+        setModelMatrix(inner_model);
+        setDiffuseColor(inner_color);
+        DrawVirtualObject("square");
+
+        //draw numbers
+        float textoffset = 0.015f;
+        char buffer[2] = "?";
+        if (key_value > 0 && key_value < 10)
+            snprintf(buffer, 2, "%d", key_value);
+        DrawString(window, buffer, xpos+(textoffset/aspect), ypos+textoffset, TEXTPOS_CENTER, TEXTPOS_CENTER, (1.5f * aspect), false, COLOR_BLACK);
+    }
+
+    setIgnoreLighting(false);
+}
+
 void drawBanner(float aspect, std::string tex) // used for game over, you won, etc...
 {
     glm::vec2 bannerSize = glm::vec2(0.8f,0.6f); // 4:3
@@ -641,7 +713,7 @@ void drawEnemy(Enemy enemy)
 // Escrevemos na tela um tempo (em segundos).
 // hud == true: desenha no canto superior direito
 // hud == false: desenha perto do meio
-void drawTimer(GLFWwindow* window, float timer, bool hud)
+void drawTimer(GLFWwindow* window, float timer, bool hud, float aspect)
 {
     char buffer[20] = "??:??:???";
 
@@ -661,23 +733,23 @@ void drawTimer(GLFWwindow* window, float timer, bool hud)
         snprintf(buffer, 20, "Bro are you ok?");
 
     if (hud)
-        DrawString(window, buffer, 1.0f, 1.0f, TEXTPOS_TOP, TEXTPOS_RIGHT, 3.0f, false, COLOR_WHITE);
+        DrawString(window, buffer, 1.0f, 1.0f, TEXTPOS_TOP, TEXTPOS_RIGHT, 2.0f * aspect, false, COLOR_WHITE);
     else
         DrawString(window, buffer, 0.0f, -0.75f, TEXTPOS_CENTER, TEXTPOS_CENTER, 4.5f, false, COLOR_WHITE);
 }
 
 // Escrevemos na tela a vida atual de um ator.
-void drawHealth(GLFWwindow* window, Actor& actor)
+void drawHealth(GLFWwindow* window, Actor& actor, float aspect)
 {
     char buffer[10] = "9999/9999";
 
     snprintf(buffer, 10, "%d/%d", actor.health, actor.maxHealth);
 
-    DrawString(window, buffer, 0.995f, -0.97f, TEXTPOS_BOTTOM, TEXTPOS_RIGHT, 3.0f, false, COLOR_BLACK);
+    DrawString(window, buffer, 0.995f, -0.975f, TEXTPOS_BOTTOM, TEXTPOS_RIGHT, 2.0f * aspect, false, COLOR_BLACK);
 }
 
 // Escrevemos na tela a posição de uma entidade
-void drawPosition(GLFWwindow* window, Entity& entity)
+void drawPosition(GLFWwindow* window, Entity& entity, float aspect)
 {
     char bufferXpos[20] = "X = -???.??????";
     char bufferYpos[20] = "Y = -???.??????";
@@ -695,17 +767,19 @@ void drawPosition(GLFWwindow* window, Entity& entity)
     snprintf(bufferYvel, 20, "Y = %+f", entity.velocity.y);
     snprintf(bufferZvel, 20, "Z = %+f", entity.velocity.z);
 
-    DrawString(window, "POSITION", 1.0f, 0.80f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
-    DrawString(window, bufferXpos, 1.0f, 0.75f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
-    DrawString(window, bufferYpos, 1.0f, 0.70f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
-    DrawString(window, bufferZpos, 1.0f, 0.65f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
+    float textsize = 1.5f * aspect;
 
-    DrawString(window, "VELOCITY", 1.0f, 0.60f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
-    DrawString(window, bufferXvel, 1.0f, 0.55f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
-    DrawString(window, bufferYvel, 1.0f, 0.50f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
-    DrawString(window, bufferZvel, 1.0f, 0.45f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, COLOR_WHITE);
+    DrawString(window, "POSITION", 1.0f, 0.80f, TEXTPOS_CENTER, TEXTPOS_RIGHT, textsize, false, COLOR_WHITE);
+    DrawString(window, bufferXpos, 1.0f, 0.75f, TEXTPOS_CENTER, TEXTPOS_RIGHT, textsize, false, COLOR_WHITE);
+    DrawString(window, bufferYpos, 1.0f, 0.70f, TEXTPOS_CENTER, TEXTPOS_RIGHT, textsize, false, COLOR_WHITE);
+    DrawString(window, bufferZpos, 1.0f, 0.65f, TEXTPOS_CENTER, TEXTPOS_RIGHT, textsize, false, COLOR_WHITE);
 
-    DrawString(window, "GROUNDED", 1.0f, 0.40f, TEXTPOS_CENTER, TEXTPOS_RIGHT, 2.0f, false, entity.grounded ? COLOR_GREEN : COLOR_RED);//show if grounded
+    DrawString(window, "VELOCITY", 1.0f, 0.60f, TEXTPOS_CENTER, TEXTPOS_RIGHT, textsize, false, COLOR_WHITE);
+    DrawString(window, bufferXvel, 1.0f, 0.55f, TEXTPOS_CENTER, TEXTPOS_RIGHT, textsize, false, COLOR_WHITE);
+    DrawString(window, bufferYvel, 1.0f, 0.50f, TEXTPOS_CENTER, TEXTPOS_RIGHT, textsize, false, COLOR_WHITE);
+    DrawString(window, bufferZvel, 1.0f, 0.45f, TEXTPOS_CENTER, TEXTPOS_RIGHT, textsize, false, COLOR_WHITE);
+
+    DrawString(window, "GROUNDED", 1.0f, 0.40f, TEXTPOS_CENTER, TEXTPOS_RIGHT, textsize, false, entity.grounded ? COLOR_GREEN : COLOR_RED);//show if grounded
 }
 
 void Enemy::draw()

@@ -596,7 +596,6 @@ void Game::Draw(GLFWwindow* window)
     if (g_ShowInfo)
     {
         drawAABB(player.getHitbox());
-        drawPosition(window, player);
 
         for (unsigned int i = 0; i < projectiles.size(); i++)
             if (projectiles[i].hit_type == BOX)
@@ -634,6 +633,8 @@ void Game::Draw(GLFWwindow* window)
         fakebullet.view = glm::vec3(0.0f,0.0f,1.0f);
         drawAxes(fakebullet.pos,glm::vec4(1.0f,0.0f,0.0f,0.0f),glm::vec4(0.0f,1.0f,0.0f,0.0f),glm::vec4(0.0f,0.0f,1.0f,0.0f));
         drawProjectile(fakebullet);
+
+        drawPosition(window, player, g_ScreenRatio);
     }
 
     // Resetamos todos os pixels do Z-buffer (depth buffer)
@@ -663,7 +664,7 @@ void Game::Draw(GLFWwindow* window)
     setProjectionMatrix(projection);
 
     // print level timer on top right
-    drawTimer(window, levelTime, true);
+    drawTimer(window, levelTime, true, g_ScreenRatio);
 
     // Dá um flash vermelho na tela se tiver tomado dano
     if (player.dmgCooldown > 0)
@@ -693,7 +694,10 @@ void Game::Draw(GLFWwindow* window)
         }
 
         // print current player hp
-        drawHealth(window, player);
+        drawHealth(window, player, g_ScreenRatio);
+
+        // draws list of available weapons
+        drawWeaponList(window, player, g_ScreenRatio);
     }
 
     /*
@@ -831,7 +835,7 @@ void Game::drawCutscene(GLFWwindow* window)
     glDisable(GL_DEPTH_TEST);
 
     // Desenha tempo da fase final
-    drawTimer(window, levelTime, true);
+    drawTimer(window, levelTime, true, g_ScreenRatio);
 
     // Se tiver acabado a cutscene
     if (cutsceneStep == 6.0f)
@@ -849,7 +853,7 @@ void Game::drawCutscene(GLFWwindow* window)
 
         // Desenha tempo final de jogo
         DrawString(window, "FINAL TIME:", 0.0f, -0.625f, TEXTPOS_CENTER, TEXTPOS_CENTER, 4.0f, false, COLOR_WHITE);
-        drawTimer(window, totalTime, false);
+        drawTimer(window, totalTime, false, g_ScreenRatio);
     }
 
     // Reativa o z-buffer
