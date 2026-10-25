@@ -230,6 +230,7 @@ void Editor::DrawGUI(GLFWwindow* window)
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
+    // for the main window
     ImGuiWindowFlags window_flags = 0;
     window_flags |= ImGuiWindowFlags_NoMove;
     window_flags |= ImGuiWindowFlags_NoResize;
@@ -242,16 +243,32 @@ void Editor::DrawGUI(GLFWwindow* window)
     ImGuiTableFlags table_flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_NoBordersInBody | ImGuiTableFlags_ScrollY;
     ImVec2 table_outer_size = ImVec2(0.0f, ImGui::GetTextLineHeightWithSpacing() * 26);
 
+    // for the obstacle/enemy/etc modals
+    ImGuiWindowFlags modal_flags = 0;
+    modal_flags |= ImGuiWindowFlags_AlwaysAutoResize;
+    modal_flags |= ImGuiWindowFlags_NoResize;
+    modal_flags |= ImGuiWindowFlags_NoCollapse;
+    // there's no flag for no close. ok i just gotta hope that doesn't break anything
+
+    // for the file dialog
+    ImGuiWindowFlags filedialog_flags = 0;
+    filedialog_flags |= ImGuiWindowFlags_NoMove;
+    filedialog_flags |= ImGuiWindowFlags_NoResize;
+    filedialog_flags |= ImGuiWindowFlags_NoCollapse;
+    ImVec2 filedialog_maxSize = ImVec2(390, 390);
+    ImVec2 filedialog_minSize = filedialog_maxSize;
+
+    // main window fills viewport
     const ImGuiViewport* viewport = ImGui::GetMainViewport();
     ImGui::SetNextWindowPos(viewport->WorkPos);
     ImGui::SetNextWindowSize(viewport->WorkSize);
 
-    //backup data for the modals
+    // backup data for the modals
     static ObstacleData backup_obstacleData;
     static EnemyData backup_enemyData;
     static AABB backup_obstacleAABB;
 
-    //aabb toggle
+    // aabb toggle
     static int obstacle_useAABB = false;
 
     //TODO
@@ -341,7 +358,7 @@ void Editor::DrawGUI(GLFWwindow* window)
             }
 
             // File dialog
-            if (fileaction != -1 && ImGuiFileDialog::Instance()->Display("FILEDIALOG"))
+            if (fileaction != -1 && ImGuiFileDialog::Instance()->Display("FILEDIALOG", filedialog_flags, filedialog_minSize, filedialog_maxSize))
             {
                 if (ImGuiFileDialog::Instance()->IsOk())
                 {
@@ -632,7 +649,7 @@ void Editor::DrawGUI(GLFWwindow* window)
 
     if (obstacleModal)
     {
-        ImGui::Begin("Obstacle Data", &obstacleModal);
+        ImGui::Begin("Obstacle Data", &obstacleModal, modal_flags);
         ImGui::Separator();
 
         ImGui::RadioButton("Position/Size", &obstacle_useAABB, false);
@@ -734,7 +751,7 @@ void Editor::DrawGUI(GLFWwindow* window)
 
     if (enemyModal)
     {
-        ImGui::Begin("Enemy Data", &enemyModal);
+        ImGui::Begin("Enemy Data", &enemyModal, modal_flags);
         ImGui::Separator();
 
         ImGui::InputFloat3("Position", glm::value_ptr(enemyData.pos));
