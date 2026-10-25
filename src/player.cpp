@@ -17,6 +17,10 @@ void Player::init()
     e_size = glm::vec3(1.0f,2.0f,1.0f);
     neck   = 0.5f;
     speed  = 3.0f;
+
+    if (g_EditorInput)
+        return;
+
     maxHealth = 100;
     health = maxHealth;
 
@@ -46,20 +50,14 @@ void Player::setView(float theta, float phi)
 
 AABB Player::getHitbox()
 {
-    AABB result;
-    glm::vec3 half = e_size / 2.0f;
-
-    result.aabb_max = pos + half;
-    result.aabb_min = pos - half;
-
-    return result;
+    return AABB::from_pos_size(pos, e_size);
 }
 
 void Player::doPlayerMovement(float deltaTime)
 {
     // jogador anda na direção onde está olhando
     glm::vec4 u,v,w;
-    calculate_uvw(view,u,v,w,true);
+    calculate_uvw(view,u,v,w,!DEBUG_noclip_fly);
 
     glm::vec4 movedir = glm::vec4(0.0f,0.0f,0.0f,0.0f);
 
@@ -105,7 +103,7 @@ void Player::doPlayerMovement(float deltaTime)
 
     // movement speed
     float speedMultiplier = 1.0f;
-    if (getCurrentWeapon().has_effect(AIM_SLOWDOWN) && wpnAnimation > 0.0f && grounded)
+    if (!g_EditorInput && getCurrentWeapon().has_effect(AIM_SLOWDOWN) && wpnAnimation > 0.0f && grounded)
         speedMultiplier = getCurrentWeapon().effects[AIM_SLOWDOWN].float_value;
 
     float trueSpeed = speed * speedMultiplier;
@@ -113,7 +111,7 @@ void Player::doPlayerMovement(float deltaTime)
         input_velocity *= trueSpeed;
 
     // variables for velocity falloff
-    float v_decay = grounded ? Entity::friction : Entity::air_resist;
+    float v_decay = (DEBUG_noclip_fly || grounded) ? Entity::friction : Entity::air_resist;
     float v_m = 0;
     glm::vec3 v_dir;
 
@@ -149,6 +147,10 @@ void Player::doPlayerMovement(float deltaTime)
     // velocity falloff (gravity)
     if (!jumpFrame)
         velocity.y -= (Entity::gravity * deltaTime);
+
+    //flyinggg
+    if (DEBUG_noclip_fly)
+        velocity = glm::vec3(0.0f,0.0f,0.0f);
 
     pos += (input_velocity * deltaTime);
     pos += (velocity * deltaTime);
@@ -323,6 +325,11 @@ void Player::doWeaponCooldown(float deltaTime)
 
 void Player::update(float deltaTime)
 {
+    if (g_EditorInput){
+        doPlayerMovement(deltaTime);
+        return;
+    }
+
     doPlayerMovement(deltaTime);
     doWeaponAnimation(deltaTime);
     doWeaponCooldown(deltaTime);

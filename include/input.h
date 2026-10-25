@@ -40,6 +40,9 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 DECLARAÇÃO DE VARIÁVEIS GLOBAIS
 */
 
+// change some stuff if on editor mode
+extern bool g_EditorInput;
+
 // Razão de proporção da janela (largura/altura). Veja função FramebufferSizeCallback().
 extern float g_ScreenRatio;
 

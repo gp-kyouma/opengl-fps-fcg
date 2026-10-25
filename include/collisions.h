@@ -46,6 +46,8 @@ struct AABB : Collider
     glm::vec3 getCenter();
 
     AABB();
+
+    static AABB from_pos_size(glm::vec3 pos, glm::vec3 e_size);
 };
 
 // Estrutura que descreve uma esfera que envolve um objeto

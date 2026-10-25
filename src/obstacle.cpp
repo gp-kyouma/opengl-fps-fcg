@@ -23,13 +23,7 @@ void Obstacle::setObstacleData(std::string type)
 
 AABB Obstacle::getHitbox()
 {
-    AABB result;
-    glm::vec3 half = e_size / 2.0f;
-
-    result.aabb_max = pos + half;
-    result.aabb_min = pos - half;
-
-    return result;
+    return AABB::from_pos_size(pos, e_size);
 }
 
 void Obstacle::update(float deltaTime){}//unimplemented... for now.

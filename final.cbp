@@ -6,24 +6,6 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug">
-				<Option output="bin/Debug/main" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="bin/Debug/" />
-				<Option object_output="obj/Debug/" />
-				<Option type="1" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-Wall" />
-					<Add option="-std=c++11" />
-					<Add option="-g" />
-					<Add directory="include" />
-				</Compiler>
-				<Linker>
-					<Add option="-static-libstdc++" />
-					<Add option="-static-libgcc" />
-					<Add option="-static" />
-				</Linker>
-			</Target>
 			<Target title="Release">
 				<Option output="bin/Release/main" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="bin/Release/" />
@@ -38,6 +20,43 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="-static-libstdc++" />
+					<Add option="-static-libgcc" />
+					<Add option="-static" />
+				</Linker>
+			</Target>
+			<Target title="(LEVEL EDITOR)">
+				<Option output="bin/Release/levelEditor" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin/Release/" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+					<Add option="-std=c++11" />
+					<Add directory="include" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-static-libstdc++" />
+					<Add option="-static-libgcc" />
+					<Add option="-static" />
+				</Linker>
+			</Target>
+			<Target title="Debug">
+				<Option output="bin/Debug/main" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin/Debug/" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-std=c++11" />
+					<Add option="-g" />
+					<Add directory="include" />
+				</Compiler>
+				<Linker>
 					<Add option="-static-libstdc++" />
 					<Add option="-static-libgcc" />
 					<Add option="-static" />
@@ -108,11 +127,33 @@
 		<Unit filename="include/KHR/khrplatform.h" />
 		<Unit filename="include/bezier.h" />
 		<Unit filename="include/collisions.h" />
+		<Unit filename="include/dataloaders.h" />
 		<Unit filename="include/dejavufont.h" />
 		<Unit filename="include/draw.h" />
 		<Unit filename="include/draw_data.h" />
+		<Unit filename="include/editor.h">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
 		<Unit filename="include/enemy.h" />
 		<Unit filename="include/entity.h" />
+		<Unit filename="include/filedialog/ImGuiFileDialog.cpp">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
+		<Unit filename="include/filedialog/ImGuiFileDialog.h">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
+		<Unit filename="include/filedialog/ImGuiFileDialogConfig.h">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
+		<Unit filename="include/filedialog/dirent/dirent.h">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
+		<Unit filename="include/filedialog/stb/stb_image.h">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
+		<Unit filename="include/filedialog/stb/stb_image_resize2.h">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
 		<Unit filename="include/game.h" />
 		<Unit filename="include/gamedata.h" />
 		<Unit filename="include/glad/glad.h" />
@@ -378,6 +419,60 @@
 		<Unit filename="include/glm/vec3.hpp" />
 		<Unit filename="include/glm/vec4.hpp" />
 		<Unit filename="include/glm/vector_relational.hpp" />
+		<Unit filename="include/imgui/imconfig.h">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
+		<Unit filename="include/imgui/imgui.cpp">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
+		<Unit filename="include/imgui/imgui.h">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
+		<Unit filename="include/imgui/imgui_demo.cpp">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
+		<Unit filename="include/imgui/imgui_draw.cpp">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
+		<Unit filename="include/imgui/imgui_impl_glfw.cpp">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
+		<Unit filename="include/imgui/imgui_impl_glfw.h">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
+		<Unit filename="include/imgui/imgui_impl_opengl3.cpp">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
+		<Unit filename="include/imgui/imgui_impl_opengl3.h">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
+		<Unit filename="include/imgui/imgui_impl_opengl3_loader.h">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
+		<Unit filename="include/imgui/imgui_internal.h">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
+		<Unit filename="include/imgui/imgui_stdlib.cpp">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
+		<Unit filename="include/imgui/imgui_stdlib.h">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
+		<Unit filename="include/imgui/imgui_tables.cpp">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
+		<Unit filename="include/imgui/imgui_widgets.cpp">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
+		<Unit filename="include/imgui/imstb_rectpack.h">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
+		<Unit filename="include/imgui/imstb_textedit.h">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
+		<Unit filename="include/imgui/imstb_truetype.h">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
 		<Unit filename="include/input.h" />
 		<Unit filename="include/level.h" />
 		<Unit filename="include/matrices.h" />
@@ -395,8 +490,12 @@
 		<Unit filename="include/weapon.h" />
 		<Unit filename="src/bezier.cpp" />
 		<Unit filename="src/collisions.cpp" />
+		<Unit filename="src/dataloaders.cpp" />
 		<Unit filename="src/draw.cpp" />
 		<Unit filename="src/draw_data.cpp" />
+		<Unit filename="src/editor.cpp">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
 		<Unit filename="src/enemy.cpp" />
 		<Unit filename="src/game.cpp" />
 		<Unit filename="src/gamedata.cpp" />
@@ -405,7 +504,16 @@
 		</Unit>
 		<Unit filename="src/input.cpp" />
 		<Unit filename="src/level.cpp" />
-		<Unit filename="src/main.cpp" />
+		<Unit filename="src/main.cpp">
+			<Option target="Release" />
+			<Option target="Debug" />
+			<Option target="Linux" />
+			<Option target="Debug (CBlocks 17.12 32-bit)" />
+			<Option target="Release (CBlocks 17.12 32-bit)" />
+		</Unit>
+		<Unit filename="src/main_editor.cpp">
+			<Option target="(LEVEL EDITOR)" />
+		</Unit>
 		<Unit filename="src/matrices.cpp" />
 		<Unit filename="src/obstacle.cpp" />
 		<Unit filename="src/player.cpp" />

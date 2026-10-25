@@ -1,5 +1,8 @@
 #include "input.h"
 
+// change some stuff if on editor mode
+bool g_EditorInput = false;
+
 // Razão de proporção da janela (largura/altura). Veja função FramebufferSizeCallback().
 float g_ScreenRatio = 1.0f;
 
@@ -72,6 +75,8 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
         // g_LeftMouseButtonPressed como true, para saber que o usuário está
         // com o botão esquerdo pressionado.
         g_LeftMouseButtonPressed = true;
+        if (g_EditorInput)
+            glfwGetCursorPos(window, &g_LastCursorPosX, &g_LastCursorPosY);
     }
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
     {
@@ -111,11 +116,14 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 // cima da janela OpenGL.
 void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 {
-    if (!g_hasMovedMouse)
+    if (!g_EditorInput && !g_hasMovedMouse)
     {
         glfwGetCursorPos(window, &g_LastCursorPosX, &g_LastCursorPosY);
         g_hasMovedMouse = true;
     }
+
+    if (g_EditorInput && !g_LeftMouseButtonPressed)
+        return;
 
     // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
     float dx = xpos - g_LastCursorPosX;

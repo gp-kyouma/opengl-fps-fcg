@@ -2053,14 +2053,14 @@
 1677343785 source:c:\users\caosd\desktop\arquivos codeblocks\e4 (fcg)\final\src\vec_aux.cpp
 	"vec_aux.h"
 
-1788027341 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\collisions.cpp
+1792959705 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\collisions.cpp
 	"collisions.h"
 	<cmath>
 	<cstdio>
 	<cstdlib>
 	<algorithm>
 
-1788578100 c:\users\caosd\documents\github\opengl-fps-fcg\include\collisions.h
+1792959671 c:\users\caosd\documents\github\opengl-fps-fcg\include\collisions.h
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
@@ -2879,7 +2879,7 @@
 1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\gtc\type_ptr.inl
 	<cstring>
 
-1792179076 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\draw.cpp
+1792188868 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\draw.cpp
 	"draw.h"
 	<cmath>
 	<cstdio>
@@ -3009,7 +3009,7 @@
 	<glm/vec4.hpp>
 	<glm/gtc/matrix_transform.hpp>
 
-1789165602 c:\users\caosd\documents\github\opengl-fps-fcg\include\player.h
+1792286693 c:\users\caosd\documents\github\opengl-fps-fcg\include\player.h
 	<map>
 	<vector>
 	<glm/mat4x4.hpp>
@@ -3020,7 +3020,7 @@
 	"projectile.h"
 	"entity.h"
 
-1788632185 c:\users\caosd\documents\github\opengl-fps-fcg\include\level.h
+1792960664 c:\users\caosd\documents\github\opengl-fps-fcg\include\level.h
 	<vector>
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
@@ -3030,7 +3030,7 @@
 	"vec_aux.h"
 	<nlohmann/json.hpp>
 
-1792177716 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\game.cpp
+1792962474 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\game.cpp
 	"game.h"
 	<cstdio>
 	<cstdlib>
@@ -3059,7 +3059,7 @@
 	"projectile.h"
 	"enemy.h"
 
-1788917494 c:\users\caosd\documents\github\opengl-fps-fcg\include\input.h
+1792284871 c:\users\caosd\documents\github\opengl-fps-fcg\include\input.h
 	<cmath>
 	<cstdio>
 	<cstdlib>
@@ -3078,7 +3078,7 @@
 1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\utils.h
 	<cstdio>
 
-1788578100 c:\users\caosd\documents\github\opengl-fps-fcg\include\vec_aux.h
+1792958054 c:\users\caosd\documents\github\opengl-fps-fcg\include\vec_aux.h
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
@@ -3092,10 +3092,10 @@
 	<windows.h>
 	<dlfcn.h>
 
-1788917494 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\input.cpp
+1792286142 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\input.cpp
 	"input.h"
 
-1788632018 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\level.cpp
+1792958054 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\level.cpp
 	"level.h"
 	<cmath>
 	<cstdio>
@@ -3109,7 +3109,7 @@
 	<stdexcept>
 	<algorithm>
 
-1788646826 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\main.cpp
+1792285207 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\main.cpp
 	<cmath>
 	<cstdio>
 	<cstdlib>
@@ -3133,8 +3133,7 @@
 	"renderer.h"
 	"input.h"
 	"game.h"
-	"draw_data.h"
-	"gamedata.h"
+	"dataloaders.h"
 
 1788578100 c:\users\caosd\documents\github\opengl-fps-fcg\include\scene.h
 	<cmath>
@@ -3151,7 +3150,7 @@
 1679259174 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\matrices.cpp
 	"matrices.h"
 
-1792179253 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\player.cpp
+1792959792 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\player.cpp
 	"player.h"
 	<cstdio>
 	<cstdlib>
@@ -3189,12 +3188,12 @@
 1674246957 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\tiny_obj_loader.cpp
 	"tiny_obj_loader.h"
 
-1788486307 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\vec_aux.cpp
+1792958054 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\vec_aux.cpp
 	"vec_aux.h"
 	<math.h>
 	"matrices.h"
 
-1788123299 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\obstacle.cpp
+1792959792 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\obstacle.cpp
 	"obstacle.h"
 	<cmath>
 	<cstdio>
@@ -5579,7 +5578,7 @@
 	"collisions.h"
 	"entity.h"
 
-1788564128 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\projectile.cpp
+1792959792 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\projectile.cpp
 	"projectile.h"
 	<algorithm>
 	"matrices.h"
@@ -5594,7 +5593,7 @@
 	"collisions.h"
 	"entity.h"
 
-1789165444 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\enemy.cpp
+1792959739 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\enemy.cpp
 	"enemy.h"
 	"timer_aux.h"
 	"vec_aux.h"
@@ -6830,7 +6829,7 @@
 1772826499 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\entity.cpp
 	"entity.h"
 
-1788578100 c:\users\caosd\documents\github\opengl-fps-fcg\include\entity.h
+1792358856 c:\users\caosd\documents\github\opengl-fps-fcg\include\entity.h
 	<string>
 	<glm/vec4.hpp>
 	"collisions.h"
@@ -7036,7 +7035,7 @@
 	<any>
 	<string_view>
 
-1788121894 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\draw_data.cpp
+1792289544 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\draw_data.cpp
 	"draw_data.h"
 	"renderer.h"
 
@@ -7058,4 +7057,450 @@
 	"obstacle.h"
 	"projectile.h"
 	"weapon.h"
+
+1775253440 source:c:\users\caosd\documents\github\opengl-fps-fcg\include\filedialog\imguifiledialog.cpp
+	"ImGuiFileDialog.h"
+	<cstring>
+	<cstdarg>
+	<sstream>
+	<iomanip>
+	<ctime>
+	<memory>
+	<sys/stat.h>
+	<cstdio>
+	<cerrno>
+	<filesystem>
+	<exception>
+	<emscripten.h>
+	<cctype>
+	<windows.h>
+	"dirent/dirent.h"
+	<sys/types.h>
+	<dirent.h>
+	<imgui/imgui_internal.h>
+	<cstdlib>
+	<algorithm>
+	<iostream>
+	"stb/stb_image.h"
+	"stb/stb_image_resize2.h"
+
+1775172100 c:\users\caosd\documents\github\opengl-fps-fcg\include\filedialog\imguifiledialog.h
+	"ImGuiFileDialogConfig.h"
+	<stdint.h>
+	<imgui/imgui.h>
+	<set>
+	<map>
+	<list>
+	<regex>
+	<array>
+	<mutex>
+	<condition_variable>
+	<thread>
+	<cfloat>
+	<memory>
+	<string>
+	<vector>
+	<utility>
+	<fstream>
+	<functional>
+	<unordered_map>
+
+1775171873 c:\users\caosd\documents\github\opengl-fps-fcg\include\filedialog\imguifiledialogconfig.h
+
+1771349577 c:\users\caosd\documents\github\opengl-fps-fcg\include\imgui\imgui.h
+	"imconfig.h"
+	<float.h>
+	<stdarg.h>
+	<stddef.h>
+	<string.h>
+	<assert.h>
+	"imgui_user.h"
+
+1771349577 c:\users\caosd\documents\github\opengl-fps-fcg\include\imgui\imconfig.h
+
+1775171873 c:\users\caosd\documents\github\opengl-fps-fcg\include\filedialog\dirent\dirent.h
+	<windows.h>
+	<stdio.h>
+	<stdarg.h>
+	<wchar.h>
+	<string.h>
+	<stdlib.h>
+	<malloc.h>
+	<sys/types.h>
+	<sys/stat.h>
+	<errno.h>
+
+1771349577 c:\users\caosd\documents\github\opengl-fps-fcg\include\imgui\imgui_internal.h
+	"imgui.h"
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<limits.h>
+	<immintrin.h>
+	<nmmintrin.h>
+
+1775171873 c:\users\caosd\documents\github\opengl-fps-fcg\include\filedialog\stb\stb_image.h
+	"stb_image.h"
+	<stdio.h>
+	<stdlib.h>
+	<stdarg.h>
+	<stddef.h>
+	<stdlib.h>
+	<string.h>
+	<limits.h>
+	<math.h>
+	<stdio.h>
+	<assert.h>
+	<stdint.h>
+	<emmintrin.h>
+	<intrin.h>
+	<arm_neon.h>
+
+1775171873 c:\users\caosd\documents\github\opengl-fps-fcg\include\filedialog\stb\stb_image_resize2.h
+	<stddef.h>
+	<stdint.h>
+	<assert.h>
+	<stdlib.h>
+	<emmintrin.h>
+	<immintrin.h>
+	<smmintrin.h>
+	<immintrin.h>
+	<arm_neon.h>
+	<wasm_simd128.h>
+	<immintrin.h>
+	<math.h>
+	<string.h>
+
+1771349577 source:c:\users\caosd\documents\github\opengl-fps-fcg\include\imgui\imgui.cpp
+	"imgui.h"
+	"imgui_internal.h"
+	<stdio.h>
+	<stdint.h>
+	<Windows.h>
+	<windows.h>
+	<TargetConditionals.h>
+	"stb_sprintf.h"
+	<Carbon/Carbon.h>
+	<shellapi.h>
+	<sys/wait.h>
+	<unistd.h>
+	<imm.h>
+	"imgui_user.inl"
+
+1771349577 source:c:\users\caosd\documents\github\opengl-fps-fcg\include\imgui\imgui_demo.cpp
+	"imgui.h"
+	<ctype.h>
+	<limits.h>
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+	<stdint.h>
+	<inttypes.h>
+	<emscripten/version.h>
+
+1771349577 source:c:\users\caosd\documents\github\opengl-fps-fcg\include\imgui\imgui_draw.cpp
+	"imgui.h"
+	"imgui_internal.h"
+	"misc/freetype/imgui_freetype.h"
+	<stdio.h>
+	<stdint.h>
+	"imstb_rectpack.h"
+	"imstb_truetype.h"
+	"../stb/stb_image_write.h"
+
+1771349577 c:\users\caosd\documents\github\opengl-fps-fcg\include\imgui\imstb_rectpack.h
+	<stdlib.h>
+	<assert.h>
+
+1771349577 c:\users\caosd\documents\github\opengl-fps-fcg\include\imgui\imstb_truetype.h
+	"stb_truetype.h"
+	<stdio.h>
+	"stb_truetype.h"
+	<math.h>
+	<math.h>
+	<math.h>
+	<math.h>
+	<math.h>
+	<stdlib.h>
+	<assert.h>
+	<string.h>
+	<string.h>
+
+1771349577 source:c:\users\caosd\documents\github\opengl-fps-fcg\include\imgui\imgui_impl_glfw.cpp
+	"imgui.h"
+	"imgui_impl_glfw.h"
+	<GLFW/glfw3.h>
+	<GLFW/glfw3native.h>
+	<GLFW/glfw3native.h>
+	<GLFW/glfw3native.h>
+	<unistd.h>
+	<stdio.h>
+	<emscripten.h>
+	<emscripten/html5.h>
+	<GLFW/emscripten_glfw3.h>
+
+1771349577 c:\users\caosd\documents\github\opengl-fps-fcg\include\imgui\imgui_impl_glfw.h
+	"imgui.h"
+
+1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glfw\glfw3native.h
+	<windows.h>
+	<ApplicationServices/ApplicationServices.h>
+	<X11/Xlib.h>
+	<X11/extensions/Xrandr.h>
+	<wayland-client.h>
+	<mir_toolkit/mir_client_library.h>
+	<GL/glx.h>
+	<EGL/egl.h>
+
+1771349577 source:c:\users\caosd\documents\github\opengl-fps-fcg\include\imgui\imgui_impl_opengl3.cpp
+	"imgui.h"
+	"imgui_impl_opengl3.h"
+	<stdio.h>
+	<stdint.h>
+	<TargetConditionals.h>
+	<OpenGLES/ES2/gl.h>
+	<GLES2/gl2.h>
+	<GLES2/gl2ext.h>
+	<OpenGLES/ES3/gl.h>
+	<GLES3/gl3.h>
+	"imgui_impl_opengl3_loader.h"
+	<stdio.h>
+
+1771349577 c:\users\caosd\documents\github\opengl-fps-fcg\include\imgui\imgui_impl_opengl3.h
+	"imgui.h"
+	<TargetConditionals.h>
+
+1771349577 c:\users\caosd\documents\github\opengl-fps-fcg\include\imgui\imgui_impl_opengl3_loader.h
+	<stdint.h>
+	<windows.h>
+	<stdlib.h>
+	<windows.h>
+	<dlfcn.h>
+	<dlfcn.h>
+
+1771349577 source:c:\users\caosd\documents\github\opengl-fps-fcg\include\imgui\imgui_tables.cpp
+	"imgui.h"
+	"imgui_internal.h"
+	<stdint.h>
+
+1771349577 source:c:\users\caosd\documents\github\opengl-fps-fcg\include\imgui\imgui_widgets.cpp
+	"imgui.h"
+	"imgui_internal.h"
+	<stdint.h>
+	"imstb_textedit.h"
+	"imstb_textedit.h"
+
+1771349577 c:\users\caosd\documents\github\opengl-fps-fcg\include\imgui\imstb_textedit.h
+	<string.h>
+
+1792961708 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\editor.cpp
+	"editor.h"
+	"imgui/imgui.h"
+	"imgui/imgui_stdlib.h"
+	"imgui/imgui_impl_glfw.h"
+	"imgui/imgui_impl_opengl3.h"
+	"filedialog/ImGuiFileDialog.h"
+	<string>
+	<vector>
+	<cstdio>
+	<cstdlib>
+	<iostream>
+	<algorithm>
+	"matrices.h"
+	"collisions.h"
+	"input.h"
+	"draw.h"
+	"timer_aux.h"
+	"bezier.h"
+	"gamedata.h"
+	"vec_aux.h"
+	<nlohmann/json.hpp>
+
+1792542310 c:\users\caosd\documents\github\opengl-fps-fcg\include\editor.h
+	<string>
+	<vector>
+	<glad/glad.h>
+	<GLFW/glfw3.h>
+	<glm/mat4x4.hpp>
+	<glm/vec4.hpp>
+	<glm/gtc/type_ptr.hpp>
+	<glm/gtx/string_cast.hpp>
+	"player.h"
+	"level.h"
+
+1792289861 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\main_editor.cpp
+	<cmath>
+	<cstdio>
+	<cstdlib>
+	<ctime>
+	<map>
+	<stack>
+	<string>
+	<vector>
+	<limits>
+	<fstream>
+	<sstream>
+	<iostream>
+	<stdexcept>
+	<algorithm>
+	"imgui/imgui.h"
+	"imgui/imgui_impl_glfw.h"
+	"imgui/imgui_impl_opengl3.h"
+	<glad/glad.h>
+	<GLFW/glfw3.h>
+	<glm/mat4x4.hpp>
+	<glm/vec4.hpp>
+	<glm/gtc/type_ptr.hpp>
+	"scene.h"
+	"renderer.h"
+	"input.h"
+	"editor.h"
+	"dataloaders.h"
+
+1792256911 c:\users\caosd\documents\github\opengl-fps-fcg\include\dataloaders.h
+
+1792256986 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\dataloaders.cpp
+	"dataloaders.h"
+	<map>
+	<stack>
+	<string>
+	<vector>
+	<limits>
+	<fstream>
+	<sstream>
+	<iostream>
+	<stdexcept>
+	<algorithm>
+	"scene.h"
+	"renderer.h"
+	"input.h"
+	"game.h"
+	"draw_data.h"
+	"gamedata.h"
+
+1792290932 source:c:\users\caosd\documents\github\opengl-fps-fcg\include\imgui\imgui_stdlib.cpp
+	"imgui.h"
+	"imgui_stdlib.h"
+
+1792290929 c:\users\caosd\documents\github\opengl-fps-fcg\include\imgui\imgui_stdlib.h
+	<string>
+
+1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\gtx\string_cast.hpp
+	"../glm.hpp"
+	"../gtc/type_precision.hpp"
+	"../gtc/quaternion.hpp"
+	"../gtx/dual_quaternion.hpp"
+	<string>
+	<cmath>
+	"string_cast.inl"
+
+1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\glm.hpp
+	"detail/_fixes.hpp"
+	"detail/setup.hpp"
+	<cmath>
+	<climits>
+	<cfloat>
+	<limits>
+	<cassert>
+	"fwd.hpp"
+	"vec2.hpp"
+	"vec3.hpp"
+	"vec4.hpp"
+	"mat2x2.hpp"
+	"mat2x3.hpp"
+	"mat2x4.hpp"
+	"mat3x2.hpp"
+	"mat3x3.hpp"
+	"mat3x4.hpp"
+	"mat4x2.hpp"
+	"mat4x3.hpp"
+	"mat4x4.hpp"
+	"trigonometric.hpp"
+	"exponential.hpp"
+	"common.hpp"
+	"packing.hpp"
+	"geometric.hpp"
+	"matrix.hpp"
+	"vector_relational.hpp"
+	"integer.hpp"
+
+1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\fwd.hpp
+	"detail/qualifier.hpp"
+
+1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\packing.hpp
+	"./ext/vector_uint2.hpp"
+	"./ext/vector_float2.hpp"
+	"./ext/vector_float4.hpp"
+	"detail/func_packing.inl"
+
+1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\detail\func_packing.inl
+	"../common.hpp"
+	"type_half.hpp"
+	"func_packing_simd.inl"
+
+1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\detail\type_half.hpp
+	"setup.hpp"
+	"type_half.inl"
+
+1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\detail\type_half.inl
+
+1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\detail\func_packing_simd.inl
+
+1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\integer.hpp
+	"detail/qualifier.hpp"
+	"common.hpp"
+	"vector_relational.hpp"
+	"detail/func_integer.inl"
+
+1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\detail\func_integer.inl
+	"_vectorize.hpp"
+	<intrin.h>
+	<limits>
+	"func_integer_simd.inl"
+
+1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\detail\func_integer_simd.inl
+	"../simd/integer.h"
+
+1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\simd\integer.h
+
+1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\gtc\type_precision.hpp
+	"../gtc/quaternion.hpp"
+	"../gtc/vec1.hpp"
+	"../ext/scalar_int_sized.hpp"
+	"../ext/scalar_uint_sized.hpp"
+	"../detail/type_vec2.hpp"
+	"../detail/type_vec3.hpp"
+	"../detail/type_vec4.hpp"
+	"../detail/type_mat2x2.hpp"
+	"../detail/type_mat2x3.hpp"
+	"../detail/type_mat2x4.hpp"
+	"../detail/type_mat3x2.hpp"
+	"../detail/type_mat3x3.hpp"
+	"../detail/type_mat3x4.hpp"
+	"../detail/type_mat4x2.hpp"
+	"../detail/type_mat4x3.hpp"
+	"../detail/type_mat4x4.hpp"
+	"type_precision.inl"
+
+1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\ext\scalar_int_sized.hpp
+	"../detail/setup.hpp"
+
+1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\ext\scalar_uint_sized.hpp
+	"../detail/setup.hpp"
+
+1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\gtc\type_precision.inl
+
+1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\gtx\dual_quaternion.hpp
+	"../glm.hpp"
+	"../gtc/constants.hpp"
+	"../gtc/quaternion.hpp"
+	"dual_quaternion.inl"
+
+1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\gtx\dual_quaternion.inl
+	"../geometric.hpp"
+	<limits>
+
+1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\gtx\string_cast.inl
+	<cstdarg>
+	<cstdio>
 

@@ -38,6 +38,10 @@ void SubObjectData::set_tex_repeat(glm::vec3 scale)
     float length = scale.z;
     float height = scale.y;
 
+    //avoid div by zero
+    if (width == 0.0f || length == 0.0f || height == 0.0f)
+        return;
+
     switch (tex_repeat){
         case TEXREPEAT_NONE:
             break;

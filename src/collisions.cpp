@@ -21,6 +21,17 @@ glm::vec3 AABB::getCenter()
     return (aabb_max + aabb_min) / 2.0f;
 }
 
+AABB AABB::from_pos_size(glm::vec3 pos, glm::vec3 e_size)
+{
+    AABB result;
+    glm::vec3 half = e_size / 2.0f;
+
+    result.aabb_max = pos + half;
+    result.aabb_min = pos - half;
+
+    return result;
+}
+
 // AABB x AABB
 bool Collide(AABB aabb1, AABB aabb2)
 {

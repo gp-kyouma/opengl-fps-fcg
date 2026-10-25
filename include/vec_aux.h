@@ -42,4 +42,10 @@ glm::vec3 normalize_vec3(glm::vec3 v);
 //Função que separa um vec3 arbitrário em direção e magnitude
 void vec3_to_attributes(glm::vec3 v, glm::vec3& dir, float& m);
 
+// Função que calcula um vetor a partir de theta e phi
+glm::vec3 phi_theta_to_vec3(float phi, float theta);
+
+// Função que checa se um vec3 tem valores finitos (não inf ou nan)
+bool vec3_finite(glm::vec3 v);
+
 #endif // FCG_VEC_AUX

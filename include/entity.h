@@ -42,6 +42,7 @@ struct Entity // All game objects with position and collision, may or may not mo
 
     // draw data key
     std::string dd_key;
+    bool editing = false; // used in level editor. don't worry about it
 
     virtual void apply_kb(float power, glm::vec3 direction) = 0;
 

@@ -24,6 +24,11 @@ struct Player : Actor
 {
     //Entity + Actor attributes omitted
 
+    //Debug flags
+    bool DEBUG_noclip_fly = false;
+    bool DEBUG_noclip_obs = false;
+    bool DEBUG_noclip_lvl = false;
+
     float neck;       // offset no eixo y em relação a pos que define onde a câmera vai ser posicionada
 
     static constexpr float baseDmgCooldown = 0.5f;

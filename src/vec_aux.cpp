@@ -97,3 +97,18 @@ void vec3_to_attributes(glm::vec3 v, glm::vec3& dir, float& m)
         m = glm::length(v);
     }
 }
+
+glm::vec3 phi_theta_to_vec3(float phi, float theta)
+{
+    glm::vec3 view;
+    view.x = cos(phi)*sin(theta);
+    view.y = sin(phi);
+    view.z = cos(phi)*cos(theta);
+    view = normalize_vec3(view);
+    return view;
+}
+
+bool vec3_finite(glm::vec3 v)
+{
+    return (std::isfinite(v.x) && std::isfinite(v.y) && std::isfinite(v.z));
+}

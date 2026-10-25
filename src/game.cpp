@@ -54,7 +54,19 @@ void Game::Init()
 
         Level level = j_level.get<Level>();
         level.setLevelWalls();
-        level_queue.push(level);
+
+        std::vector<std::string> errors = level.checkValid();
+        if (errors.size() > 0)
+        {
+            std::cout << "Level contains invalid data:" << std::endl;
+            for (std::string &e : errors)
+                std::cout << e << std::endl;
+        }
+        else
+        {
+            std::cout << "Level is valid" << std::endl;
+            level_queue.push(level);
+        }
     }
 
     loadTopLevel();
@@ -102,95 +114,101 @@ void Game::Update()
     player.grounded = false;
 
     // testa colisão com fase (para grounded)
-    entityWithinLevel(player, level_queue.front());
+    if (!player.DEBUG_noclip_lvl)
+        entityWithinLevel(player, level_queue.front());
 
     // testa colisão com obstáculos 1 (para grounded)
     std::vector<Obstacle> obs_touching_player; // guarda os obstáculos que colidem com o jogador e precisam ser processados depois na ordem
     obs_touching_player.clear();
 
-    for (unsigned int i = 0; i < obstacles.size(); i++)
+    if (!player.DEBUG_noclip_obs)
     {
-        glm::vec3 resolve;
-
-        AABB player_hb = player.getHitbox();
-        AABB obstcl_hb = obstacles[i].getHitbox();
-
-        if (Collide(player_hb,obstcl_hb,resolve))
+        for (unsigned int i = 0; i < obstacles.size(); i++)
         {
-            if (resolve.y != 0) // colisão vertical
+            glm::vec3 resolve;
+
+            AABB player_hb = player.getHitbox();
+            AABB obstcl_hb = obstacles[i].getHitbox();
+
+            if (Collide(player_hb,obstcl_hb,resolve))
+            {
+                if (resolve.y != 0) // colisão vertical
+                {
+                    player.pos += resolve;
+                    if (resolve.y > 0) // colisão em cima
+                    {
+                        player.grounded = true;
+                        if (player.velocity.y < 0)
+                            player.velocity.y = 0.0f;
+                    }
+                    else // colisão em baixo
+                        if (player.velocity.y > 0)
+                            player.velocity.y = 0.0f;
+                }
+                else
+                    obs_touching_player.push_back(obstacles[i]);
+            }
+        }
+
+        // testa colisão com obstáculos 2 (para step up)
+        float step_up = 0.0f;
+        bool ignore_step = false;
+
+        auto obj = obs_touching_player.begin();
+        while (obj != obs_touching_player.end())
+        {
+            glm::vec3 resolve;
+            float step_limit = 0.25f;
+            Obstacle ob = *obj;
+
+            AABB player_hb = player.getHitbox();
+            AABB obstcl_hb = ob.getHitbox();
+
+            if (Collide(player_hb,obstcl_hb))
+            {
+                float height_diff = (obstcl_hb.aabb_max.y - player_hb.aabb_min.y);
+
+                if (height_diff <= step_limit && player.grounded)
+                {
+                    if (height_diff > step_up)
+                        step_up = height_diff;
+                    obj = obs_touching_player.erase(obj);
+                }
+                else
+                {
+                    obj++;
+                    ignore_step = true;//this fixes triple step, but sometimes it catches on the steps...? good enough
+                }
+            }
+        }
+
+        if (!ignore_step)
+            player.pos.y += step_up;
+
+        // testa colisão com obstáculos 3 (o resto dos resolves)
+        for (unsigned int i = 0; i < obs_touching_player.size(); i++)
+        {
+            glm::vec3 resolve;
+
+            AABB player_hb = player.getHitbox();
+            AABB obstcl_hb = obs_touching_player[i].getHitbox();
+
+            if (Collide(player_hb,obstcl_hb,resolve))
             {
                 player.pos += resolve;
-                if (resolve.y > 0) // colisão em cima
-                {
-                    player.grounded = true;
-                    if (player.velocity.y < 0)
-                        player.velocity.y = 0.0f;
-                }
-                else // colisão em baixo
-                    if (player.velocity.y > 0)
-                        player.velocity.y = 0.0f;
-            }
-            else
-                obs_touching_player.push_back(obstacles[i]);
-        }
-    }
-
-    // testa colisão com obstáculos 2 (para step up)
-    float step_up = 0.0f;
-    bool ignore_step = false;
-
-    auto obj = obs_touching_player.begin();
-    while (obj != obs_touching_player.end())
-    {
-        glm::vec3 resolve;
-        float step_limit = 0.25f;
-        Obstacle ob = *obj;
-
-        AABB player_hb = player.getHitbox();
-        AABB obstcl_hb = ob.getHitbox();
-
-        if (Collide(player_hb,obstcl_hb))
-        {
-            float height_diff = (obstcl_hb.aabb_max.y - player_hb.aabb_min.y);
-
-            if (height_diff <= step_limit && player.grounded)
-            {
-                if (height_diff > step_up)
-                    step_up = height_diff;
-                obj = obs_touching_player.erase(obj);
-            }
-            else
-            {
-                obj++;
-                ignore_step = true;//this fixes triple step, but sometimes it catches on the steps...? good enough
+                //KNOCKBACK RESOLVE
+                if (resolve.x != 0) // colisão horizontal (eixo X)
+                    player.velocity.x = 0.0f;
+                else if (resolve.z != 0) // colisão horizontal (eixo Z)
+                    player.velocity.z = 0.0f;
             }
         }
     }
 
-    if (!ignore_step)
-        player.pos.y += step_up;
-
-    // testa colisão com obstáculos 3 (o resto dos resolves)
-    for (unsigned int i = 0; i < obs_touching_player.size(); i++)
-    {
-        glm::vec3 resolve;
-
-        AABB player_hb = player.getHitbox();
-        AABB obstcl_hb = obs_touching_player[i].getHitbox();
-
-        if (Collide(player_hb,obstcl_hb,resolve))
-        {
-            player.pos += resolve;
-            //KNOCKBACK RESOLVE
-            if (resolve.x != 0) // colisão horizontal (eixo X)
-                player.velocity.x = 0.0f;
-            else if (resolve.z != 0) // colisão horizontal (eixo Z)
-                player.velocity.z = 0.0f;
-        }
-    }
 
     // testa colisão com a fase (para manter in bounds)
-    entityWithinLevel(player, level_queue.front());
+    if (!player.DEBUG_noclip_lvl)
+        entityWithinLevel(player, level_queue.front());
 
     // testa se deve atirar
     std::vector<Projectile> new_projectiles;
