@@ -9,6 +9,10 @@
 
 void Projectile::setProjectileData(std::string type)
 {
+    // if type doesn't exist in gamedata, set first type as default
+    if (g_GameData_Projectiles.count(type) == 0)
+        type = g_GameData_Projectiles.begin()->first;
+
     *this = g_GameData_Projectiles[type];
     lifespan = base_lifespan;
 }

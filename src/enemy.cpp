@@ -7,6 +7,10 @@
 
 void Enemy::setEnemyData(std::string type)
 {
+    // if type doesn't exist in gamedata, set first type as default
+    if (g_GameData_Enemies.count(type) == 0)
+        type = g_GameData_Enemies.begin()->first;
+
     *this = g_GameData_Enemies[type];
     health = maxHealth;
 }

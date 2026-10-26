@@ -18,6 +18,10 @@
 
 void Obstacle::setObstacleData(std::string type)
 {
+    // if type doesn't exist in gamedata, set first type as default
+    if (g_GameData_Obstacles.count(type) == 0)
+        type = g_GameData_Obstacles.begin()->first;
+
     *this = g_GameData_Obstacles[type];
 }
 
