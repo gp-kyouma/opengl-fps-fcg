@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
     // Criamos uma janela do sistema operacional, com 800 colunas e 600 linhas
     // de pixels
     GLFWwindow* window;
-    window = glfwCreateWindow(800, 600, "HALL OF THE MINOTAUR v2.0.0", NULL, NULL);
+    window = glfwCreateWindow(800, 600, "HALL OF THE MINOTAUR v2.0.1", NULL, NULL);
     if (!window)
     {
         glfwTerminate();

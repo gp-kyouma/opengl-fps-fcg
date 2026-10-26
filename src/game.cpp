@@ -23,6 +23,8 @@ void Game::Init()
     // LOAD LEVEL LIST FROM FILE
     std::ifstream f_level_list("../../gamedata/level_list.json");
 
+    std::cout << "Loading level_list.json..." << std::endl;
+
     if ( f_level_list.fail() )
     {
         std::cout << "level_list.json failed to open" << std::endl;
@@ -30,10 +32,21 @@ void Game::Init()
         exit(1);
     }
 
-    json j_level_list = json::parse(f_level_list);
-    f_level_list.close();
+    std::vector<std::string> level_list;
 
-    auto level_list = j_level_list.get<std::vector<std::string>>();
+    try
+    {
+        json j_level_list = json::parse(f_level_list);
+        level_list = j_level_list.get<std::vector<std::string>>();
+    }
+    catch (const json::exception& e)
+    {
+        std::cout << "Invalid level list file: " << std::endl << e.what() << std::endl;
+        f_level_list.close();
+        exit(1);
+    }
+
+    f_level_list.close();
 
     for (const auto& level_name : level_list) {
         // LOAD LEVEL DATA FROM FILE
@@ -49,24 +62,42 @@ void Game::Init()
             exit(1);
         }
 
-        json j_level = json::parse(f_level);
+        Level level;
+
+        try
+        {
+            json j_level = json::parse(f_level);
+            level = j_level.get<Level>();
+        }
+        catch (const json::exception& e)
+        {
+            std::cout << "Invalid level file: " << std::endl << e.what() << std::endl;
+            f_level.close();
+            exit(1);
+        }
+
         f_level.close();
 
-        Level level = j_level.get<Level>();
         level.setLevelWalls();
 
         std::vector<std::string> errors = level.checkValid();
         if (errors.size() > 0)
         {
-            std::cout << "Level contains invalid data:" << std::endl;
+            std::cout << "Level contains invalid data, discarding" << std::endl << "Errors:" << std::endl;
             for (std::string &e : errors)
                 std::cout << e << std::endl;
         }
         else
         {
-            std::cout << "Level is valid" << std::endl;
+            std::cout << "Level is valid, adding to queue" << std::endl;
             level_queue.push(level);
         }
+    }
+
+    if (level_queue.empty())
+    {
+        std::cout << "No valid levels were loaded!" << std::endl;
+        exit(1);
     }
 
     loadTopLevel();
