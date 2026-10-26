@@ -491,7 +491,14 @@ void drawWeapon(Player player, float theta, float phi)
 
     glm::mat4 model = Matrix_Identity();
 
-    float cooldown_percent = (player.wpnState == WPNSTATE_COOLDOWN) ? (player.wpnCooldown / player.getCurrentWeapon().cooldown) : 0.0f;
+    float wcd_percent = (player.wpnCooldown / player.getCurrentWeapon().cooldown);
+    float cooldown_percent = (player.wpnState == WPNSTATE_COOLDOWN) ? wcd_percent : 0.0f;
+
+    // on draw, weapon raising animation
+    // (obs: that forcedAim check is jank, it's probably the minigun model's fault)
+    // (this should probably be an attribute but idonwannaaaaa)
+    if (player.wpnState == WPNSTATE_DRAW)
+        vertical_displace -= v * (wcd_percent * (dd.wpn_anim.forcedAim ? 0.05f : 0.5f));
 
     // visual weapon recoil when shooting
     // obs: weapon model might clip into camera (sniper)
