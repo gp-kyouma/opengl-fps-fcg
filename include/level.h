@@ -24,7 +24,7 @@ STRUCTS/CLASSES
 struct EnemyData
 {
     glm::vec3 pos;
-    //glm::vec3 view = glm::vec3(0.0f,0.0f,1.0f); //TODO
+    glm::vec3 view = glm::vec3(0.0f,0.0f,1.0f);
     std::string type;
 
     Enemy buildEnemy();
@@ -36,7 +36,7 @@ struct EnemyData
 struct ObstacleData
 {
     glm::vec3 pos;
-    glm::vec3 e_size;
+    glm::vec3 e_size = glm::vec3(1.0f,1.0f,1.0f);
     std::string type;
 
     Obstacle buildObstacle();
@@ -75,7 +75,7 @@ struct Level
     void setValidDefaults(); // se há erros, seta pra valores default
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(EnemyData, pos, type);
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(EnemyData, pos, view, type);
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ObstacleData, pos, e_size, type);
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Level, level_name, player_pos, player_view, levelWidth, levelLength, levelFloor, levelCeiling, obstacles, enemies);
 

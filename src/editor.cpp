@@ -40,6 +40,21 @@ int find_index_string_vec(std::vector<const char*> vec, const char* str)
     return -1;
 }
 
+//quickfix aux function, rounds too small values to 0
+//no setprecision modifier on json... fuuuuuck
+glm::vec3 view_dir_epsilon(glm::vec3 view)
+{
+    glm::vec3 ret = view;
+    const float eps = 1e-6;
+    if (std::fabs(ret.x) < eps)
+        ret.x = 0.0f;
+    if (std::fabs(ret.y) < eps)
+        ret.y = 0.0f;
+    if (std::fabs(ret.z) < eps)
+        ret.z = 0.0f;
+    return ret;
+}
+
 void ConfirmDialog::open() {
     pending = true;
     result  = false;
@@ -263,6 +278,9 @@ void Editor::DrawGUI(GLFWwindow* window)
     ImGui::SetNextWindowPos(viewport->WorkPos);
     ImGui::SetNextWindowSize(viewport->WorkSize);
 
+    // enemy view yaw
+    static float enemyYaw = 0.0f;
+
     // backup data for the modals
     static ObstacleData backup_obstacleData;
     static EnemyData backup_enemyData;
@@ -439,6 +457,8 @@ void Editor::DrawGUI(GLFWwindow* window)
             ImGui::SliderAngle("Starting yaw", &viewTheta); setEdited();
             ImGui::SliderAngle("Starting pitch", &viewPhi); setEdited();
             level.player_view = phi_theta_to_vec3(viewPhi, viewTheta);
+            //precision quickfix
+            level.player_view = view_dir_epsilon(level.player_view);
 
             ImGui::Separator();
 
@@ -575,12 +595,14 @@ void Editor::DrawGUI(GLFWwindow* window)
 
                 EnemyData new_enemydata;
                 new_enemydata.pos = level.getLevelCenter();
+                new_enemydata.view = glm::vec3(0.0f,0.0f,1.0f);
                 new_enemydata.type = enemyTypes[0];
                 enemyTypeIndex = 0;
 
                 enemyData = new_enemydata;
 
                 backup_enemyData = enemyData;
+                enemyYaw = 0.0f;
             }
             ImGui::Separator();
 
@@ -608,6 +630,7 @@ void Editor::DrawGUI(GLFWwindow* window)
                         enemyTypeIndex = find_index_string_vec(enemyTypes, enemyData.type.c_str());
 
                         backup_enemyData = enemyData;
+                        enemyYaw = getTheta(enemyData.view);
                     }
 
                     ImGui::SameLine();
@@ -619,6 +642,7 @@ void Editor::DrawGUI(GLFWwindow* window)
                         enemyTypeIndex = find_index_string_vec(enemyTypes, enemyData.type.c_str());
 
                         backup_enemyData = enemyData;
+                        enemyYaw = getTheta(enemyData.view);
                     }
 
                     ImGui::SameLine();
@@ -764,9 +788,14 @@ void Editor::DrawGUI(GLFWwindow* window)
                 backup_enemyData.pos = enemyData.pos;
         }
 
-        //TODO
-        //enemy view
-        //just yaw for now
+        // enemy view dir
+        // just yaw for now
+        // i don't think you can even set this to nan from the GUI?
+        // if you can then congratulations, but the level won't save anyways
+        ImGui::SliderAngle("View yaw", &enemyYaw);
+        enemyData.view = phi_theta_to_vec3(0.0f, enemyYaw);
+        //precision quickfix
+        enemyData.view = view_dir_epsilon(enemyData.view);
 
         if (ImGui::Combo("Type", &enemyTypeIndex, enemyTypes.data(), (int)enemyTypes.size()))
             enemyData.type = std::string(enemyTypes[enemyTypeIndex]);

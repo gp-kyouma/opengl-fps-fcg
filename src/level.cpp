@@ -28,7 +28,7 @@ Enemy EnemyData::buildEnemy()
     enemy.seesPlayer  = false;
 
     enemy.pos         = pos;
-    enemy.view        = glm::vec3(0.0f,0.0f,1.0f);//TODO
+    enemy.view        = view;
     enemy.velocity    = glm::vec3(0.0f,0.0f,0.0f);
     enemy.move_dir    = enemy.view;
 
@@ -41,7 +41,12 @@ bool EnemyData::checkValid()
     if (!vec3_finite(pos))
         return false;
 
-    //TODO check view validity
+    //view valid
+    if (!vec3_finite(view))
+        return false;
+
+    if (glm::length(view) == 0.0f)
+        view = glm::vec3(0.0f,0.0f,1.0f);//silently fix shhhh
 
     return true;
 }
@@ -52,7 +57,13 @@ void EnemyData::setValidDefaults()
     if (!vec3_finite(pos))
         pos = glm::vec3(0.0f,0.0f,0.0f);
 
-    //TODO check view validity
+    //view valid
+    if (!vec3_finite(view))
+        view = glm::vec3(0.0f,0.0f,1.0f);
+    else if (glm::length(view) == 0.0f)
+        view = glm::vec3(0.0f,0.0f,1.0f);
+    else
+        view = normalize_vec3(view);
 }
 
 Obstacle ObstacleData::buildObstacle()

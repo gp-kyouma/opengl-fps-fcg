@@ -149,7 +149,7 @@ int main(int argc, char* argv[])
     // Criamos uma janela do sistema operacional, com 800 colunas e 600 linhas
     // de pixels
     GLFWwindow* window;
-    window = glfwCreateWindow(800, 600, "HOTM LEVEL EDITOR v1.0.1", NULL, NULL);
+    window = glfwCreateWindow(800, 600, "HOTM LEVEL EDITOR v1.1.0", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
