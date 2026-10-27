@@ -189,7 +189,6 @@ void Game::Update()
         while (obj != obs_touching_player.end())
         {
             glm::vec3 resolve;
-            float step_limit = 0.25f;
             Obstacle ob = *obj;
 
             AABB player_hb = player.getHitbox();
@@ -199,7 +198,7 @@ void Game::Update()
             {
                 float height_diff = (obstcl_hb.aabb_max.y - player_hb.aabb_min.y);
 
-                if (height_diff <= step_limit && player.grounded)
+                if (height_diff <= player.step_limit && player.grounded)
                 {
                     if (height_diff > step_up)
                         step_up = height_diff;

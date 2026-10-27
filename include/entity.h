@@ -26,6 +26,7 @@ struct Entity // All game objects with position and collision, may or may not mo
     glm::vec3 e_size;   // size of entity
 
     float speed = 0.0f; // speed of entity (if it moves)
+    float step_limit = 0.25f;
 
     // current velocity of entity (gravity, knockback)
     glm::vec3 velocity;
