@@ -112,3 +112,12 @@ bool vec3_finite(glm::vec3 v)
 {
     return (std::isfinite(v.x) && std::isfinite(v.y) && std::isfinite(v.z));
 }
+
+glm::vec3 clamp_vec3(glm::vec3 v, glm::vec3 vmin, glm::vec3 vmax)
+{
+    glm::vec3 result;
+    result.x = glm::clamp(v.x, vmin.x, vmax.x);
+    result.y = glm::clamp(v.y, vmin.y, vmax.y);
+    result.z = glm::clamp(v.z, vmin.z, vmax.z);
+    return result;
+}

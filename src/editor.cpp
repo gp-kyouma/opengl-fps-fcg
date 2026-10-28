@@ -87,6 +87,172 @@ void ConfirmDialog::render(const char* msg) {
     }
 }
 
+bool StairbuilderData::checkValid()
+{
+    if (!vec3_finite(bounding.aabb_min) || !vec3_finite(bounding.aabb_max))
+        return false;
+
+    glm::vec3 sb_size = bounding.getSize();
+    if (sb_size.x <= 0 || sb_size.y <= 0 || sb_size.z <= 0)
+        return false;
+
+    if (numSteps < 1)
+        return false;
+
+    if (thickness < 1 || thickness > numSteps)
+        return false;
+
+    return true;
+}
+
+glm::vec3 StairbuilderData::getStepIncrement()
+{
+    if (!checkValid())
+        return glm::vec3(0.0f);
+
+    return bounding.getSize() / (float)numSteps;
+}
+
+AABB StairbuilderData::getInitialStep()
+{
+    if (orientation == 0)
+        return initial_vertical();
+    else
+        return initial_horizontal();
+}
+
+std::vector<ObstacleData> StairbuilderData::buildFull()
+{
+    std::vector<ObstacleData> ret;
+    ret.clear();
+
+    if (!checkValid())
+        return ret;
+
+    glm::vec3 step = getStepIncrement();
+
+    AABB currentStep = getInitialStep();
+
+    for (int i = 1; i <= numSteps; i++)
+    {
+        AABB new_aabb = currentStep;
+
+        if (clamp)
+        {
+            new_aabb.aabb_min = ClosestPoint(new_aabb.aabb_min, bounding);
+            new_aabb.aabb_max = ClosestPoint(new_aabb.aabb_max, bounding);
+        }
+
+        ObstacleData new_obdata;
+        new_obdata.pos = new_aabb.getCenter();
+        new_obdata.e_size = new_aabb.getSize();
+        new_obdata.type = objType;
+        ret.push_back(new_obdata);
+
+        switch (direction)
+        {
+            case NORTH: // z+
+                currentStep.aabb_min.z += step.z;
+                currentStep.aabb_max.z += step.z;
+                break;
+
+            case SOUTH: // z-
+                currentStep.aabb_min.z -= step.z;
+                currentStep.aabb_max.z -= step.z;
+                break;
+
+            case EAST: // x-
+                currentStep.aabb_min.x -= step.x;
+                currentStep.aabb_max.x -= step.x;
+                break;
+
+            case WEST: // x+
+                currentStep.aabb_min.x += step.x;
+                currentStep.aabb_max.x += step.x;
+                break;
+
+            default:
+                break;
+        }
+
+        currentStep.aabb_min.y += step.y;
+        currentStep.aabb_max.y += step.y;
+    }
+
+    return ret;
+}
+
+AABB StairbuilderData::initial_vertical()
+{
+    glm::vec3 step = getStepIncrement();
+
+    AABB currentStep;
+    currentStep.aabb_min = bounding.aabb_min;
+    currentStep.aabb_max = bounding.aabb_max;
+    currentStep.aabb_max.y = currentStep.aabb_min.y + step.y;
+
+    if (thickness > 1)
+        currentStep.aabb_min.y -= (step.y * (float)(thickness - 1));
+
+    switch (direction)
+    {
+        case NORTH: // z+
+            currentStep.aabb_max.z = currentStep.aabb_min.z + step.z;
+            break;
+
+        case SOUTH: // z-
+            currentStep.aabb_min.z = currentStep.aabb_max.z - step.z;
+            break;
+
+        case EAST: // x-
+            currentStep.aabb_min.x = currentStep.aabb_max.x - step.x;
+            break;
+
+        case WEST: // x+
+            currentStep.aabb_max.x = currentStep.aabb_min.x + step.x;
+            break;
+
+        default:
+            break;
+    }
+
+    return currentStep;
+}
+
+AABB StairbuilderData::initial_horizontal()
+{
+    glm::vec3 step = getStepIncrement();
+
+    AABB currentStep;
+    currentStep.aabb_min = bounding.aabb_min;
+    currentStep.aabb_max = bounding.aabb_max;
+    currentStep.aabb_max.y = currentStep.aabb_min.y + step.y;
+
+    switch (direction)
+    {
+        case NORTH: // z+
+            currentStep.aabb_max.z = currentStep.aabb_min.z + (step.z * (float)thickness);
+            break;
+
+        case SOUTH: // z-
+            currentStep.aabb_min.z = currentStep.aabb_max.z - (step.z * (float)thickness);
+            break;
+
+        case EAST: // x-
+            currentStep.aabb_min.x = currentStep.aabb_max.x - (step.x * (float)thickness);
+            break;
+
+        case WEST: // x+
+            currentStep.aabb_max.x = currentStep.aabb_min.x + (step.x * (float)thickness);
+            break;
+
+        default:
+            break;
+    }
+
+    return currentStep;
+}
+
 void Editor::setEdited()
 {
     if (!edited && ImGui::IsItemEdited())
@@ -137,7 +303,7 @@ void Editor::newLevel()
     g_CameraTheta = g_CameraPhi = viewTheta = viewPhi = 0.0f;
     level.player_view = phi_theta_to_vec3(viewPhi, viewTheta);
 
-    obstacleModal = enemyModal = false;
+    obstacleModal = enemyModal = stairbuilderModal = false;
     edited = false;
 
     //more stuff here?
@@ -176,7 +342,7 @@ void Editor::loadLevel(std::string filepath)
     g_CameraTheta = viewTheta = getTheta(level.player_view);
     g_CameraPhi   = viewPhi   = getPhi(level.player_view);
 
-    obstacleModal = enemyModal = false;
+    obstacleModal = enemyModal = stairbuilderModal = false;
     edited = false;
 }
 
@@ -220,7 +386,7 @@ void Editor::saveLevel(std::string filepath)
 
     f_level.close();
 
-    obstacleModal = enemyModal = false;
+    obstacleModal = enemyModal = stairbuilderModal = false;
     edited = false;
 }
 
@@ -283,21 +449,15 @@ void Editor::DrawGUI(GLFWwindow* window)
 
     // backup data for the modals
     static ObstacleData backup_obstacleData;
-    static EnemyData backup_enemyData;
     static AABB backup_obstacleAABB;
+    static EnemyData backup_enemyData;
+    static StairbuilderData backup_stairbuilderData;
+
+    // because i need an int* to use combobox
+    static int stairbuilderDirection;
 
     // aabb toggle
     static int obstacle_useAABB = false;
-
-    //TODO
-    //stair builder macro
-    //parameters:
-    //min/max, like an aabb
-    //direction (+x, -x, +z, -z)
-    //no. of steps (auto-calculate and show step height, green if autostep, red if not)
-    //type of obstacle used
-    //idk if anything else?
-    //draw: first and last step, then the aabb for the whole thing
 
     ImGui::Begin("CONTROLS", NULL, window_flags);
 
@@ -521,6 +681,27 @@ void Editor::DrawGUI(GLFWwindow* window)
                 backup_obstacleAABB = AABB::from_pos_size(obstacleData.pos, obstacleData.e_size);
                 obstacle_useAABB = false;
             }
+            ImGui::SameLine();
+            if (ImGui::Button("Open stair builder"))
+            {
+                stairbuilderModal = true;
+
+                StairbuilderData new_sbdata;
+                new_sbdata.bounding     = AABB::from_pos_size(level.getLevelCenter(), glm::vec3(1.0f,1.0f,1.0f));
+                new_sbdata.direction    = NORTH;
+                new_sbdata.orientation  = 0;
+                new_sbdata.numSteps     = 4;
+                new_sbdata.thickness    = 4;
+                new_sbdata.clamp        = true;
+                new_sbdata.objType      = obstacleTypes[0];
+
+                stairbuilderData = new_sbdata;
+                stairbuilderTypeIndex = 0;
+
+                backup_stairbuilderData = stairbuilderData;
+                stairbuilderDirection = NORTH;
+            }
+
             ImGui::Separator();
 
             int obstacleCount = level.obstacles.size();
@@ -830,6 +1011,111 @@ void Editor::DrawGUI(GLFWwindow* window)
         ImGui::End();
     }
 
+    if (stairbuilderModal)
+    {
+        ImGui::Begin("Stair Builder", &stairbuilderModal, modal_flags);
+        ImGui::Separator();
+
+        ImGui::InputFloat3("Min point", glm::value_ptr(stairbuilderData.bounding.aabb_min));
+        //VALIDATE
+        if (ImGui::IsItemDeactivatedAfterEdit())
+        {
+            if (!stairbuilderData.checkValid())
+                stairbuilderData.bounding = backup_stairbuilderData.bounding;
+            else
+                backup_stairbuilderData.bounding = stairbuilderData.bounding;
+        }
+
+        ImGui::InputFloat3("Max point", glm::value_ptr(stairbuilderData.bounding.aabb_max));
+        //VALIDATE
+        if (ImGui::IsItemDeactivatedAfterEdit())
+        {
+            if (!stairbuilderData.checkValid())
+                stairbuilderData.bounding = backup_stairbuilderData.bounding;
+            else
+                backup_stairbuilderData.bounding = stairbuilderData.bounding;
+        }
+
+        static std::vector<const char*> directionNames = {"North (+Z)", "South (-Z)", "East (-X)", "West (+X)"};
+        if (ImGui::Combo("Direction", &stairbuilderDirection, directionNames.data(), (int)directionNames.size()))
+            stairbuilderData.direction = static_cast<CardinalDirection>(stairbuilderDirection);
+
+        if (ImGui::Combo("Obstacle type", &stairbuilderTypeIndex, obstacleTypes.data(), (int)obstacleTypes.size()))
+            stairbuilderData.objType = std::string(obstacleTypes[stairbuilderTypeIndex]);
+
+        ImGui::RadioButton("Vertical", &stairbuilderData.orientation, 0);
+        ImGui::SameLine();
+        ImGui::RadioButton("Horizontal", &stairbuilderData.orientation, 1);
+
+        int thickness_diff = stairbuilderData.numSteps - stairbuilderData.thickness;
+        if (ImGui::SliderInt("Steps", &stairbuilderData.numSteps, 1, 10))
+        {
+            //cases:
+            // th = ns: th = ns
+            // th < ns: th = min(th, ns)
+            // th > ns: th = ns
+            if (thickness_diff > 0)
+                stairbuilderData.thickness = std::min(stairbuilderData.thickness, stairbuilderData.numSteps);
+            else
+                stairbuilderData.thickness = stairbuilderData.numSteps;
+        }
+        //VALIDATE
+        if (ImGui::IsItemDeactivatedAfterEdit())
+        {
+            if (!stairbuilderData.checkValid())
+                stairbuilderData.numSteps = backup_stairbuilderData.numSteps;
+            else
+            {
+                backup_stairbuilderData.numSteps = stairbuilderData.numSteps;
+                backup_stairbuilderData.thickness = stairbuilderData.thickness;
+            }
+        }
+
+        ImGui::SliderInt("Thickness", &stairbuilderData.thickness, 1, stairbuilderData.numSteps);
+        //VALIDATE
+        if (ImGui::IsItemDeactivatedAfterEdit())
+        {
+            if (!stairbuilderData.checkValid())
+                stairbuilderData.thickness = backup_stairbuilderData.thickness;
+            else
+                backup_stairbuilderData.thickness = stairbuilderData.thickness;
+        }
+
+        ImGui::Checkbox("Clamp to bounding box", &stairbuilderData.clamp);
+
+        glm::vec3 stepSize = stairbuilderData.getInitialStep().getSize();
+        ImGui::Text("Obstacle size: %.3f, %.3f, %.3f", stepSize.x, stepSize.y, stepSize.z);
+
+        float stepHeight = stairbuilderData.getStepIncrement().y;
+        ImGui::Text("Step height: %.3f", stepHeight);
+        if (stepHeight <= player.step_limit)
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Player can autostep");
+        else
+            ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Player cannot autostep");
+
+        ImGui::Separator();
+
+        if (ImGui::Button("Save"))
+        {
+            //add
+            auto stair = stairbuilderData.buildFull();
+            level.obstacles.insert(level.obstacles.end(), stair.begin(), stair.end());
+
+            edited = true;
+
+            stairbuilderModal = false;
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Cancel"))
+        {
+            stairbuilderModal = false;
+        }
+
+        ImGui::End();
+    }
+
     ImGui::End();
 
     //RENDER GUI
@@ -916,6 +1202,16 @@ void Editor::DrawLevel(GLFWwindow* window)
         enemies.push_back(en);
     }
 
+    if (stairbuilderModal)
+    {
+        for (auto& obdata : stairbuilderData.buildFull())
+        {
+            Obstacle ob = obdata.buildObstacle();
+            ob.editing = true;
+            obstacles.push_back(ob);
+        }
+    }
+
     //draws all entities (obstacles, projectiles, enemies)
     //transparent entities are drawn after opaque entities,
     //sorted by distance from camera (works well enough...)
@@ -972,6 +1268,9 @@ void Editor::DrawLevel(GLFWwindow* window)
         item->draw();
         resetAlphaValue();//safety
     }
+
+    if (stairbuilderModal)
+        drawAABB(stairbuilderData.bounding);
 
     //draw axes in middle of level
     drawAxes(level.getLevelCenter(),glm::vec4(1.0f,0.0f,0.0f,0.0f),glm::vec4(0.0f,1.0f,0.0f,0.0f),glm::vec4(0.0f,0.0f,1.0f,0.0f));

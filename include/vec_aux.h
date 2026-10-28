@@ -48,4 +48,7 @@ glm::vec3 phi_theta_to_vec3(float phi, float theta);
 // Função que checa se um vec3 tem valores finitos (não inf ou nan)
 bool vec3_finite(glm::vec3 v);
 
+// Função que faz clamp de um vec3 (mantém entre min e max)
+glm::vec3 clamp_vec3(glm::vec3 v, glm::vec3 vmin, glm::vec3 vmax);
+
 #endif // FCG_VEC_AUX

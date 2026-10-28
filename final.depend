@@ -2053,12 +2053,13 @@
 1677343785 source:c:\users\caosd\desktop\arquivos codeblocks\e4 (fcg)\final\src\vec_aux.cpp
 	"vec_aux.h"
 
-1792959705 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\collisions.cpp
+1793227610 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\collisions.cpp
 	"collisions.h"
 	<cmath>
 	<cstdio>
 	<cstdlib>
 	<algorithm>
+	"vec_aux.h"
 
 1792959671 c:\users\caosd\documents\github\opengl-fps-fcg\include\collisions.h
 	<glm/mat4x4.hpp>
@@ -3030,7 +3031,7 @@
 	"vec_aux.h"
 	<nlohmann/json.hpp>
 
-1792978320 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\game.cpp
+1793135115 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\game.cpp
 	"game.h"
 	<cstdio>
 	<cstdlib>
@@ -3078,7 +3079,7 @@
 1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\utils.h
 	<cstdio>
 
-1792958054 c:\users\caosd\documents\github\opengl-fps-fcg\include\vec_aux.h
+1793227582 c:\users\caosd\documents\github\opengl-fps-fcg\include\vec_aux.h
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
@@ -3188,12 +3189,12 @@
 1674246957 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\tiny_obj_loader.cpp
 	"tiny_obj_loader.h"
 
-1792958054 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\vec_aux.cpp
+1793227582 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\vec_aux.cpp
 	"vec_aux.h"
 	<math.h>
 	"matrices.h"
 
-1792967468 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\obstacle.cpp
+1793135310 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\obstacle.cpp
 	"obstacle.h"
 	<cmath>
 	<cstdio>
@@ -6829,7 +6830,7 @@
 1772826499 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\entity.cpp
 	"entity.h"
 
-1792358856 c:\users\caosd\documents\github\opengl-fps-fcg\include\entity.h
+1793135115 c:\users\caosd\documents\github\opengl-fps-fcg\include\entity.h
 	<string>
 	<glm/vec4.hpp>
 	"collisions.h"
@@ -7293,7 +7294,7 @@
 1771349577 c:\users\caosd\documents\github\opengl-fps-fcg\include\imgui\imstb_textedit.h
 	<string.h>
 
-1792970548 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\editor.cpp
+1793231219 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\editor.cpp
 	"editor.h"
 	"imgui/imgui.h"
 	"imgui/imgui_stdlib.h"
@@ -7316,7 +7317,7 @@
 	"vec_aux.h"
 	<nlohmann/json.hpp>
 
-1792542310 c:\users\caosd\documents\github\opengl-fps-fcg\include\editor.h
+1793231784 c:\users\caosd\documents\github\opengl-fps-fcg\include\editor.h
 	<string>
 	<vector>
 	<glad/glad.h>
@@ -7328,7 +7329,7 @@
 	"player.h"
 	"level.h"
 
-1792971257 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\main_editor.cpp
+1793145589 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\main_editor.cpp
 	<cmath>
 	<cstdio>
 	<cstdlib>

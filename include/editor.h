@@ -32,6 +32,26 @@ struct ConfirmDialog
     void render(const char* msg);
 };
 
+struct StairbuilderData
+{
+    AABB bounding;
+    CardinalDirection direction;
+    int orientation; // 0 = vertical, 1 = horizontal
+    int numSteps;
+    int thickness;
+    bool clamp;
+    std::string objType;
+
+    bool checkValid();
+    glm::vec3 getStepIncrement();
+    AABB getInitialStep();
+    std::vector<ObstacleData> buildFull();
+
+private:
+    AABB initial_vertical();
+    AABB initial_horizontal();
+};
+
 struct Editor
 {
     // informações de tempo
@@ -66,6 +86,10 @@ struct Editor
     EnemyData enemyData;
     int obstacleTypeIndex;
     int enemyTypeIndex;
+
+    bool stairbuilderModal;
+    StairbuilderData stairbuilderData;
+    int stairbuilderTypeIndex;
 
     void newLevel();
     void loadLevel(std::string filepath);
