@@ -47,7 +47,7 @@ struct ObstacleData
 
 struct Level
 {
-    std::string level_name = "new_level";
+    std::string level_name = "level";
 
     glm::vec3 player_pos;    // posição inicial do jogador ao iniciar a fase
     glm::vec3 player_view = glm::vec3(0.0f,0.0f,1.0f);   // direção onde o jogador está olhando ao iniciar a fase
@@ -69,10 +69,13 @@ struct Level
     glm::vec3 getLevelCenter();
     void setLevelWalls();
 
-    //validations
+    // validations
     bool checkValidBoundaries();
     std::vector<std::string> checkValid(); // retorna lista de erros encontrados
     void setValidDefaults(); // se há erros, seta pra valores default
+
+    // load from file, return true if successful and false if not
+    bool loadFromFile(std::string filepath);
 };
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(EnemyData, pos, view, type);

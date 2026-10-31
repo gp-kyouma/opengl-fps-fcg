@@ -1,7 +1,7 @@
 #ifndef FCG_GAME
 #define FCG_GAME
 
-#include <queue>
+#include <deque>
 #include <vector>
 
 // Headers das bibliotecas OpenGL
@@ -46,7 +46,8 @@ struct Game
     std::vector<Projectile> projectiles;
 
     // fila de níveis que o jogo tem
-    std::queue<Level> level_queue;
+    Level level;
+    std::deque<std::string> levelList;
 
     // se o jogador está morto, ao fim de fase, ou durante a cutscene final:
     // pula o update do jogador, inimigos, etc.
@@ -63,7 +64,13 @@ struct Game
     void initCutscene();
     void drawCutscene(GLFWwindow* window);
     void checkLevelEnd();
-    void loadTopLevel();
+
+    void initCurrentLevel();
+    void loadNextLevel();
+    void loadGotoLevel(std::string levelname);
+
+private:
+    void loadLevelFile(std::string levelname);
 };
 
 #endif // FCG_GAME

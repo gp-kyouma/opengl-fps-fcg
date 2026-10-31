@@ -238,3 +238,35 @@ void Level::setValidDefaults()
     for (int i = 0; i < (int)enemies.size(); i++)
         enemies[i].setValidDefaults();
 }
+
+bool Level::loadFromFile(std::string filepath)
+{
+    // LOAD LEVEL DATA FROM FILE
+    std::ifstream f_level(filepath);
+
+    std::cout << "Loading level at " << filepath << "..." << std::endl;
+
+    if ( f_level.fail() )
+    {
+        std::cout << "File failed to open" << std::endl;
+        std::cout << "Error: " << strerror(errno) << std::endl;
+        return false;
+    }
+
+    try
+    {
+        json j_level = json::parse(f_level);
+        *this = j_level.get<Level>();
+    }
+    catch (const json::exception& e)
+    {
+        std::cout << "Invalid level file: " << std::endl << e.what() << std::endl;
+        f_level.close();
+        return false;
+    }
+
+    f_level.close();
+
+    return true;
+}
+

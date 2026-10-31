@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
+#include <algorithm>
 
 #include "matrices.h"
 
@@ -32,12 +33,10 @@ void Game::Init()
         exit(1);
     }
 
-    std::vector<std::string> level_list;
-
     try
     {
         json j_level_list = json::parse(f_level_list);
-        level_list = j_level_list.get<std::vector<std::string>>();
+        levelList = j_level_list.get<std::deque<std::string>>();
     }
     catch (const json::exception& e)
     {
@@ -48,59 +47,15 @@ void Game::Init()
 
     f_level_list.close();
 
-    for (const auto& level_name : level_list) {
-        // LOAD LEVEL DATA FROM FILE
-        std::string filepath = "../../gamedata/levels/" + level_name + ".json";
-        std::ifstream f_level(filepath);
-
-        std::cout << "Loading level " << level_name << ".json..." << std::endl;
-
-        if ( f_level.fail() )
-        {
-            std::cout << level_name << ".json failed to open" << std::endl;
-            std::cout << "Error: " << strerror(errno) << std::endl;
-            exit(1);
-        }
-
-        Level level;
-
-        try
-        {
-            json j_level = json::parse(f_level);
-            level = j_level.get<Level>();
-        }
-        catch (const json::exception& e)
-        {
-            std::cout << "Invalid level file: " << std::endl << e.what() << std::endl;
-            f_level.close();
-            exit(1);
-        }
-
-        f_level.close();
-
-        level.setLevelWalls();
-
-        std::vector<std::string> errors = level.checkValid();
-        if (errors.size() > 0)
-        {
-            std::cout << "Level contains invalid data, discarding" << std::endl << "Errors:" << std::endl;
-            for (std::string &e : errors)
-                std::cout << e << std::endl;
-        }
-        else
-        {
-            std::cout << "Level is valid, adding to queue" << std::endl;
-            level_queue.push(level);
-        }
-    }
-
-    if (level_queue.empty())
+    if (levelList.empty())
     {
-        std::cout << "No valid levels were loaded!" << std::endl;
+        std::cout << "Level list is empty!" << std::endl;
         exit(1);
     }
 
-    loadTopLevel();
+    // load first level in list
+    loadNextLevel();
+    initCurrentLevel();
 
     finalCutscene = false;
 
@@ -146,7 +101,7 @@ void Game::Update()
 
     // testa colisão com fase (para grounded)
     if (!player.DEBUG_noclip_lvl)
-        entityWithinLevel(player, level_queue.front());
+        entityWithinLevel(player, level);
 
     // testa colisão com obstáculos 1 (para grounded)
     std::vector<Obstacle> obs_touching_player; // guarda os obstáculos que colidem com o jogador e precisam ser processados depois na ordem
@@ -238,7 +193,7 @@ void Game::Update()
 
     // testa colisão com a fase (para manter in bounds)
     if (!player.DEBUG_noclip_lvl)
-        entityWithinLevel(player, level_queue.front());
+        entityWithinLevel(player, level);
 
     // testa se deve atirar
     std::vector<Projectile> new_projectiles;
@@ -332,7 +287,7 @@ void Game::Update()
 
         // testa colisão com fase
         // 1: projéteis atingem as paredes e chão/teto
-        AABB* level_walls = level_queue.front().levelWalls;
+        AABB* level_walls = level.levelWalls;
         Projectile dummy;
         for (int i = 0; i < 6; i++)
         {
@@ -366,7 +321,7 @@ void Game::Update()
         // 2: projéteis não contidos na fase são deletados
         // mais um failsafe do que qualquer outra coisa, o teste de verdade é o 1
         // (this is a little jank)
-        AABB level_boundary = level_queue.front().getAABB();
+        AABB level_boundary = level.getAABB();
         glm::vec3 tolerance = glm::vec3(1.0f,1.0f,1.0f);
         level_boundary.aabb_max += tolerance;
         level_boundary.aabb_min -= tolerance;
@@ -476,7 +431,7 @@ void Game::Update()
         }
 
         // testa colisão com a fase
-        entityWithinLevel(enemies[i], level_queue.front());
+        entityWithinLevel(enemies[i], level);
     }
 
     // update level timer
@@ -492,22 +447,24 @@ void Game::Update()
 
 void Game::checkLevelEnd()
 {
+    //TODO FIX ALL OF THIS FOR LEVEL END CONDITIONS
+    //AND ALSO GOTOLEVEL EVENTS
     if (player.isDead() && g_KeyPressed[GLFW_KEY_ENTER])
     {
-        loadTopLevel();
+        initCurrentLevel();
     }
     else if (enemies.empty())   // todos os inimigos derrotados, fim de nível
     {
-        if (level_queue.size() == 1) // se for o último nível
+        if (levelList.size() == 0) // se for o último nível (e for nextlevel (todo))
         {
             totalTime += levelTime;
             initCutscene();
         }
         else if (g_KeyPressed[GLFW_KEY_ENTER])
         {
-            level_queue.pop();
+            loadNextLevel();
             totalTime += levelTime;
-            loadTopLevel();
+            initCurrentLevel();
         }
     }
 }
@@ -586,11 +543,11 @@ void Game::Draw(GLFWwindow* window)
 
     // (DESENHA OBJETOS)
 
-    drawFloor(level_queue.front());
-    drawWall(level_queue.front(), NORTH);
-    drawWall(level_queue.front(), SOUTH);
-    drawWall(level_queue.front(), EAST);
-    drawWall(level_queue.front(), WEST);
+    drawFloor(level);
+    drawWall(level, NORTH);
+    drawWall(level, SOUTH);
+    drawWall(level, EAST);
+    drawWall(level, WEST);
 
     //draws all entities (obstacles, projectiles, enemies)
     //transparent entities are drawn after opaque entities,
@@ -870,11 +827,11 @@ void Game::drawCutscene(GLFWwindow* window)
     setUseSphericalUV(false);
 
     // Desenha o chão e as paredes da fase
-    drawFloor(level_queue.front());
-    drawWall(level_queue.front(), NORTH);
-    drawWall(level_queue.front(), SOUTH);
-    drawWall(level_queue.front(), EAST);
-    drawWall(level_queue.front(), WEST);
+    drawFloor(level);
+    drawWall(level, NORTH);
+    drawWall(level, SOUTH);
+    drawWall(level, EAST);
+    drawWall(level, WEST);
 
     // Desenha o minotauro
     drawEnemy(enemies[0]);
@@ -976,26 +933,26 @@ void Game::updateDeltaTime()
     prevTime  = currentTime;
 }
 
-// Carrega os dados da fase na frente da fila de fases
-void Game::loadTopLevel()
+// Instancia os dados da fase atualmente carregada
+void Game::initCurrentLevel()
 {
     obstacles.clear();
     enemies.clear();
     projectiles.clear();
 
-    for (ObstacleData& ob : level_queue.front().obstacles)
+    for (ObstacleData& ob : level.obstacles)
     {
         obstacles.push_back(ob.buildObstacle());
     }
 
-    for (EnemyData& enemy : level_queue.front().enemies)
+    for (EnemyData& enemy : level.enemies)
     {
         enemies.push_back(enemy.buildEnemy());
     }
 
     // carrega/reseta dados do jogador
-    player.pos  = level_queue.front().player_pos;
-    player.view = level_queue.front().player_view;
+    player.pos  = level.player_pos;
+    player.view = level.player_view;
     g_CameraPhi   = 0.0f;
     g_CameraTheta = 0.0f;
 
@@ -1014,4 +971,57 @@ void Game::loadTopLevel()
     levelTime = 0.0f;
 
     noUpdate = false;
+}
+
+// Carrega arquivo de fase para level e verifica validade
+void Game::loadLevelFile(std::string levelname)
+{
+    // LOAD LEVEL DATA FROM FILE
+    std::string filepath = "../../gamedata/levels/" + levelname + ".json";
+
+    Level newlevel;
+    level = newlevel;
+    if (!level.loadFromFile(filepath))
+        exit(1); //placeholder while no level end conditions
+
+    level.setLevelWalls();
+
+    std::vector<std::string> errors = level.checkValid();
+    if (errors.size() > 0)
+    {
+        std::cout << "Level contains invalid data" << std::endl << "Errors:" << std::endl;
+        for (std::string &e : errors)
+            std::cout << e << std::endl;
+        exit(1); //placeholder while no level end conditions
+    }
+}
+
+// Carrega próxima fase na lista
+void Game::loadNextLevel()
+{
+    std::string levelname = levelList.front();
+    levelList.pop_front();
+
+    loadLevelFile(levelname);
+}
+
+// Carrega fase com nome levelname
+// Se já existe na lista: pula todas as fases anteriores até chegar nela
+// Se não existe na lista: carrega sem mover a lista
+void Game::loadGotoLevel(std::string levelname)
+{
+    auto levelInList = std::find(levelList.begin(), levelList.end(), levelname);
+
+    if (levelInList != levelList.end())
+    {
+        std::cout << "Going to level " << levelname << " (found in list, skipping previous levels)" << std::endl;
+        levelList.erase(levelList.begin(), levelInList);
+    }
+    else
+    {
+        std::cout << "Going to level " << levelname << " (not found in list)" << std::endl;
+        levelList.push_front(levelname);
+    }
+
+    loadNextLevel();
 }

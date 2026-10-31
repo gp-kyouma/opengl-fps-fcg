@@ -312,30 +312,8 @@ void Editor::newLevel()
 void Editor::loadLevel(std::string filepath)
 {
     // LOAD LEVEL DATA FROM FILE
-    std::ifstream f_level(filepath);
-
-    std::cout << "Loading level at " << filepath << "..." << std::endl;
-
-    if ( f_level.fail() )
-    {
-        std::cout << "File failed to open" << std::endl;
-        std::cout << "Error: " << strerror(errno) << std::endl;
+    if (!level.loadFromFile(filepath))
         return;
-    }
-
-    try
-    {
-        json j_level = json::parse(f_level);
-        level = j_level.get<Level>();
-    }
-    catch (const json::exception& e)
-    {
-        std::cout << "Invalid level file: " << e.what() << std::endl;
-        f_level.close();
-        return;
-    }
-
-    f_level.close();
 
     //set camera to player starting position
     player.pos = level.player_pos;
