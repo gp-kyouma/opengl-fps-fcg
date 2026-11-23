@@ -2880,7 +2880,7 @@
 1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\gtc\type_ptr.inl
 	<cstring>
 
-1792981201 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\draw.cpp
+1793581715 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\draw.cpp
 	"draw.h"
 	<cmath>
 	<cstdio>
@@ -2899,7 +2899,7 @@
 	"matrices.h"
 	"vec_aux.h"
 
-1792176889 c:\users\caosd\documents\github\opengl-fps-fcg\include\draw.h
+1793581556 c:\users\caosd\documents\github\opengl-fps-fcg\include\draw.h
 	<string>
 	<glad/glad.h>
 	<GLFW/glfw3.h>
@@ -3021,7 +3021,7 @@
 	"projectile.h"
 	"entity.h"
 
-1793398996 c:\users\caosd\documents\github\opengl-fps-fcg\include\level.h
+1795394048 c:\users\caosd\documents\github\opengl-fps-fcg\include\level.h
 	<vector>
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
@@ -3031,11 +3031,12 @@
 	"vec_aux.h"
 	<nlohmann/json.hpp>
 
-1793408842 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\game.cpp
+1795390840 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\game.cpp
 	"game.h"
 	<cstdio>
 	<cstdlib>
 	<iostream>
+	<sstream>
 	<algorithm>
 	"matrices.h"
 	"collisions.h"
@@ -3045,8 +3046,9 @@
 	"timer_aux.h"
 	"bezier.h"
 	"gamedata.h"
+	"string_aux.h"
 
-1793407626 c:\users\caosd\documents\github\opengl-fps-fcg\include\game.h
+1794180416 c:\users\caosd\documents\github\opengl-fps-fcg\include\game.h
 	<deque>
 	<vector>
 	<glad/glad.h>
@@ -3061,7 +3063,7 @@
 	"projectile.h"
 	"enemy.h"
 
-1792284871 c:\users\caosd\documents\github\opengl-fps-fcg\include\input.h
+1794081603 c:\users\caosd\documents\github\opengl-fps-fcg\include\input.h
 	<cmath>
 	<cstdio>
 	<cstdlib>
@@ -3094,10 +3096,10 @@
 	<windows.h>
 	<dlfcn.h>
 
-1792286142 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\input.cpp
+1794087214 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\input.cpp
 	"input.h"
 
-1793398400 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\level.cpp
+1795388939 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\level.cpp
 	"level.h"
 	<cmath>
 	<cstdio>
@@ -3111,7 +3113,7 @@
 	<stdexcept>
 	<algorithm>
 
-1792976937 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\main.cpp
+1794081750 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\main.cpp
 	<cmath>
 	<cstdio>
 	<cstdlib>
@@ -5588,7 +5590,7 @@
 	"timer_aux.h"
 	"gamedata.h"
 
-1789165444 c:\users\caosd\documents\github\opengl-fps-fcg\include\enemy.h
+1795388910 c:\users\caosd\documents\github\opengl-fps-fcg\include\enemy.h
 	<glm/mat4x4.hpp>
 	<glm/vec4.hpp>
 	<glm/gtc/type_ptr.hpp>
@@ -7295,7 +7297,7 @@
 1771349577 c:\users\caosd\documents\github\opengl-fps-fcg\include\imgui\imstb_textedit.h
 	<string.h>
 
-1793398500 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\editor.cpp
+1795390184 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\editor.cpp
 	"editor.h"
 	"imgui/imgui.h"
 	"imgui/imgui_stdlib.h"
@@ -7315,10 +7317,11 @@
 	"timer_aux.h"
 	"bezier.h"
 	"gamedata.h"
+	"string_aux.h"
 	"vec_aux.h"
 	<nlohmann/json.hpp>
 
-1793231784 c:\users\caosd\documents\github\opengl-fps-fcg\include\editor.h
+1795390040 c:\users\caosd\documents\github\opengl-fps-fcg\include\editor.h
 	<string>
 	<vector>
 	<glad/glad.h>
@@ -7330,7 +7333,7 @@
 	"player.h"
 	"level.h"
 
-1793145589 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\main_editor.cpp
+1794081750 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\main_editor.cpp
 	<cmath>
 	<cstdio>
 	<cstdlib>
@@ -7505,4 +7508,14 @@
 1674246957 c:\users\caosd\documents\github\opengl-fps-fcg\include\glm\gtx\string_cast.inl
 	<cstdarg>
 	<cstdio>
+
+1794077142 source:c:\users\caosd\documents\github\opengl-fps-fcg\src\string_aux.cpp
+	"string_aux.h"
+	<cctype>
+	<cstring>
+	<algorithm>
+
+1794077142 c:\users\caosd\documents\github\opengl-fps-fcg\include\string_aux.h
+	<string>
+	<vector>
 

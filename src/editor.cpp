@@ -23,22 +23,12 @@
 #include "timer_aux.h"
 #include "bezier.h"
 #include "gamedata.h"
+#include "string_aux.h"
 
 //JSON
 #include "vec_aux.h"//for vec3 json
 #include <nlohmann/json.hpp>
 using json = nlohmann::ordered_json;
-
-//aux function
-int find_index_string_vec(std::vector<const char*> vec, const char* str)
-{
-    for (int j = 0; j < (int)vec.size(); j++){
-        if (!strcmp(vec[j],str)) {
-            return j;
-        }
-    }
-    return -1;
-}
 
 //quickfix aux function, rounds too small values to 0
 //no setprecision modifier on json... fuuuuuck
@@ -303,6 +293,8 @@ void Editor::newLevel()
     g_CameraTheta = g_CameraPhi = viewTheta = viewPhi = 0.0f;
     level.player_view = phi_theta_to_vec3(viewPhi, viewTheta);
 
+    levelAutoclear = level.autoclear;
+
     obstacleModal = enemyModal = stairbuilderModal = false;
     edited = false;
 
@@ -319,6 +311,8 @@ void Editor::loadLevel(std::string filepath)
     player.pos = level.player_pos;
     g_CameraTheta = viewTheta = getTheta(level.player_view);
     g_CameraPhi   = viewPhi   = getPhi(level.player_view);
+
+    levelAutoclear = level.autoclear;
 
     obstacleModal = enemyModal = stairbuilderModal = false;
     edited = false;
@@ -637,6 +631,11 @@ void Editor::DrawGUI(GLFWwindow* window)
                 else
                     backup_ceiling = level.levelCeiling;
             }
+
+            static std::vector<const char*> autoclearNames = {"None", "Kill all enemies", "Kill all boss enemies"};// this should probably be globally available in some way...
+            bool usedcombo = ImGui::Combo("Auto clear cond.", &levelAutoclear, autoclearNames.data(), (int)autoclearNames.size()); setEdited();
+            if (usedcombo)
+                level.autoclear = static_cast<LevelAutoClear>(levelAutoclear);
 
             ImGui::EndTabItem();
         }
@@ -958,6 +957,8 @@ void Editor::DrawGUI(GLFWwindow* window)
 
         if (ImGui::Combo("Type", &enemyTypeIndex, enemyTypes.data(), (int)enemyTypes.size()))
             enemyData.type = std::string(enemyTypes[enemyTypeIndex]);
+
+        ImGui::Checkbox("Boss enemy", &enemyData.boss);
 
         ImGui::Separator();
 

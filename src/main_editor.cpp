@@ -138,12 +138,6 @@ int main(int argc, char* argv[])
     ImGui_ImplGlfw_InitForOpenGL(window_gui, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    //DRAGGING THE GUI WINDOW AROUND pauses the main window
-    //...huh.
-    //probably won't matter for the editor...?
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
     //---------------------------------------------------------------------------------------------------------------------------
 
     // Criamos uma janela do sistema operacional, com 800 colunas e 600 linhas
@@ -187,6 +181,12 @@ int main(int argc, char* argv[])
     // (região de memória onde são armazenados os pixels da imagem).
     glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
     FramebufferSizeCallback(window, 800, 600); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
+
+    // window un/focus callback
+    //glfwSetWindowFocusCallback(window, WindowFocusCallback);
+
+    // window position callback
+    //glfwSetWindowPosCallback(window, WindowPosCallback);
 
     // Imprimimos no terminal informações sobre a GPU do sistema
     const GLubyte *vendor      = glGetString(GL_VENDOR);

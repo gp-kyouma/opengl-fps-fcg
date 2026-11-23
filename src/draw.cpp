@@ -714,6 +714,12 @@ void drawEnemy(Enemy enemy)
     dd.reset_drawdata_flags();
 }
 
+// Escrevemos na tela o nome da fase atual.
+void drawLevelName(GLFWwindow* window, std::string levelname, float aspect)
+{
+    DrawString(window, levelname, 1.0f, 1.0f, TEXTPOS_TOP, TEXTPOS_RIGHT, 2.0f * aspect, false, COLOR_WHITE);
+}
+
 // Escrevemos na tela um tempo (em segundos).
 // hud == true: desenha no canto superior direito
 // hud == false: desenha perto do meio
@@ -737,7 +743,7 @@ void drawTimer(GLFWwindow* window, float timer, bool hud, float aspect)
         snprintf(buffer, 20, "Bro are you ok?");
 
     if (hud)
-        DrawString(window, buffer, 1.0f, 1.0f, TEXTPOS_TOP, TEXTPOS_RIGHT, 2.0f * aspect, false, COLOR_WHITE);
+        DrawString(window, buffer, 1.0f, 0.9125f, TEXTPOS_TOP, TEXTPOS_RIGHT, 2.0f * aspect, false, COLOR_WHITE);
     else
         DrawString(window, buffer, 0.0f, -0.75f, TEXTPOS_CENTER, TEXTPOS_CENTER, 4.5f, false, COLOR_WHITE);
 }

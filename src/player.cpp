@@ -300,8 +300,8 @@ void Player::doWeaponSwitch()
 
 void Player::addWeapon(std::string wpn_key)
 {
-    //todo:
-    //if already has the weapon, add ammo (todo) for it instead
+    //TODO:
+    //if already has the weapon, add ammo for it instead
     //always add the ammo*
 
     Weapon wpn = g_GameData_Weapons[wpn_key];

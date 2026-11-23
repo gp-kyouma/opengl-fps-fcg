@@ -26,6 +26,8 @@ struct Enemy : Actor
     bool seesPlayer;
     float followRange;
 
+    bool boss = false; // set by enemydata
+
     static constexpr float baseDmgCooldown = 0.155f;
 
     void setEnemyData(std::string type);

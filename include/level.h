@@ -26,6 +26,7 @@ struct EnemyData
     glm::vec3 pos;
     glm::vec3 view = glm::vec3(0.0f,0.0f,1.0f);
     std::string type;
+    bool boss = false;
 
     Enemy buildEnemy();
 
@@ -45,6 +46,13 @@ struct ObstacleData
     void setValidDefaults(); // se há erros, seta pra valores default
 };
 
+enum LevelAutoClear
+{
+    NO_AUTOCLEAR,
+    ALL_ENEMIES_CLEAR,
+    ALL_BOSS_ENEMIES_CLEAR,
+};
+
 struct Level
 {
     std::string level_name = "level";
@@ -58,6 +66,8 @@ struct Level
     float levelCeiling  = 10.0f;    // altura máxima da fase
 
     AABB levelWalls[6]; // AABBs usadas para colisão com as paredes (pra não ter que implementar planos)
+
+    LevelAutoClear autoclear = NO_AUTOCLEAR;
 
     // obstáculos da fase
     std::vector<ObstacleData> obstacles;
@@ -78,8 +88,14 @@ struct Level
     bool loadFromFile(std::string filepath);
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(EnemyData, pos, view, type);
+NLOHMANN_JSON_SERIALIZE_ENUM( LevelAutoClear, {
+    {NO_AUTOCLEAR, "none"},
+    {ALL_ENEMIES_CLEAR, "all_enemies"},
+    {ALL_BOSS_ENEMIES_CLEAR, "all_bosses"},
+});
+
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(EnemyData, pos, view, type, boss);
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ObstacleData, pos, e_size, type);
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Level, level_name, player_pos, player_view, levelWidth, levelLength, levelFloor, levelCeiling, obstacles, enemies);
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Level, level_name, player_pos, player_view, levelWidth, levelLength, levelFloor, levelCeiling, autoclear, obstacles, enemies);
 
 #endif // FCG_LEVEL

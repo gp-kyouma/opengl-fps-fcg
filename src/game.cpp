@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
+#include <sstream>
 #include <algorithm>
 
 #include "matrices.h"
@@ -14,6 +15,7 @@
 #include "timer_aux.h"
 #include "bezier.h"
 #include "gamedata.h"
+#include "string_aux.h"
 
 // protótipos de funções auxiliares
 void entityWithinLevel(Entity &entity, Level level);
@@ -53,11 +55,13 @@ void Game::Init()
         exit(1);
     }
 
+    // tolower all level filenames in list
+    for (auto& lvl : levelList)
+        lvl = str_tolower(lvl);
+
     // load first level in list
     loadNextLevel();
     initCurrentLevel();
-
-    finalCutscene = false;
 
     // PLAYER
     player.init();
@@ -73,16 +77,37 @@ void Game::Update()
     // calcula próximo delta time
     updateDeltaTime();
 
-    // aborta o resto dos updates se finalCutscene == true
-    if (finalCutscene)
-        return;
+    // TEXT INPUT
+    if (g_ShowTextInput)
+    {
+        // submit on enter
+        if (g_KeyPressed[GLFW_KEY_ENTER])
+        {
+            doConsoleCommand(g_TextInput);
 
-    // CHECK LEVEL END
+            g_ShowTextInput = false;
+            g_TextInput.clear();
+
+            g_KeyPressed[GLFW_KEY_ENTER] = false;
+        }
+        else
+            return;
+    }
+
+    // CHECKS
     checkLevelEnd();
+    checkStartCutscene();
+
+    // cutscene update
+    if (cutscene)
+        updateCutscene();
 
     // aborta o resto dos updates se noUpdate == true
-    if (noUpdate)
+    if (noUpdate())
         return;
+
+    // update level timer
+    levelTime += deltaTime;
 
     // PLAYER
 
@@ -190,7 +215,6 @@ void Game::Update()
         }
     }
 
-
     // testa colisão com a fase (para manter in bounds)
     if (!player.DEBUG_noclip_lvl)
         entityWithinLevel(player, level);
@@ -208,7 +232,7 @@ void Game::Update()
     // vetor utilizado para contabilizar o dano levado por cada inimigo nesse frame
     std::vector<int> damageTaken(enemies.size(),0);
 
-    //this here loop is fucked up (and evil)
+    //this here loop is fucked up (and evil) TODO
     unsigned int i_proj = 0;
     while (i_proj < projectiles.size())
     {
@@ -433,39 +457,67 @@ void Game::Update()
         // testa colisão com a fase
         entityWithinLevel(enemies[i], level);
     }
+}
 
-    // update level timer
-    levelTime += deltaTime;
+bool Game::noUpdate()
+{
+    return (isGameOver() || isLevelClear() || cutscene);
+}
 
-    // liga noUpdate se estiver numa condição de fim de fase
-    if (player.isDead() || (enemies.empty()))
-        noUpdate = true;
+bool Game::isGameOver()
+{
+    return player.isDead();
+}
 
-    // CHECK LEVEL END
-    checkLevelEnd();
+bool Game::isLevelClear()
+{
+    if (levelCleared) return true;
+
+    // level end conditions
+    if (level.autoclear == ALL_ENEMIES_CLEAR)
+        return enemies.empty();
+    else if (level.autoclear == ALL_BOSS_ENEMIES_CLEAR)
+    {
+        for (unsigned int i = 0; i < enemies.size(); i++)
+            if (enemies[i].boss && !enemies[i].isDead())
+                return false;
+
+        return true;
+    }
+
+    return false;//idk
+}
+
+bool Game::isLastLevel()
+{
+    return ((nextlevel.empty()) && (levelList.size() == 0));
 }
 
 void Game::checkLevelEnd()
 {
-    //TODO FIX ALL OF THIS FOR LEVEL END CONDITIONS
-    //AND ALSO GOTOLEVEL EVENTS
-    if (player.isDead() && g_KeyPressed[GLFW_KEY_ENTER])
+    if (isGameOver() && g_KeyPressed[GLFW_KEY_ENTER])
     {
         initCurrentLevel();
     }
-    else if (enemies.empty())   // todos os inimigos derrotados, fim de nível
+    else if (isLevelClear() && !isLastLevel() && g_KeyPressed[GLFW_KEY_ENTER])
     {
-        if (levelList.size() == 0) // se for o último nível (e for nextlevel (todo))
-        {
-            totalTime += levelTime;
-            initCutscene();
-        }
-        else if (g_KeyPressed[GLFW_KEY_ENTER])
-        {
+        // this should work
+        if (nextlevel.empty())
             loadNextLevel();
-            totalTime += levelTime;
-            initCurrentLevel();
-        }
+        else
+            loadGotoLevel(str_tolower(nextlevel));
+
+        totalTime += levelTime;
+        initCurrentLevel();
+    }
+}
+
+void Game::checkStartCutscene()
+{
+    if (!cutscene && isLevelClear() && isLastLevel()) // should be isLevelClear() && level.hasEndingCutscene
+    {
+        totalTime += levelTime;
+        initCutscene();
     }
 }
 
@@ -492,7 +544,7 @@ void Game::Draw(GLFWwindow* window)
     glUseProgram(g_GpuProgramID);
 
     // Se estiver na cutscene, entra em DrawCutscene e aborta
-    if (finalCutscene)
+    if (cutscene)
     {
         drawCutscene(window);
         return;
@@ -613,24 +665,6 @@ void Game::Draw(GLFWwindow* window)
 
         //drawPoint(player.calculateWeaponPos());
 
-        // weapons in 3rd person view
-        Player fakeplayer[(int)player.weapons.size()];
-
-        for (int i = 1; i < (int)player.weapons.size(); i++)
-        {
-            fakeplayer[i].pos  = glm::vec3(4.5f - (i * 1.5f),2.25f,-12.0f);
-            fakeplayer[i].neck = 0.5f;
-            fakeplayer[i].view = glm::vec3(0.0f,0.0f,1.0f);
-            fakeplayer[i].wpnAnimation = 0.0f;
-            fakeplayer[i].wpnCooldown  = 0.0f;
-            fakeplayer[i].wpnState = WPNSTATE_READY;
-            fakeplayer[i].weapons[0] = {player.weapons[i]};
-            fakeplayer[i].currentWeapon = {0,0};
-
-            drawWeapon(fakeplayer[i],getTheta(fakeplayer[i].view),getPhi(fakeplayer[i].view));
-            drawPoint(fakeplayer[i].calculateWeaponPos());
-        }
-
         // bullet for checking spherical uv
         Projectile fakebullet;
         fakebullet.setProjectileData("P_SNIPER_BULLET");
@@ -638,8 +672,6 @@ void Game::Draw(GLFWwindow* window)
         fakebullet.view = glm::vec3(0.0f,0.0f,1.0f);
         drawAxes(fakebullet.pos,glm::vec4(1.0f,0.0f,0.0f,0.0f),glm::vec4(0.0f,1.0f,0.0f,0.0f),glm::vec4(0.0f,0.0f,1.0f,0.0f));
         drawProjectile(fakebullet);
-
-        drawPosition(window, player, g_ScreenRatio);
     }
 
     // Resetamos todos os pixels do Z-buffer (depth buffer)
@@ -647,7 +679,7 @@ void Game::Draw(GLFWwindow* window)
     glClear(GL_DEPTH_BUFFER_BIT);
 
     // Desenha arma
-    if (!noUpdate)
+    if (!noUpdate())
     {
         // draw weapon with separate fov
         float weapon_fov = 3.141592 / 3.0f; //60graus
@@ -668,7 +700,8 @@ void Game::Draw(GLFWwindow* window)
     setViewMatrix(view);
     setProjectionMatrix(projection);
 
-    // print level timer on top right
+    // print level name + timer on top right
+    drawLevelName(window, level.level_name, g_ScreenRatio);
     drawTimer(window, levelTime, true, g_ScreenRatio);
 
     // Dá um flash vermelho na tela se tiver tomado dano
@@ -676,9 +709,9 @@ void Game::Draw(GLFWwindow* window)
         drawColorFade(COLOR_RED, player.dmgCooldown);
 
     // Desenha mensagem ao usuário se estiver morto/acabou fase
-    if (player.isDead())
+    if (isGameOver())
         drawBanner(g_ScreenRatio, "player_dead");
-    else if (enemies.empty())
+    else if (isLevelClear() && !isLastLevel()) // should be isLevelClear() && !level.hasEndingCutscene
         drawBanner(g_ScreenRatio, "level_clear");
     else
     {
@@ -705,12 +738,21 @@ void Game::Draw(GLFWwindow* window)
         drawWeaponList(window, player, g_ScreenRatio);
     }
 
-    /*
     if (g_ShowInfo)
     {
-        drawColorCompare(g_ScreenRatio);
+        drawPosition(window, player, g_ScreenRatio);
     }
-    */
+
+    // text input
+    if (g_ShowTextInput)
+    {
+        drawColorFade(COLOR_BLACK, 0.5f);
+
+        int blipcount = std::floor(glfwGetTime() * 3);
+        float textsize = 2.0f * g_ScreenRatio;
+        std::string inputdraw = g_TextInput + ((blipcount % 2) ? '|' : ' ');
+        DrawString(window, inputdraw, -0.95f, -0.95f, TEXTPOS_BOTTOM, TEXTPOS_LEFT, textsize, false, COLOR_WHITE);
+    }
 
     // Reativa o z-buffer
     glEnable(GL_DEPTH_TEST);
@@ -733,9 +775,10 @@ void Game::Draw(GLFWwindow* window)
 // Inicializa variáveis referentes à cutscene
 void Game::initCutscene()
 {
-    finalCutscene = true;
-    cutsceneStep  = 0.0f;
+    cutscene = true;
+    cutsceneStep = 0.0f;
 
+    enemies.clear();
     projectiles.clear();
     obstacles.clear();
 
@@ -746,8 +789,7 @@ void Game::initCutscene()
     enemies.push_back(cutscene_minotaur.buildEnemy());
 }
 
-// Desenha elementos da cutscene
-void Game::drawCutscene(GLFWwindow* window)
+void Game::updateCutscene()
 {
     // Pontos de controle da(s) curva(s) bézier que a câmera irá percorrer
     const glm::vec3 bezier_pts[7] = {glm::vec3( 0.0f, 1.5f, 3.0f),
@@ -758,26 +800,20 @@ void Game::drawCutscene(GLFWwindow* window)
                                      glm::vec3(-5.5f, 3.5f, 5.0f),
                                      glm::vec3( 0.0f, 3.5f, 5.0f)};
 
-    // Variáveis da câmera virtual
-    // A posição será obtida por curva de bézier, e o view vector será obtido através de look-at
-    glm::vec4 camera_pos;
-    glm::vec4 view_vector;
-    glm::vec4 up_vector = glm::vec4(0.0f,1.0f,0.0f,0.0f); // Vetor "up" fixado para apontar para o "céu" (eixo Y global)
-
     // Determina em que fase da cutscene estamos, dependendo do valor de cutsceneStep
 
     // Determina a posição da câmera
     if (cutsceneStep <= 2.0f)   // entre segundos 0 e 2, faz a primeira curva de bézier (primeira metade piecewise)
     {
-        camera_pos = Ponto(CubicBezier(bezier_pts[0], bezier_pts[1], bezier_pts[2], bezier_pts[3], cutsceneStep/2.0f));
+        cutscenePos = CubicBezier(bezier_pts[0], bezier_pts[1], bezier_pts[2], bezier_pts[3], cutsceneStep/2.0f);
     }
     else if (cutsceneStep > 2.0f && cutsceneStep <= 4.0f) // entre segundos 2 e 4, faz a segunda curva de bézier (segunda metade piecewise)
     {
-        camera_pos = Ponto(CubicBezier(bezier_pts[3], bezier_pts[4], bezier_pts[5], bezier_pts[6], cutsceneStep/2.0f - 1.0f));
+        cutscenePos = CubicBezier(bezier_pts[3], bezier_pts[4], bezier_pts[5], bezier_pts[6], cutsceneStep/2.0f - 1.0f);
     }
     else    // a partir do segundo 4, deixa a câmera parada no último ponto
     {
-        camera_pos = Ponto(bezier_pts[6]);
+        cutscenePos = bezier_pts[6];
     }
 
     // Encolhe o tamanho do minotauro a partir do segundo 5
@@ -786,6 +822,19 @@ void Game::drawCutscene(GLFWwindow* window)
         enemies[0].health = 0;
         enemies[0].dmgCooldown = (6.0f - cutsceneStep) * Enemy::baseDmgCooldown;
     }
+
+    // Incrementa cutsceneStep
+    incrementTimer(cutsceneStep, deltaTime, 6.0f);
+}
+
+// Desenha elementos da cutscene
+void Game::drawCutscene(GLFWwindow* window)
+{
+    // Variáveis da câmera virtual
+    // A posição será obtida por curva de bézier, e o view vector será obtido através de look-at
+    glm::vec4 camera_pos = Ponto(cutscenePos);
+    glm::vec4 view_vector;
+    glm::vec4 up_vector = glm::vec4(0.0f,1.0f,0.0f,0.0f); // Vetor "up" fixado para apontar para o "céu" (eixo Y global)
 
     // Define o view vector
     // (câmera look-at)
@@ -839,26 +888,38 @@ void Game::drawCutscene(GLFWwindow* window)
     // Os objetos a seguir sempre serão desenhados na frente; desativa o z-buffer
     glDisable(GL_DEPTH_TEST);
 
-    // Desenha tempo da fase final
+    // Últimas coisas são desenhadas diretamente em NDC
+    // Desativa matrizes de view e projeção
+    view       = Matrix_Identity();
+    projection = Matrix_Identity();
+
+    setViewMatrix(view);
+    setProjectionMatrix(projection);
+
+    // print level name + timer on top right
+    drawLevelName(window, level.level_name, g_ScreenRatio);
     drawTimer(window, levelTime, true, g_ScreenRatio);
 
     // Se tiver acabado a cutscene
-    if (cutsceneStep == 6.0f)
+    if (cutsceneStep == 6.0f) // if (cutsceneEnd())
     {
-        // Últimas coisas são desenhadas diretamente em NDC
-        // Desativa matrizes de view e projeção
-        view       = Matrix_Identity();
-        projection = Matrix_Identity();
-
-        setViewMatrix(view);
-        setProjectionMatrix(projection);
-
-        // Desenha mensagem de fim de jogo
-        drawBanner(g_ScreenRatio, "game_clear");
+        // Desenha mensagem de fim de jogo / próximo nível
+        drawBanner(g_ScreenRatio, isLastLevel() ? "game_clear" : "level_clear");
 
         // Desenha tempo final de jogo
         DrawString(window, "FINAL TIME:", 0.0f, -0.625f, TEXTPOS_CENTER, TEXTPOS_CENTER, 4.0f, false, COLOR_WHITE);
         drawTimer(window, totalTime, false, g_ScreenRatio);
+    }
+
+    // text input
+    if (g_ShowTextInput)
+    {
+        drawColorFade(COLOR_BLACK, 0.5f);
+
+        int blipcount = std::floor(glfwGetTime() * 3);
+        float textsize = 2.0f * g_ScreenRatio;
+        std::string inputdraw = g_TextInput + ((blipcount % 2) ? '|' : ' ');
+        DrawString(window, inputdraw, -0.95f, -0.95f, TEXTPOS_BOTTOM, TEXTPOS_LEFT, textsize, false, COLOR_WHITE);
     }
 
     // Reativa o z-buffer
@@ -871,9 +932,6 @@ void Game::drawCutscene(GLFWwindow* window)
     // tudo que foi renderizado pelas funções acima.
     // Veja o link: https://en.wikipedia.org/w/index.php?title=Multiple_buffering&oldid=793452829#Double_buffering_in_computer_graphics
     glfwSwapBuffers(window);
-
-    // Incrementa cutsceneStep
-    incrementTimer(cutsceneStep, deltaTime, 6.0f);
 }
 
 // Checa se a entidade está dentro dos limites da fase e ajusta sua posição se não estiver
@@ -970,7 +1028,9 @@ void Game::initCurrentLevel()
 
     levelTime = 0.0f;
 
-    noUpdate = false;
+    levelCleared = false;
+    cutscene = false;
+    nextlevel = "";
 }
 
 // Carrega arquivo de fase para level e verifica validade
@@ -979,10 +1039,15 @@ void Game::loadLevelFile(std::string levelname)
     // LOAD LEVEL DATA FROM FILE
     std::string filepath = "../../gamedata/levels/" + levelname + ".json";
 
+    // Placeholder level;
+    // if level loading fails, place player in an empty level with no clear condition
     Level newlevel;
+    newlevel.level_name = "MINOCHECK";//lol
+    newlevel.autoclear = NO_AUTOCLEAR;
     level = newlevel;
+
     if (!level.loadFromFile(filepath))
-        exit(1); //placeholder while no level end conditions
+        level = newlevel;
 
     level.setLevelWalls();
 
@@ -992,7 +1057,8 @@ void Game::loadLevelFile(std::string levelname)
         std::cout << "Level contains invalid data" << std::endl << "Errors:" << std::endl;
         for (std::string &e : errors)
             std::cout << e << std::endl;
-        exit(1); //placeholder while no level end conditions
+        level = newlevel;
+        level.setLevelWalls();
     }
 }
 
@@ -1024,4 +1090,173 @@ void Game::loadGotoLevel(std::string levelname)
     }
 
     loadNextLevel();
+}
+
+void Game::doConsoleCommand(std::string cmd)
+{
+    //split string
+    std::stringstream split(cmd);
+    std::vector<std::string> tokens;
+
+    std::string token;
+    while (std::getline(split, token, ' ')) {
+        token = str_trim(token);
+        if (!token.empty())
+            tokens.push_back(token);
+    }
+
+    if (tokens.empty())
+        return;
+
+    // get cmd and params
+    std::string cmdname = tokens[0];
+    tokens.erase(tokens.begin());
+
+    //elseif nation
+    if (cmdname == "GOTOLEVEL")
+    {
+        if (tokens.size() != 1)
+        {
+            std::cout << "USAGE: GOTOLEVEL <LEVEL_NAME>" << std::endl;
+            return;
+        }
+
+        loadGotoLevel(str_tolower(tokens[0]));
+        initCurrentLevel();
+    }
+    else if (cmdname == "GOTONEXT")
+    {
+        if (tokens.size() != 0)
+        {
+            std::cout << "USAGE: GOTONEXT" << std::endl;
+            return;
+        }
+
+        if (isLastLevel())
+        {
+            std::cout << "NO NEXT LEVEL" << std::endl;
+            return;
+        }
+
+        if (nextlevel.empty())
+            loadNextLevel();
+        else
+            loadGotoLevel(str_tolower(nextlevel));
+        initCurrentLevel();
+    }
+    else if (cmdname == "NEXTLEVEL")
+    {
+        // different usages:
+        // NEXTLEVEL SET <LEVEL_NAME>
+        // NEXTLEVEL RESET
+        std::string snl_usage = "USAGE: NEXTLEVEL <SET/RESET> [LEVEL_NAME]";
+
+        if (tokens.size() == 0)
+        {
+            std::cout << snl_usage << std::endl;
+            return;
+        }
+        else if (tokens.size() == 1)
+        {
+            if (tokens[0] == "RESET")
+                nextlevel = "";
+            else
+            {
+                std::cout << snl_usage << std::endl;
+                return;
+            }
+        }
+        else if (tokens.size() == 2)
+        {
+            if (tokens[0] == "SET")
+                nextlevel = str_tolower(tokens[1]);
+            else
+            {
+                std::cout << snl_usage << std::endl;
+                return;
+            }
+        }
+        else
+        {
+            std::cout << snl_usage << std::endl;
+            return;
+        }
+    }
+    else if (cmdname == "LEVELCLEAR")
+    {
+        if (tokens.size() != 0)
+        {
+            std::cout << "USAGE: LEVELCLEAR" << std::endl;
+            return;
+        }
+
+        levelCleared = true;
+    }
+    else if (cmdname == "NOCLIP")
+    {
+        // different usages:
+        // NOCLIP: toggle ALL
+        // NOCLIP <FLY/OBS/ALL>: toggle
+        // NOCLIP <FLY/OBS/ALL> <ON/OFF>
+        std::string noclip_usage = "USAGE: NOCLIP [FLY/OBS/ALL] [ON/OFF]";
+
+        std::string noclipmode;
+        bool on_off = false;
+        bool toggle = false;
+
+        if (tokens.size() == 0)
+        {
+            noclipmode = "ALL";
+            toggle = true;
+        }
+        else if (tokens.size() == 1)
+        {
+            noclipmode = tokens[0];
+            toggle = true;
+        }
+        else if (tokens.size() == 2)
+        {
+            noclipmode = tokens[0];
+            if (tokens[1] == "ON")
+                on_off = true;
+            else if (tokens[1] == "OFF")
+                on_off = false;
+            else
+            {
+                std::cout << noclip_usage << std::endl;
+                return;
+            }
+        }
+        else
+        {
+            std::cout << noclip_usage << std::endl;
+            return;
+        }
+
+        if (noclipmode == "FLY")
+        {
+            player.DEBUG_noclip_fly = toggle ? (!player.DEBUG_noclip_fly) : on_off;
+
+            //to prevent falling into the void
+            if (!player.DEBUG_noclip_fly)
+                player.DEBUG_noclip_lvl = false;
+        }
+        else if (noclipmode == "OBS")
+        {
+            player.DEBUG_noclip_obs = toggle ? (!player.DEBUG_noclip_obs) : on_off;
+        }
+        else if (noclipmode == "ALL")
+        {
+            player.DEBUG_noclip_fly =
+            player.DEBUG_noclip_obs =
+            player.DEBUG_noclip_lvl = toggle ? (!player.DEBUG_noclip_lvl) : on_off;
+        }
+        else
+        {
+            std::cout << noclip_usage << std::endl;
+            return;
+        }
+    }
+    else
+        std::cout << "UNKNOWN COMMAND" << std::endl;
 }

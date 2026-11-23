@@ -33,6 +33,10 @@ float g_CameraPhi = 0.0f;   // Ângulo em relação ao eixo Y
 // Variável que controla se a informação extra será mostrada na tela.
 bool g_ShowInfo = false;
 
+// text input by player
+std::string g_TextInput = "";
+bool g_ShowTextInput = false;
+
 // Guarda se o usuário já movimentou o mouse
 bool g_hasMovedMouse = false;
 
@@ -69,6 +73,8 @@ bool g_IgnoreMouse = false; // "works on my machine", mas não se pode garantir q
 // Função callback chamada sempre que o usuário aperta algum dos botões do mouse
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
+    if (g_ShowTextInput) return;
+
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
     {
         // Se o usuário pressionou o botão esquerdo do mouse, setamos a variável
@@ -129,6 +135,13 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
     float dx = xpos - g_LastCursorPosX;
     float dy = ypos - g_LastCursorPosY;
 
+    // Atualizamos as variáveis globais para armazenar a posição atual do
+    // cursor como sendo a última posição conhecida do cursor.
+    g_LastCursorPosX = xpos;
+    g_LastCursorPosY = ypos;
+
+    if (g_ShowTextInput) return;
+
     // Atualizamos parâmetros da câmera com os deslocamentos
     if (!g_IgnoreMouse)
     {
@@ -146,17 +159,14 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
             g_CameraPhi = phimin;
     }
 
-    // Atualizamos as variáveis globais para armazenar a posição atual do
-    // cursor como sendo a última posição conhecida do cursor.
-    g_LastCursorPosX = xpos;
-    g_LastCursorPosY = ypos;
-
     if (g_IgnoreMouse) g_IgnoreMouse = false;
 }
 
 // Função callback chamada sempre que o usuário movimenta a "rodinha" do mouse.
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
+    if (g_ShowTextInput) return;
+
     if (yoffset > 0)
     {
         // Handle scroll up (e.g., zoom in)
@@ -167,6 +177,79 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
         // Handle scroll down (e.g., zoom out)
         g_LastScrollDirection = -1;
     }
+}
+
+void WindowFocusCallback(GLFWwindow* window, int focused)
+{
+    if (focused == GLFW_TRUE) {
+        // A janela recuperou o foco
+        //printf("WINDOW REFOCUSED\n");
+    } else {
+        // A janela perdeu o foco (unfocused)
+        //printf("WINDOW UNFOCUSED\n");
+    }
+}
+
+void WindowPosCallback(GLFWwindow* window, int xpos, int ypos)
+{
+    //printf("WINDOW POS %d %d\n", xpos, ypos);
+}
+
+bool KeyIsLetter(int key)
+{
+    return (key >= GLFW_KEY_A && key <= GLFW_KEY_Z);
+}
+
+bool KeyIsNumberRow(int key)
+{
+    return (key >= GLFW_KEY_0 && key <= GLFW_KEY_9);
+}
+
+bool KeyIsNumberNumpad(int key)
+{
+    return (key >= GLFW_KEY_KP_0 && key <= GLFW_KEY_KP_9);
+}
+
+bool KeyIsUnderscore(int key)
+{
+    // there's definitely a better way to detect underscores lol.
+    return (key == GLFW_KEY_MINUS && (g_KeyPressed[GLFW_KEY_LEFT_SHIFT] || g_KeyPressed[GLFW_KEY_RIGHT_SHIFT]));
+}
+
+bool KeyIsAcceptedTextInput(int key)
+{
+    // letters, numbers, space, backspace, underscores
+    return (KeyIsLetter(key) || KeyIsNumberRow(key) || KeyIsNumberNumpad(key) || key == GLFW_KEY_SPACE || key == GLFW_KEY_BACKSPACE || KeyIsUnderscore(key));
+}
+
+void UserTextInput(int key)
+{
+    if (!KeyIsAcceptedTextInput(key))
+        return;
+
+    char toadd;
+
+    if (key == GLFW_KEY_BACKSPACE)
+    {
+        if (!g_TextInput.empty())
+            g_TextInput.pop_back();
+        return;
+    }
+
+    const int maxinput = 50;
+    if (g_TextInput.size() >= maxinput)
+        return;
+
+    if (KeyIsNumberNumpad(key))
+        toadd = '0' + (key - GLFW_KEY_KP_0);
+
+    else if (KeyIsUnderscore(key))
+        toadd = '_';
+
+    else // everything else is ascii directly
+        toadd = key;
+
+    g_TextInput.push_back(toadd);
 }
 
 // Definição da função que será chamada sempre que o usuário pressionar alguma
@@ -185,25 +268,44 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
     else if (action == GLFW_RELEASE)
         g_KeyPressed[key] = false;
 
+    // text input
+    if (g_ShowTextInput && (action == GLFW_PRESS || action == GLFW_REPEAT) && KeyIsAcceptedTextInput(key))
+    {
+        UserTextInput(key);
+        return;
+    }
+
+    //printf("keycode %d\n", key);
+
     // special cases
     if (action == GLFW_PRESS)
     {
         // Se o usuário apertar uma tecla numérica, atualiza variável global
         // Standard row number keys
-        if (key >= GLFW_KEY_0 && key <= GLFW_KEY_9) {
+        if (KeyIsNumberRow(key)) {
             g_LastNumberPressed = key - GLFW_KEY_0;
             g_NumberKeyPressed = true;
         }
         // Numeric keypad keys
-        else if (key >= GLFW_KEY_KP_0 && key <= GLFW_KEY_KP_9) {
+        else if (KeyIsNumberNumpad(key)) {
             g_LastNumberPressed = key - GLFW_KEY_KP_0;
             g_NumberKeyPressed = true;
         }
 
         // Se o usuário apertar a tecla H, fazemos um "toggle" da informação extra.
-        if (key == GLFW_KEY_H)
+        // (not on editor)
+        if (!g_EditorInput && key == GLFW_KEY_H)
         {
             g_ShowInfo = !g_ShowInfo;
+        }
+
+        // toggle text input on ' key
+        // (not on editor)
+        // works on my ptbr kb layout. tough shit for any other
+        if (!g_EditorInput && key == GLFW_KEY_GRAVE_ACCENT)
+        {
+            g_ShowTextInput = !g_ShowTextInput;
+            g_TextInput.clear();
         }
 
         // Se o usuário apertar a tecla M, maximiza/restaura a janela.

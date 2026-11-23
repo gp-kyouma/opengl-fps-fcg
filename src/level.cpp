@@ -31,6 +31,7 @@ Enemy EnemyData::buildEnemy()
     enemy.view        = view;
     enemy.velocity    = glm::vec3(0.0f,0.0f,0.0f);
     enemy.move_dir    = enemy.view;
+    enemy.boss        = boss;
 
     return enemy;
 }

@@ -78,6 +78,9 @@ struct Editor
     std::vector<const char*> obstacleTypes;
     std::vector<const char*> enemyTypes;
 
+    // because i need an int* to use combobox
+    int levelAutoclear;
+
     bool obstacleModal;
     bool enemyModal;
     int obstacleIndex;

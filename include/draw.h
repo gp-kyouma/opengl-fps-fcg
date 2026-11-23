@@ -62,6 +62,7 @@ void drawEnemy(Enemy enemy);
 
 void drawWeaponList(GLFWwindow* window, Player player, float aspect);
 
+void drawLevelName(GLFWwindow* window, std::string levelname, float aspect);
 void drawTimer(GLFWwindow* window, float timer, bool hud, float aspect);
 void drawHealth(GLFWwindow* window, Actor& actor, float aspect);
 void drawPosition(GLFWwindow* window, Entity& entity, float aspect);

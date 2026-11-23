@@ -134,6 +134,12 @@ int main(int argc, char* argv[])
     glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
     FramebufferSizeCallback(window, 800, 600); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
 
+    // window un/focus callback
+    //glfwSetWindowFocusCallback(window, WindowFocusCallback);
+
+    // window position callback
+    //glfwSetWindowPosCallback(window, WindowPosCallback);
+
     // Imprimimos no terminal informações sobre a GPU do sistema
     const GLubyte *vendor      = glGetString(GL_VENDOR);
     const GLubyte *renderer    = glGetString(GL_RENDERER);

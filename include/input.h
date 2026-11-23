@@ -35,6 +35,8 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 void CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+void WindowFocusCallback(GLFWwindow* window, int focused);
+void WindowPosCallback(GLFWwindow* window, int xpos, int ypos);
 
 /*
 DECLARAÇÃO DE VARIÁVEIS GLOBAIS
@@ -72,5 +74,9 @@ extern float g_CameraPhi;   // Ângulo em relação ao eixo Y
 
 // Variável que controla se a informação extra será mostrada na tela.
 extern bool g_ShowInfo;
+
+// text input by player
+extern std::string g_TextInput;
+extern bool g_ShowTextInput;
 
 #endif // FCG_INPUT

@@ -49,25 +49,41 @@ struct Game
     Level level;
     std::deque<std::string> levelList;
 
+    // próximo nível a carregar
+    // string vazia = avança na levelList
+    std::string nextlevel;
+
     // se o jogador está morto, ao fim de fase, ou durante a cutscene final:
     // pula o update do jogador, inimigos, etc.
-    bool noUpdate;
+    bool noUpdate(); // getter
+    bool levelCleared;
 
     // atributos referentes à cutscene de fim de jogo
-    bool finalCutscene;
+    bool cutscene;
     float cutsceneStep; // determina em qual parte da cutscene está; [0.0f, 6.0f]
+    glm::vec3 cutscenePos;
 
     void updateDeltaTime();
+
     void Init();
     void Update();
     void Draw(GLFWwindow* window);
+
     void initCutscene();
+    void updateCutscene();
     void drawCutscene(GLFWwindow* window);
+
+    bool isGameOver();
+    bool isLevelClear();
+    bool isLastLevel();
     void checkLevelEnd();
+    void checkStartCutscene();
 
     void initCurrentLevel();
     void loadNextLevel();
     void loadGotoLevel(std::string levelname);
+
+    void doConsoleCommand(std::string cmd);
 
 private:
     void loadLevelFile(std::string levelname);
